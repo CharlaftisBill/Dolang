@@ -1,0 +1,112 @@
+# -------------------------------------
+# LEXICAL TOKENS
+# -------------------------------------
+COMMENT = "#" [^\n]* "\n"
+
+NAME = [a-zA-Z_]\w*
+
+INT = \d+
+FLT = \d+"."\d+
+BOOL = "true"|"false"
+
+SINGLE_STR = "'"[^']*"'"
+DOUBLE_STR = '"'[^"]*'"'
+STR = SINGLE_STR | DOUBLE_STR
+
+# -------------------------------------
+# TYPES
+# -------------------------------------
+PRIMITIVE_TYPE = "i32"|"i64"|"f32"|"f64"|"bool"|"str"
+USER_TYPE = NAME
+
+GENERIC_TYPE = NAME "<" TYPE ["," TYPE]* ">"
+FUNCTION_TYPE = "(" [ VAR_DECL ["," VAR_DECL ]* ]* ")" [TYPE ["," TYPE]* ]*
+
+TYPE = PRIMITIVE_TYPE|GENERIC_TYPE|FUNCTION_TYPE|USER_TYPE
+
+# -------------------------------------
+# EXPRESSIONS (Precedence: Low to High)
+# -------------------------------------
+UNARY_OPERATOR = "!" | "-" | "+"
+MULTIPLICATIVE_OPERATOR = "*" | "/" | "%"
+ADDITIVE_OPERATOR = "+" | "-"
+COMPARISON_OPERATOR = "==" | "!=" | "<" | "<=" | ">" | ">="
+
+UNARY = [ UNARY_OPERATOR ]* VALUE
+MULTIPLICATIVE = UNARY [ MULTIPLICATIVE_OPERATOR UNARY ]*
+ADDITIVE = MULTIPLICATIVE [ ADDITIVE_OPERATOR MULTIPLICATIVE ]*
+COMPARISON = ADDITIVE [ COMPARISON_OPERATOR ADDITIVE ]*
+LOGICAL_AND = COMPARISON [ "&&" COMPARISON ]*
+LOGICAL_OR = LOGICAL_AND [ "||" LOGICAL_AND ]*
+
+EXPRESSION = LOGICAL_OR
+
+# -------------------------------------
+# VALUES & CHAINS
+# -------------------------------------
+VAR_NAME = NAME
+VAR_DECL = VAR_NAME TYPE
+
+ARRAY_LITERAL = "[" [ EXPRESSION ["," EXPRESSION]* ]* "]"
+BLOCK = "{" STATEMENT* "}"
+
+# Catch Flow definitions
+MATCH_ARM = ( VALUE | TYPE | "_" ) ":" ( EXPRESSION | BLOCK )
+CATCH_ARM = VALUE ["," VALUE]* ":" ( EXPRESSION | BLOCK )
+CATCH_FLOW = "catch" "{" CATCH_ARM+ "}"
+
+ACCESS_ARGS = "(" [ EXPRESSION ["," EXPRESSION ]* ]* ")"
+ACCESS_INDEX = "[" EXPRESSION "]"
+ACCESS_PROP = "." NAME
+
+# Logic: 
+# 1. Starts with Name or (Expression)
+# 2. Followed by any number of modifiers (args, index, prop)
+# 3. Optionally ends with [ CATCH_FLOW ]
+CALL_CHAIN = ( NAME | "(" EXPRESSION ")" ) ( ACCESS_ARGS | ACCESS_INDEX | ACCESS_PROP )* [ CATCH_FLOW ]
+
+VALUE = FLT|INT|BOOL|STR|ARRAY_LITERAL|BLOCK|CALL_CHAIN
+
+# -------------------------------------
+# STATEMENTS
+# -------------------------------------
+USER_TYPE_DECL = USER_TYPE "type" ( ":" "{" VAR_DECL+ "}" | USER_TYPE )
+UNION_TYPE_DECL = NAME "union" ":" "{" VAR_DECL+ "}"
+ENUM_TYPE_DECL = NAME "enum" ":" "{" NAME+ "}"
+
+FUNCTION_DECL = NAME [ "<" NAME ["," NAME]* ">" ]* FUNCTION_TYPE BLOCK
+METHOD_DECL = TYPE "." NAME [ "<" NAME ["," NAME]* ">" ]* FUNCTION_TYPE BLOCK
+
+MUT_INIT = VAR_DECL "=" EXPRESSION
+IMUT_INIT = VAR_DECL ":" EXPRESSION
+ASSIGNMENT = CALL_CHAIN "=" EXPRESSION
+
+SUCCESS_RETURN = "success" [ EXPRESSION ["," EXPRESSION ]* ]*
+FAILURE_REASON = NAME
+FAILURE_RETURN = "failure" FAILURE_REASON [ EXPRESSION ["," EXPRESSION ]* ]*
+STATUS_RETURNS = SUCCESS_RETURN | FAILURE_RETURN
+
+STATEMENT = VAR_DECL
+          | MUT_INIT
+          | IMUT_INIT
+          | ASSIGNMENT
+          | CALL_CHAIN
+          | STATUS_RETURNS
+          | "break"
+          | "continue"
+          | CONTROL_FLOW
+          | USER_TYPE_DECL
+          | UNION_TYPE_DECL
+          | ENUM_TYPE_DECL
+          | FUNCTION_DECL
+          | METHOD_DECL
+
+# -------------------------------------
+# CONTROL FLOW
+# -------------------------------------
+IF_FLOW = "if" EXPRESSION BLOCK [ "else" ( IF_FLOW | BLOCK ) ]
+LOOP_FLOW = "loop" [ NAME ["," NAME ]* ]* "in" EXPRESSION BLOCK
+
+MATCH_FLOW = "match" EXPRESSION "{" MATCH_ARM+ "}"
+
+CONTROL_FLOW = IF_FLOW|LOOP_FLOW|MATCH_FLOW
