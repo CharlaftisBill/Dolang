@@ -1,6 +1,6 @@
 use std::fs;
 
-use crate::lexing::token::Token;
+use crate::ast::token::{Tag, Token};
 
 #[derive(Debug)]
 pub struct Lexer {
@@ -11,7 +11,7 @@ pub struct Lexer {
 }
 
 impl Lexer {
-    pub fn new(src_path: &String) -> Result<Self, std::io::Error> {
+    pub fn new(src_path: &str) -> Result<Self, std::io::Error> {
         let src = fs::read_to_string(src_path)?;
 
         Ok(Self {
@@ -36,13 +36,13 @@ impl Lexer {
                 None => break,
             };
 
-            println!(
-                "\n---> next_char: '{:?}' at: {} of {}\n---> last_char_added: '{:?}'\n",
-                next_char,
-                self.at + 1,
-                self.src.len(),
-                tokens.last(),
-            );
+            // println!(
+            //     "\n---> next_char: '{:?}' at: {} of {}\n---> last_char_added: '{:?}'\n",
+            //     next_char,
+            //     self.at + 1,
+            //     self.src.len(),
+            //     tokens.last(),
+            // );
 
             match next_char {
                 // keep the order
@@ -51,9 +51,7 @@ impl Lexer {
                 ' ' | '\t' | '\r' => self.at += 1,
                 '=' | ':' | '+' | '-' | '*' | '%' | '/' | '^' | '!' | '|' | '&' | '.' | '{'
                 | '}' | '(' | ')' | '<' | '>' => tokens.push(self.consume_symbol()),
-                '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' => {
-                    tokens.push(self.consume_number())
-                }
+                '0'..='9' => tokens.push(self.consume_number()),
                 '"' => tokens.push(self.consume_string_literal()),
                 '\'' => tokens.push(self.consume_character_literal()),
                 _ => tokens.push(self.consume_ident_or_keyword()),
@@ -64,8 +62,9 @@ impl Lexer {
             }
         }
 
-        println!("---> tokens: '{:?}'", tokens.len());
+        // println!("---> tokens: '{:?}'", tokens.len());
 
+        tokens.push(Token::new(self, Tag::EOF));
         Ok(tokens)
     }
 
@@ -94,12 +93,14 @@ impl Lexer {
         let mut symbol = String::new();
 
         let symbols: Vec<char> = vec![
-            '=', ':', '+', '-', '*', '%', '/', '^', '!', '|', '&', '.', '{', '}', '(', ')',
+            '=', ':', '+', '-', '*', '%', '/', '^', '!', '|', '&', '.', '{', '}', '(', ')', '<',
+            '>',
         ];
-        let operators: Vec<char> = vec!['+', '-', '*', '%', '/', '^', '!', '|', '&'];
+        let operators: Vec<char> = vec![
+            '*', '/', '%', '<', '>', '&', '+', '-', '|', '^', '=', '!', '<', '>', '&',
+        ];
 
-        let mut is_operator = false;
-        let mut is_doubled_operator = false;
+        let operators_may_doubled: Vec<char> = vec!['|', '&', '<', '>', '='];
 
         match self.peak() {
             Some(character) => {
@@ -107,8 +108,34 @@ impl Lexer {
                     self.at += 1;
                     symbol.push(character);
                 }
-                is_operator = operators.contains(&character);
-                is_doubled_operator = character == '|' || character == '&';
+
+                let is_operator = operators.contains(&character);
+                let is_doubled_operator = operators_may_doubled.contains(&character);
+
+                if is_operator {
+                    if let Some(next_char) = self.peak() {
+                        if next_char == '='
+                            || next_char == ':'
+                            || (is_doubled_operator && (next_char == character))
+                        {
+                            symbol.push(self.src[self.at]);
+                            self.at += 1;
+                        } else if symbols.contains(&next_char) {
+                            return Token::new_invalid(
+                                self,
+                                format!(
+                                    "Arithmetic Operator Symbol '{symbol}' can only be followed by either ':' or '=' symbols."
+                                ),
+                            );
+                        }
+                    } else {
+                        panic!(
+                            "L{}:{}  Unexpected 'None' while peaking character!",
+                            self.line,
+                            self.at - self.last_new_line_at
+                        );
+                    }
+                }
             }
             None => panic!(
                 "L{}:{}  Expected symbol got None!",
@@ -116,31 +143,6 @@ impl Lexer {
                 self.at - self.last_new_line_at
             ),
         };
-
-        if is_operator {
-            match self.peak() {
-                Some(character) => {
-                    if (character == '=' || character == ':')
-                        || (is_doubled_operator && (character == '|' || character == '&'))
-                    {
-                        symbol.push(self.src[self.at]);
-                        self.at += 1;
-                    } else if symbols.contains(&character) {
-                        return Token::new_invalid(
-                            self,
-                            format!(
-                                "Arithmetic Operator Symbol '{symbol}' can only be followed by either ':' or '=' symbols."
-                            ),
-                        );
-                    }
-                }
-                None => panic!(
-                    "L{}:{}  Unexpected 'None' while peaking character!",
-                    self.line,
-                    self.at - self.last_new_line_at
-                ),
-            }
-        }
 
         Token::new(self, super::token::Tag::SYMBOL(symbol))
     }
@@ -267,7 +269,6 @@ impl Lexer {
     }
 
     fn consume_new_lines(&mut self) -> Token {
-        let starts = self.at;
         let mut new_lines = String::new();
 
         loop {
@@ -281,12 +282,7 @@ impl Lexer {
                         break;
                     }
                 }
-                None => {
-                    return Token::new_invalid(
-                        self,
-                        "Unexcpected end of file while excpected new line".to_string(),
-                    );
-                }
+                None => break,
             }
         }
 
