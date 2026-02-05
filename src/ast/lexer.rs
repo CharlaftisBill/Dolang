@@ -295,7 +295,7 @@ impl Lexer {
         loop {
             match self.peak() {
                 Some(character) => {
-                    if !character.is_ascii_whitespace() {
+                    if !character.is_ascii_whitespace() && !character.is_ascii_punctuation(){
                         self.at += 1;
                         word.push(character)
                     } else {

@@ -1,1 +1,1 @@
-arith5 f32 = (1 + (2 - 3)) / 4 * 5 % 6
+arith6 f32 = (1 + (arith1 - arith2)) / arith3 * arith0 % arith4
