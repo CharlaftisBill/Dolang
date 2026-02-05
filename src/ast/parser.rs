@@ -37,9 +37,12 @@ impl<'a> Parser<'a> {
 
         let current = self.tokens[self.at].kind.as_str();
         if current != expected {
-            panic!("Expected, '{:?}' but instead got '{:?}'.", expected, current)
+            panic!(
+                "Expected, '{:?}' but instead got '{:?}'.",
+                expected, current
+            )
         }
-        
+
         self.advance();
     }
 
@@ -139,7 +142,12 @@ impl<'a> Parser<'a> {
 
             let (l_bp, r_bp) = self.infix_binding_power(start_token.kind.as_str());
             // println!("  ---> {}: ({l_bp}, {r_bp})", start_token.kind.as_str());
-            println!("Token: '{}', BP: {}, MinBP: {}", start_token.kind.as_str(), l_bp, min_bp);
+            println!(
+                "Token: '{}', BP: {}, MinBP: {}",
+                start_token.kind.as_str(),
+                l_bp,
+                min_bp
+            );
 
             if l_bp == 0 {
                 break;
@@ -150,9 +158,7 @@ impl<'a> Parser<'a> {
             }
 
             self.advance();
-            if self.tokens[self.at].kind.as_str() == "("
-                && matches!(start_token.kind, Tag::IDENT(_))
-            {
+            if start_token.kind.as_str() == "(" {
                 lhs = self.parse_call(lhs);
                 continue;
             }
@@ -219,13 +225,15 @@ impl<'a> Parser<'a> {
     }
 
     fn parse_call(&mut self, func: NodeId) -> NodeId {
-        let current_token = &self.tokens[self.at];
+        let starting_token = &self.tokens[self.at];
+
+        println!("parse_call");
 
         let mut args = Vec::new();
-        if current_token.kind.as_str() != ")" {
+        if starting_token.kind.as_str() != ")" {
             loop {
                 args.push(self.parse_expr(0));
-                if current_token.kind.as_str() == "," {
+                if self.tokens[self.at].kind.as_str() == "," {
                     self.advance();
                 } else {
                     break;
@@ -233,7 +241,7 @@ impl<'a> Parser<'a> {
             }
         }
         self.expect(")");
-        self.ast.add(Node::CALL { func, args }, current_token.span)
+        self.ast.add(Node::CALL { func, args }, starting_token.span)
     }
 
     fn token_to_binary_op(&self, kind: &str, lhs: NodeId, rhs: NodeId) -> BinaryOp {
@@ -259,14 +267,14 @@ impl<'a> Parser<'a> {
 
             "&&" => BinaryOp::LOGICAND(lhs, rhs),
             "||" => BinaryOp::LOGICOR(lhs, rhs),
-            // ... map others ...
-            _ => panic!("Unknown binary op"),
+
+            _ => panic!("Unknown binary op: '{kind}'"),
         }
     }
 
     fn infix_binding_power(&self, symbol: &str) -> (u8, u8) {
         match symbol {
-            // "(" => (20, 0),
+            "(" => (20, 0),
             "*" | "/" | "%" | "<<" | ">>" | "&" | " &^" => (9, 10),
             "+" | "-" | "|" | "^" => (7, 8),
             "==" | "!=" | "<" | "<=" | ">" | ">=" => (5, 6),

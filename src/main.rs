@@ -22,7 +22,7 @@ fn main() {
     for (index, token) in tokens.iter().enumerate() {
         println!(" {index}  ---> {:?}", token)
     }
-
+    
     println!("______________| PARSE |______________");
     let mut ast = Ast::new();
     let mut parser = Parser::new(&tokens, &lexer.src, &mut ast);
