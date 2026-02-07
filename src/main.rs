@@ -4,7 +4,7 @@ use crate::ast::lexer::Lexer;
 
 mod ast;
 
-// TODO: Parse: expressions, user defined types 
+// TODO: Parse: user defined types 
 
 fn main() {
     println!("Do programming language!");

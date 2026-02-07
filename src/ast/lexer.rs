@@ -94,7 +94,7 @@ impl Lexer {
 
         let symbols: Vec<char> = vec![
             '=', ':', '+', '-', '*', '%', '/', '^', '!', '|', '&', '.', '{', '}', '(', ')', '<',
-            '>', ','
+            '>', ',',
         ];
         let operators: Vec<char> = vec![
             '*', '/', '%', '<', '>', '&', '+', '-', '|', '^', '=', '!', '<', '>', '&',
@@ -120,7 +120,9 @@ impl Lexer {
                         {
                             symbol.push(self.src[self.at]);
                             self.at += 1;
-                        } else if symbols.contains(&next_char) {
+                        } else if symbols.contains(&next_char)
+                            && !(character == '!' && next_char == '(')
+                        {
                             return Token::new_invalid(
                                 self,
                                 format!(
@@ -148,7 +150,7 @@ impl Lexer {
     }
 
     fn consume_ident_or_keyword(&mut self) -> Token {
-        let word: String = self.consume_word();
+        let mut word: String = self.consume_word();
 
         let keywords = vec![
             "success",
@@ -168,7 +170,7 @@ impl Lexer {
             "continue",
             "enum",
             "union",
-            "kind",
+            "type",
             "of",
             "interface",
             "import",
@@ -178,6 +180,20 @@ impl Lexer {
             return Token::new(self, super::token::Tag::BOOL(word));
         } else if keywords.contains(&word.as_str()) {
             return Token::new(self, super::token::Tag::KEYWORD(word));
+        }
+
+        match self.peak() {
+            Some(character) => {
+                if character == '.' {
+                    self.at += 1;
+                    let method_or_field = self.consume_word();
+                    word.push_str(".");
+                    word.push_str(&method_or_field);
+                }
+            }
+            None => {
+                //proceed with canonical flow
+            }
         }
 
         Token::new(self, super::token::Tag::IDENT(word))
@@ -295,7 +311,7 @@ impl Lexer {
         loop {
             match self.peak() {
                 Some(character) => {
-                    if !character.is_ascii_whitespace() && !character.is_ascii_punctuation(){
+                    if !character.is_ascii_whitespace() && !character.is_ascii_punctuation() {
                         self.at += 1;
                         word.push(character)
                     } else {
