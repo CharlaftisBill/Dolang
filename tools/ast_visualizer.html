@@ -8,54 +8,315 @@
     <script src="https://dagrejs.github.io/project/dagre-d3/latest/dagre-d3.min.js"></script>
 
     <style>
-        body { margin: 0; background-color: #1e1e1e; color: #d4d4d4; font-family: 'Consolas', monospace; overflow: hidden; }
-        #controls { position: absolute; top: 10px; left: 10px; background: #252526; padding: 10px; border: 1px solid #333; border-radius: 4px; z-index: 100; }
-        input { background: #3c3c3c; color: white; border: 1px solid #555; padding: 5px; }
-        svg { width: 100vw; height: 100vh; }
+        :root {
+            --color-var: #61afef;
+            --bg-var: #1a2430;
+            --color-id: #56b6c2;
+            --bg-id: #1b2729;
+            --color-call: #e5c07b;
+            --bg-call: #2c2820;
+            --color-op: #c678dd;
+            --bg-op: #2a202e;
+            --color-success: #98c379;
+            --bg-success: #1e291b;
+            --color-failure: #e06c75;
+            --bg-failure: #2a1b1c;
+            --color-if: #d19a66;
+            --bg-if: #2b221a;
+            --color-block: #abb2bf;
+            --bg-block: #232323;
+        }
 
-        /* Node Styling */
-        .node rect { stroke: #d4d4d4; fill: #2d2d2d; stroke-width: 1.5px; }
-        .node text { fill: #d4d4d4; font-size: 12px; }
+        body {
+            margin: 0;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Consolas', monospace;
+            overflow: hidden;
+        }
 
-        /* Specific Node Colors */
-        g.type-VAR > rect { stroke: #61afef; fill: #1a2430; }
-        g.type-IDENTIFIER > rect { stroke: #56b6c2; fill: #1b2729; }
-        g.type-CALL > rect { stroke: #e5c07b; fill: #2c2820; }
-        g.type-IF > rect { stroke: #d19a66; fill: #2b221a; }
-        g.type-FUNCSIGNATURE > rect { stroke: #c678dd; fill: #251e29; }
-        g.type-SUCCESS > rect { stroke: #98c379; fill: #1e291b; }
-        g.type-FAILURE > rect { stroke: #e06c75; fill: #2a1b1c; }
-        g.type-BLOCK > rect { stroke: #abb2bf; stroke-dasharray: 5, 5; fill: #232323; }
+        #controls,
+        #legend,
+        #zoom-controls {
+            position: absolute;
+            background: #252526;
+            padding: 12px;
+            border: 1px solid #333;
+            border-radius: 4px;
+            z-index: 100;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
 
-        /* Edge Styling */
-        .edgePath path { stroke: #666; fill: none; stroke-width: 1.5px; }
-        .edgeLabel text { fill: #999; font-size: 10px; }
+        #controls {
+            top: 10px;
+            left: 10px;
+            width: 220px;
+        }
+
+        #legend {
+            top: 10px;
+            right: 10px;
+            font-size: 0.85em;
+            width: 180px;
+        }
+
+        #zoom-controls {
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+
+        h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.1em;
+            border-bottom: 1px solid #444;
+            padding-bottom: 5px;
+        }
+
+        button {
+            background: #3c3c3c;
+            color: white;
+            border: 1px solid #555;
+            padding: 6px 12px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-family: inherit;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #505050;
+        }
+
+        input[type="file"] {
+            background: #3c3c3c;
+            color: white;
+            border: 1px solid #555;
+            padding: 5px;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 0.8em;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .swatch {
+            width: 14px;
+            height: 14px;
+            margin-right: 10px;
+            border-radius: 2px;
+            border: 1.5px solid white;
+        }
+
+        /* Graph Node Classes */
+        g.type-VAR>rect {
+            stroke: var(--color-var);
+            fill: var(--bg-var);
+        }
+
+        g.type-IDENTIFIER>rect {
+            stroke: var(--color-id);
+            fill: var(--bg-id);
+        }
+
+        g.type-CALL>rect {
+            stroke: var(--color-call);
+            fill: var(--bg-call);
+            stroke-width: 2.5px;
+        }
+
+        g.type-BINARY>rect,
+        g.type-UNARY>rect {
+            stroke: var(--color-op);
+            fill: var(--bg-op);
+        }
+
+        g.type-SUCCESS>rect {
+            stroke: var(--color-success);
+            fill: var(--bg-success);
+        }
+
+        g.type-FAILURE>rect {
+            stroke: var(--color-failure);
+            fill: var(--bg-failure);
+        }
+
+        g.type-IF>rect {
+            stroke: var(--color-if);
+            fill: var(--bg-if);
+        }
+
+        g.type-BLOCK>rect {
+            stroke: var(--color-block);
+            fill: var(--bg-block);
+            stroke-dasharray: 4, 4;
+        }
+
+        g.type-FUNCSIGNATURE>rect {
+            stroke: var(--color-op);
+            fill: var(--bg-block);
+            stroke-dasharray: 2, 2;
+        }
+
+        svg {
+            width: 100vw;
+            height: 100vh;
+            cursor: grab;
+        }
+
+        svg:active {
+            cursor: grabbing;
+        }
+
+        .node text {
+            fill: #d4d4d4;
+            font-size: 12px;
+        }
+
+        .edgePath path {
+            stroke: #555;
+            fill: none;
+            stroke-width: 1.5px;
+        }
+
+        .edgeLabel text {
+            fill: #888;
+            font-size: 10px;
+        }
     </style>
 </head>
 
 <body>
+
     <div id="controls">
-        <h3>AST Flowchart</h3>
+        <h3>AST Controls</h3>
         <input type="file" id="fileInput" accept=".json">
-        <div id="status" style="margin-top:5px; font-size: 0.8em; color: #888;">Load your JSON</div>
+        <div id="status" style="margin-top:5px; font-size: 0.75em; color: #888;">Select ast.json</div>
     </div>
-    <svg><g /></svg>
+
+    <div id="legend">
+        <h3>Legend</h3>
+        <div class="legend-item">
+            <div class="swatch" style="border-color: var(--color-var); background: var(--bg-var);"></div> Variables
+        </div>
+        <div class="legend-item">
+            <div class="swatch" style="border-color: var(--color-id); background: var(--bg-id);"></div> Identifiers
+        </div>
+        <div class="legend-item">
+            <div class="swatch"
+                style="border-color: var(--color-call); background: var(--bg-call); border-width: 2.5px;"></div>
+            Function Calls
+        </div>
+        <div class="legend-item">
+            <div class="swatch" style="border-color: var(--color-op); background: var(--bg-op);"></div> Operations
+        </div>
+        <div class="legend-item">
+            <div class="swatch" style="border-color: var(--color-if); background: var(--bg-if);"></div> If Condition
+        </div>
+        <div class="legend-item">
+            <div class="swatch" style="border-color: var(--color-success); background: var(--bg-success);"></div>
+            Success
+        </div>
+        <div class="legend-item">
+            <div class="swatch" style="border-color: var(--color-failure); background: var(--bg-failure);"></div>
+            Failure
+        </div>
+        <div class="legend-item">
+            <div class="swatch"
+                style="border-color: var(--color-block); background: var(--bg-block); border-style: dashed;"></div> Code
+            Blocks
+        </div>
+    </div>
+
+    <div id="zoom-controls">
+        <button id="zoom-in" title="Zoom In">+</button>
+        <button id="zoom-out" title="Zoom Out">-</button>
+        <button id="zoom-reset" title="Zoom 0">0</button>
+        <button id="move-center" title="Move to Center">Center</button>
+    </div>
+
+    <svg>
+        <g />
+    </svg>
 
     <script>
-        const g = new dagreD3.graphlib.Graph().setGraph({ rankdir: "TB", nodesep: 50, ranksep: 70 });
+        const svg = d3.select("svg");
+        const inner = svg.select("g");
+        const renderEngine = new dagreD3.render();
+
+        // 1. Initialize Zoom
+        const zoom = d3.zoom().on("zoom", () => {
+            inner.attr("transform", d3.event.transform);
+        });
+        svg.call(zoom);
+
+        // 2. Build empty Graph object
+        let g = new dagreD3.graphlib.Graph().setGraph({ rankdir: "TB", nodesep: 50, ranksep: 70 });
+
+        function centerGraph(animate = true) {
+            if (!g.graph()) return;
+
+            const graphWidth = g.graph().width;
+            const graphHeight = g.graph().height;
+            const svgWidth = svg.node().getBoundingClientRect().width;
+            const svgHeight = svg.node().getBoundingClientRect().height;
+
+            // Scale to fit screen but don't go larger than 100%
+            const initialScale = Math.min(1, Math.min(svgWidth / (graphWidth + 40), svgHeight / (graphHeight + 40)));
+            const xOffset = (svgWidth - graphWidth * initialScale) / 2;
+            const yOffset = (svgHeight - graphHeight * initialScale) / 2;
+
+            const transform = d3.zoomIdentity.translate(xOffset, yOffset).scale(initialScale);
+
+            if (animate) {
+                svg.transition().duration(500).call(zoom.transform, transform);
+            } else {
+                svg.call(zoom.transform, transform);
+            }
+        }
+
+        // --- Event Listeners ---
+        document.getElementById('zoom-in').onclick = () => svg.transition().duration(300).call(zoom.scaleBy, 1.2);
+        document.getElementById('zoom-out').onclick = () => svg.transition().duration(300).call(zoom.scaleBy, 0.8);
+        document.getElementById('zoom-reset').onclick = () => svg.transition().duration(300).call(zoom.transform, d3.zoomIdentity);
+        document.getElementById('move-center').onclick = () => centerGraph(true);
 
         document.getElementById('fileInput').addEventListener('change', function (event) {
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = (e) => buildGraph(JSON.parse(e.target.result));
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    buildGraph(data);
+                    document.getElementById('status').innerText = "Loaded: " + file.name;
+                } catch (err) {
+                    alert("JSON Error: " + err.message);
+                }
+            };
             reader.readAsText(file);
         });
 
-        function buildGraph(data) {
-            const nodes = data.nodes;
-            const spans = data.spans || [];
-            g.nodes().forEach(v => g.removeNode(v));
+        function buildGraph(flatData) {
+            const nodes = flatData.nodes;
+            const spans = flatData.spans || [];
+
+            // --- CRITICAL STEP: RESET SVG STATE ---
+            // We reset zoom to identity (1:1) and clear the DOM.
+            // This ensures Dagre's internal measurements for HTML labels are accurate.
+            svg.call(zoom.transform, d3.zoomIdentity);
+            inner.selectAll("*").remove();
+
+            // Create a fresh graph object
+            g = new dagreD3.graphlib.Graph()
+                .setGraph({ rankdir: "TB", nodesep: 50, ranksep: 70, marginx: 20, marginy: 20 })
+                .setDefaultEdgeLabel(() => ({}));
 
             const getLabel = (n, idx) => {
                 let title = n.kind;
@@ -64,90 +325,99 @@
 
                 if (n.kind === "VAR") {
                     title = d.name;
-                    // Try to resolve type name if 'kind' is an index
                     const typeNode = nodes[d.kind];
-                    subtitle = typeNode ? `Type: ${typeNode.data}` : "Variable";
-                } else if (n.kind === "IDENTIFIER" || n.kind === "I32" || n.kind === "STR") {
+                    if (typeNode) {
+                        subtitle = (typeNode.kind === "FUNCSIGNATURE") ? "Type: Function" : `Type: ${typeNode.data}`;
+                    } else {
+                        subtitle = "Variable";
+                    }
+                }
+                else if (n.kind === "IDENTIFIER" || n.kind === "STR" || n.kind === "I32") {
                     title = String(d);
                     subtitle = n.kind;
-                } else if (n.kind === "SUCCESS") {
-                    title = "RETURN";
-                    subtitle = "Success";
-                } else if (n.kind === "FAILURE") {
-                    title = "FAIL";
-                    subtitle = d.reason || "Error";
-                } else if (n.kind === "FUNCSIGNATURE") {
-                    title = "SIGNATURE";
-                    subtitle = `(${d.params.length} params)`;
                 }
+                else if (n.kind === "BINARY" || n.kind === "UNARY") {
+                    title = Object.keys(d)[0] || n.kind;
+                    subtitle = n.kind;
+                }
+                else if (n.kind === "SUCCESS") { title = "SUCCESS"; subtitle = "Result"; }
+                else if (n.kind === "FAILURE") { title = "FAILURE"; subtitle = d.reason || "Error"; }
+                else if (n.kind === "FUNCSIGNATURE") { title = "SIGNATURE"; subtitle = `Params: ${d.params.length}`; }
 
-                const span = spans[idx] ? `<br/><span style="color:#555;font-size:9px;">L${spans[idx].line}:${spans[idx].start}</span>` : "";
-                
-                return `<div style="text-align: center; padding: 8px;">
-                    <b style="font-size:1.1em;">${title}</b><br/>
-                    <span style="opacity:0.6; font-size:0.9em;">${subtitle}</span>
-                    ${span}
-                </div>`;
+                let spanHtml = spans[idx] ? `<br/><span style="color:#555; font-size:9px;">L${spans[idx].line}</span>` : "";
+
+                return `<div style="text-align: center; padding: 10px; min-width: 80px;">
+                        <span style="font-weight:bold; font-size:1.1em;">${title}</span><br/>
+                        <span style="font-size:0.8em; opacity:0.7">${subtitle}</span>
+                        ${spanHtml}
+                    </div>`;
             };
 
-            // 1. Add Nodes
-            nodes.forEach((n, i) => {
-                g.setNode(i.toString(), {
+            // Add Nodes
+            nodes.forEach((n, index) => {
+                g.setNode(index.toString(), {
                     labelType: "html",
-                    label: getLabel(n, i),
-                    class: "type-" + n.kind,
-                    rx: 5, ry: 5
+                    label: getLabel(n, index),
+                    rx: 5, ry: 5,
+                    class: "type-" + n.kind
                 });
             });
 
-            // 2. Add Edges
-            nodes.forEach((n, i) => {
+            // Add Edges
+            nodes.forEach((n, parentId) => {
                 const d = n.data;
-                if (!d) return;
+                if (!d && d !== 0) return;
 
-                const add = (target, label) => {
-                    if (target !== null && target !== undefined) 
-                        g.setEdge(i.toString(), target.toString(), { label: label, curve: d3.curveBasis });
+                const addEdge = (childId, label = "") => {
+                    if (childId !== null && childId !== undefined) {
+                        g.setEdge(parentId.toString(), childId.toString(), {
+                            label: label,
+                            curve: d3.curveBasis
+                        });
+                    }
                 };
 
                 if (n.kind === "VAR") {
-                    add(d.kind, "type");
-                    add(d.value, "init");
-                } else if (n.kind === "BLOCK") {
-                    d.forEach((id, idx) => add(id, `step ${idx}`));
-                } else if (n.kind === "CALL") {
-                    add(d.func, "fn");
-                    d.args.forEach((id, idx) => add(id, `arg ${idx}`));
-                } else if (n.kind === "IF") {
-                    add(d.condition, "cond");
-                    add(d.body, "then");
-                } else if (n.kind === "BINARY") {
-                    const op = Object.keys(d)[0];
-                    add(d[op][0], "L");
-                    add(d[op][1], "R");
-                } else if (n.kind === "FUNCSIGNATURE") {
-                    d.params.forEach(id => add(id, "param"));
-                    d.returns.forEach(id => add(id, "ret"));
-                } else if (n.kind === "SUCCESS" || n.kind === "FAILURE") {
-                    if (d.return_values) d.return_values.forEach(id => add(id, "val"));
+                    addEdge(d.kind, "type");
+                    if (d.value !== null) addEdge(d.value, "init");
+                }
+                else if (n.kind === "CALL") {
+                    addEdge(d.func, "fn");
+                    if (Array.isArray(d.args)) d.args.forEach((arg, i) => addEdge(arg, `arg ${i}`));
+                }
+                else if (n.kind === "BINARY") {
+                    const opKey = Object.keys(d)[0];
+                    if (Array.isArray(d[opKey])) {
+                        addEdge(d[opKey][0], "L");
+                        addEdge(d[opKey][1], "R");
+                    }
+                }
+                else if (n.kind === "UNARY") {
+                    addEdge(d[Object.keys(d)[0]], "operand");
+                }
+                else if (n.kind === "BLOCK") {
+                    d.forEach((stmt, i) => addEdge(stmt, `step ${i}`));
+                }
+                else if (n.kind === "IF") {
+                    addEdge(d.condition, "cond");
+                    addEdge(d.body, "then");
+                }
+                else if (n.kind === "SUCCESS" || n.kind === "FAILURE") {
+                    if (Array.isArray(d.return_values)) d.return_values.forEach((v, i) => addEdge(v, `val ${i}`));
+                }
+                else if (n.kind === "FUNCSIGNATURE") {
+                    d.params.forEach((p, i) => addEdge(p, `param ${i}`));
+                    if (d.returns) d.returns.forEach((r, i) => addEdge(r, `ret ${i}`));
                 }
             });
 
-            render();
-        }
-
-        const svg = d3.select("svg");
-        const inner = svg.select("g");
-        const renderEngine = new dagreD3.render();
-        const zoom = d3.zoom().on("zoom", () => inner.attr("transform", d3.event.transform));
-        svg.call(zoom);
-
-        function render() {
+            // Render and Center
             renderEngine(inner, g);
-            const initialScale = 0.8;
-            const xCenter = (svg.node().getBoundingClientRect().width - g.graph().width * initialScale) / 2;
-            svg.call(zoom.transform, d3.zoomIdentity.translate(xCenter, 40).scale(initialScale));
+            centerGraph(false);
         }
+
+        window.onresize = () => centerGraph(false);
     </script>
 </body>
+
 </html>
