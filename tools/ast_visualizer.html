@@ -4,247 +4,132 @@
 <head>
     <meta charset="UTF-8">
     <title>Rust AST Flowchart</title>
-    <!-- D3 v5 and Dagre-D3 for the flowchart layout -->
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="https://dagrejs.github.io/project/dagre-d3/latest/dagre-d3.min.js"></script>
 
     <style>
-        body {
-            margin: 0;
-            background-color: #1e1e1e;
-            color: #d4d4d4;
-            font-family: 'Consolas', 'Monaco', monospace;
-            overflow: hidden;
-        }
+        body { margin: 0; background-color: #1e1e1e; color: #d4d4d4; font-family: 'Consolas', monospace; overflow: hidden; }
+        #controls { position: absolute; top: 10px; left: 10px; background: #252526; padding: 10px; border: 1px solid #333; border-radius: 4px; z-index: 100; }
+        input { background: #3c3c3c; color: white; border: 1px solid #555; padding: 5px; }
+        svg { width: 100vw; height: 100vh; }
 
-        #controls {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: #252526;
-            padding: 10px;
-            border: 1px solid #333;
-            border-radius: 4px;
-            z-index: 100;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        }
+        /* Node Styling */
+        .node rect { stroke: #d4d4d4; fill: #2d2d2d; stroke-width: 1.5px; }
+        .node text { fill: #d4d4d4; font-size: 12px; }
 
-        input {
-            background: #3c3c3c;
-            color: white;
-            border: 1px solid #555;
-            padding: 5px;
-        }
+        /* Specific Node Colors */
+        g.type-VAR > rect { stroke: #61afef; fill: #1a2430; }
+        g.type-IDENTIFIER > rect { stroke: #56b6c2; fill: #1b2729; }
+        g.type-CALL > rect { stroke: #e5c07b; fill: #2c2820; }
+        g.type-IF > rect { stroke: #d19a66; fill: #2b221a; }
+        g.type-FUNCSIGNATURE > rect { stroke: #c678dd; fill: #251e29; }
+        g.type-SUCCESS > rect { stroke: #98c379; fill: #1e291b; }
+        g.type-FAILURE > rect { stroke: #e06c75; fill: #2a1b1c; }
+        g.type-BLOCK > rect { stroke: #abb2bf; stroke-dasharray: 5, 5; fill: #232323; }
 
-        svg {
-            width: 100vw;
-            height: 100vh;
-        }
-
-        /* --- GRAPH STYLING --- */
-        .node rect {
-            stroke: #d4d4d4;
-            fill: #2d2d2d;
-            stroke-width: 1.5px;
-        }
-
-        .node text {
-            fill: #d4d4d4;
-            font-family: 'Consolas', monospace;
-            font-size: 14px;
-        }
-
-        .edgePath path {
-            stroke: #a0a0a0;
-            fill: none;
-            stroke-width: 1.5px;
-        }
-
-        .edgePath marker {
-            fill: #a0a0a0;
-        }
-
-        /* --- SPECIFIC NODE COLORS --- */
-
-        /* Variables */
-        g.type-VAR>rect { stroke: #61afef; fill: #1a2430; }
-        g.type-VAR text { fill: #9cd1ff; }
-
-        /* Identifiers */
-        g.type-IDENTIFIER>rect { stroke: #56b6c2; fill: #1b2729; }
-        g.type-IDENTIFIER text { fill: #56b6c2; }
-
-        /* Function Calls */
-        g.type-CALL>rect { stroke: #e5c07b; fill: #2c2820; stroke-width: 2px; }
-
-        /* Values (Primitives) */
-        g.type-I32>rect, g.type-F32>rect { stroke: #98c379; fill: #1e291b; }
-        g.type-BOOL>rect { stroke: #d19a66; }
-        g.type-STR>rect, g.type-CHAR>rect { stroke: #e06c75; }
-
-        /* Operations */
-        g.type-BINARY>rect { stroke: #c678dd; fill: #2a202e; }
-        g.type-UNARY>rect { stroke: #56b6c2; fill: #1b2729; }
-
-        /* Structure */
-        g.type-BLOCK>rect {
-            stroke: #abb2bf;
-            stroke-width: 2px;
-            stroke-dasharray: 5, 5;
-            fill: #232323;
-        }
-
-        /* Edge Labels */
-        .edgeLabel text {
-            fill: #888;
-            font-size: 10px;
-        }
+        /* Edge Styling */
+        .edgePath path { stroke: #666; fill: none; stroke-width: 1.5px; }
+        .edgeLabel text { fill: #999; font-size: 10px; }
     </style>
 </head>
 
 <body>
-
     <div id="controls">
         <h3>AST Flowchart</h3>
         <input type="file" id="fileInput" accept=".json">
-        <div id="status" style="margin-top:5px; font-size: 0.8em; color: #888;">Select ast.json</div>
+        <div id="status" style="margin-top:5px; font-size: 0.8em; color: #888;">Load your JSON</div>
     </div>
-
     <svg><g /></svg>
 
     <script>
-        const g = new dagreD3.graphlib.Graph()
-            .setGraph({
-                rankdir: "TB",
-                nodesep: 60,
-                ranksep: 60,
-                marginx: 20,
-                marginy: 20
-            })
-            .setDefaultEdgeLabel(() => ({}));
+        const g = new dagreD3.graphlib.Graph().setGraph({ rankdir: "TB", nodesep: 50, ranksep: 70 });
 
         document.getElementById('fileInput').addEventListener('change', function (event) {
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = function (e) {
-                try {
-                    const rawData = JSON.parse(e.target.result);
-                    document.getElementById('status').innerText = `Loaded ${rawData.nodes.length} nodes`;
-                    buildGraph(rawData);
-                } catch (err) {
-                    alert("Error parsing JSON");
-                    console.error(err);
-                }
-            };
+            reader.onload = (e) => buildGraph(JSON.parse(e.target.result));
             reader.readAsText(file);
         });
 
-        function buildGraph(flatData) {
-            const nodes = flatData.nodes;
-            const spans = flatData.spans || [];
-
+        function buildGraph(data) {
+            const nodes = data.nodes;
+            const spans = data.spans || [];
             g.nodes().forEach(v => g.removeNode(v));
 
             const getLabel = (n, idx) => {
                 let title = n.kind;
                 let subtitle = "";
-                let meta = "";
                 const d = n.data;
-
-                const spanData = spans[idx];
-                let spanTxt = "";
-                if (spanData) {
-                    const linePrefix = spanData.line !== undefined ? `${spanData.line}:` : "";
-                    spanTxt = `<span style="color:#666; font-size:0.7em;">[${linePrefix}${spanData.start}..${spanData.end}]</span>`;
-                }
 
                 if (n.kind === "VAR") {
                     title = d.name;
-                    subtitle = d.kind || "variable";
-                    if (d.public) meta += "PUB ";
-                    if (d.constant) meta += "CONST ";
-                } 
-                else if (n.kind === "IDENTIFIER") {
-                    title = d;
-                    subtitle = "ID";
-                }
-                else if (n.kind === "CALL") {
-                    title = "CALL";
-                    subtitle = "function call";
-                }
-                else if (n.kind === "BINARY") {
-                    if (d && typeof d === 'object') {
-                        const keys = Object.keys(d);
-                        title = keys[0] || "BINARY";
-                        subtitle = "Op";
-                    }
-                }
-                else if (["I32", "F32", "BOOL", "CHAR", "STR"].includes(n.kind)) {
-                    title = String(d).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                    // Try to resolve type name if 'kind' is an index
+                    const typeNode = nodes[d.kind];
+                    subtitle = typeNode ? `Type: ${typeNode.data}` : "Variable";
+                } else if (n.kind === "IDENTIFIER" || n.kind === "I32" || n.kind === "STR") {
+                    title = String(d);
                     subtitle = n.kind;
-                }
-                else if (n.kind === "BLOCK") {
-                    title = "BLOCK";
-                    subtitle = Array.isArray(d) ? `${d.length} items` : "";
+                } else if (n.kind === "SUCCESS") {
+                    title = "RETURN";
+                    subtitle = "Success";
+                } else if (n.kind === "FAILURE") {
+                    title = "FAIL";
+                    subtitle = d.reason || "Error";
+                } else if (n.kind === "FUNCSIGNATURE") {
+                    title = "SIGNATURE";
+                    subtitle = `(${d.params.length} params)`;
                 }
 
-                return `<div style="text-align: center; padding: 5px;">
-                        <span style="font-size:0.7em; color: #ff79c6;">${meta}</span><br/>
-                        <span style="font-weight:bold; font-size:1.1em;">${title}</span><br/>
-                        <span style="font-size:0.8em; opacity:0.7">${subtitle}</span><br/>
-                        ${spanTxt}
-                    </div>`;
+                const span = spans[idx] ? `<br/><span style="color:#555;font-size:9px;">L${spans[idx].line}:${spans[idx].start}</span>` : "";
+                
+                return `<div style="text-align: center; padding: 8px;">
+                    <b style="font-size:1.1em;">${title}</b><br/>
+                    <span style="opacity:0.6; font-size:0.9em;">${subtitle}</span>
+                    ${span}
+                </div>`;
             };
 
-            // A. Add Nodes
-            nodes.forEach((n, index) => {
-                g.setNode(index.toString(), {
+            // 1. Add Nodes
+            nodes.forEach((n, i) => {
+                g.setNode(i.toString(), {
                     labelType: "html",
-                    label: getLabel(n, index),
-                    rx: 5, ry: 5,
-                    padding: 0,
-                    class: "type-" + n.kind
+                    label: getLabel(n, i),
+                    class: "type-" + n.kind,
+                    rx: 5, ry: 5
                 });
             });
 
-            // B. Add Edges
-            nodes.forEach((n, parentId) => {
+            // 2. Add Edges
+            nodes.forEach((n, i) => {
                 const d = n.data;
                 if (!d) return;
 
-                const addEdge = (childId, label = "") => {
-                    if (childId !== null && childId !== undefined) {
-                        g.setEdge(parentId.toString(), childId.toString(), {
-                            label: label,
-                            curve: d3.curveBasis // Smoother lines for complex calls
-                        });
-                    }
+                const add = (target, label) => {
+                    if (target !== null && target !== undefined) 
+                        g.setEdge(i.toString(), target.toString(), { label: label, curve: d3.curveBasis });
                 };
 
                 if (n.kind === "VAR") {
-                    addEdge(d.value, "init");
-                }
-                else if (n.kind === "CALL") {
-                    // func points to the Identifier or Expression
-                    addEdge(d.func, "fn");
-                    // args points to the array of arguments
-                    if (Array.isArray(d.args)) {
-                        d.args.forEach((argIdx, i) => addEdge(argIdx, `arg ${i}`));
-                    }
-                }
-                else if (n.kind === "BINARY") {
-                    const operands = Object.values(d)[0];
-                    if (Array.isArray(operands)) {
-                        addEdge(operands[0], "L");
-                        addEdge(operands[1], "R");
-                    }
-                }
-                else if (n.kind === "UNARY") {
-                    addEdge(Object.values(d)[0]);
-                }
-                else if (n.kind === "BLOCK" && Array.isArray(d)) {
-                    d.forEach((childId, i) => addEdge(childId, `stmt ${i}`));
+                    add(d.kind, "type");
+                    add(d.value, "init");
+                } else if (n.kind === "BLOCK") {
+                    d.forEach((id, idx) => add(id, `step ${idx}`));
+                } else if (n.kind === "CALL") {
+                    add(d.func, "fn");
+                    d.args.forEach((id, idx) => add(id, `arg ${idx}`));
+                } else if (n.kind === "IF") {
+                    add(d.condition, "cond");
+                    add(d.body, "then");
+                } else if (n.kind === "BINARY") {
+                    const op = Object.keys(d)[0];
+                    add(d[op][0], "L");
+                    add(d[op][1], "R");
+                } else if (n.kind === "FUNCSIGNATURE") {
+                    d.params.forEach(id => add(id, "param"));
+                    d.returns.forEach(id => add(id, "ret"));
+                } else if (n.kind === "SUCCESS" || n.kind === "FAILURE") {
+                    if (d.return_values) d.return_values.forEach(id => add(id, "val"));
                 }
             });
 
@@ -254,22 +139,15 @@
         const svg = d3.select("svg");
         const inner = svg.select("g");
         const renderEngine = new dagreD3.render();
-
-        const zoom = d3.zoom().on("zoom", () => {
-            inner.attr("transform", d3.event.transform);
-        });
+        const zoom = d3.zoom().on("zoom", () => inner.attr("transform", d3.event.transform));
         svg.call(zoom);
 
         function render() {
             renderEngine(inner, g);
-            const graphWidth = g.graph().width;
-            const svgWidth = svg.node().getBoundingClientRect().width;
-            const xOffset = (svgWidth - graphWidth) / 2;
-            const transform = d3.zoomIdentity.translate(xOffset, 40).scale(1);
-            svg.call(zoom.transform, transform);
+            const initialScale = 0.8;
+            const xCenter = (svg.node().getBoundingClientRect().width - g.graph().width * initialScale) / 2;
+            svg.call(zoom.transform, d3.zoomIdentity.translate(xCenter, 40).scale(initialScale));
         }
-
-        window.onresize = () => render();
     </script>
 </body>
 </html>

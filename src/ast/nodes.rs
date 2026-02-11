@@ -51,7 +51,7 @@ pub enum Node {
 
     VAR {
         name: String,
-        kind: String,
+        kind: NodeId,
         public: bool,
         constant: bool,
         value: Option<NodeId>,
@@ -65,4 +65,32 @@ pub enum Node {
         func: NodeId,
         args: Vec<NodeId>,
     },
+    FUNCSIGNATURE {
+        params: Vec<NodeId>,
+        returns: Vec<NodeId>,
+    },
+
+    SUCCESS {
+        return_values:  Vec<NodeId>,
+    },
+    FAILURE {
+        reason: String,
+        return_values:  Vec<NodeId>,
+    },
+
+    IF {
+        condition: NodeId,
+        body: Option<NodeId>
+    },
+    ELSE {
+        condition: Option<NodeId>,
+        body: Option<NodeId>
+    },
+    WHILE {
+        condition: NodeId,
+        body: Option<NodeId>
+    },
+    LOOP {
+        body: Option<NodeId>
+    }
 }

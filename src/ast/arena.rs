@@ -18,7 +18,8 @@ impl Ast {
     pub fn add(&mut self, node: Node, span: Span) -> NodeId {
         let id = NodeId::from_index(self.nodes.len());
 
-        println!("      --- Adding: node -> '{:?}', span -> '{:?}'", node, span);
+        println!("      ({:?})      --- Adding: node -> '{:?}', span -> '{:?}'", self.nodes.len(), node, span);
+        
         self.nodes.push(node);
         self.spans.push(span);
         id

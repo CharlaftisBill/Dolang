@@ -36,14 +36,6 @@ impl Lexer {
                 None => break,
             };
 
-            // println!(
-            //     "\n---> next_char: '{:?}' at: {} of {}\n---> last_char_added: '{:?}'\n",
-            //     next_char,
-            //     self.at + 1,
-            //     self.src.len(),
-            //     tokens.last(),
-            // );
-
             match next_char {
                 // keep the order
                 '#' => tokens.push(self.consume_comment()),
@@ -156,15 +148,13 @@ impl Lexer {
             "success",
             "failure",
             "catch",
-            "propagate",
-            "assert",
             "on",
             "do",
             "if",
             "else",
-            "loop",
             "while",
             "for",
+            "loop",
             "match",
             "break",
             "continue",
@@ -311,7 +301,9 @@ impl Lexer {
         loop {
             match self.peak() {
                 Some(character) => {
-                    if !character.is_ascii_whitespace() && !character.is_ascii_punctuation() {
+                    if !character.is_ascii_whitespace()
+                        && (!character.is_ascii_punctuation() || character == '_')
+                    {
                         self.at += 1;
                         word.push(character)
                     } else {
