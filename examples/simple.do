@@ -1,18 +1,5 @@
-# integers
-int0 i8
-int0 = 1
-int1 u16 : 1
-Int2 i32 = -1
+# Arrays
+arr_int1 [5]i64 : [i64: 0,1,2,3,4]
 
-# floats
-float0 f32 : 3.14
-
-# bools
-bool0 bool = true
-bool1 bool : false
-
-# characters
-char0 char = 'a'
-
-# strings
-str0 str : "The quick \"brown fox\" jumps over the lazy dog.\n"
+arr_int0 [3]i32
+arr_int0 = [i32: 0,1,2]

@@ -160,7 +160,9 @@
             stroke-width: 2.5px;
         }
 
-        g.type-BINARY>rect {
+        /* Updated: Include UNARY in the operation styling */
+        g.type-BINARY>rect,
+        g.type-UNARY>rect {
             stroke: var(--color-op);
             fill: var(--bg-op);
         }
@@ -227,8 +229,7 @@
             Assignments
         </div>
         <div class="legend-item">
-            <div class="swatch" style="border-color: var(--color-val); background: var(--bg-val);"></div> Literals (i32,
-            str)
+            <div class="swatch" style="border-color: var(--color-val); background: var(--bg-val);"></div> Literals
         </div>
         <div class="legend-item">
             <div class="swatch" style="border-color: var(--color-id); background: var(--bg-id);"></div> Identifiers
@@ -260,13 +261,11 @@
         const renderEngine = new dagreD3.render();
         let g = new dagreD3.graphlib.Graph();
 
-        // Zoom setup
         const zoom = d3.zoom().on("zoom", () => {
             inner.attr("transform", d3.event.transform);
         });
         svg.call(zoom);
 
-        // Buttons
         document.getElementById('zoom-in').onclick = () => svg.transition().duration(300).call(zoom.scaleBy, 1.2);
         document.getElementById('zoom-out').onclick = () => svg.transition().duration(300).call(zoom.scaleBy, 0.8);
         document.getElementById('zoom-reset').onclick = () => svg.transition().duration(300).call(zoom.transform, d3.zoomIdentity);
@@ -278,13 +277,10 @@
             const graphHeight = g.graph().height;
             const svgWidth = svg.node().getBoundingClientRect().width;
             const svgHeight = svg.node().getBoundingClientRect().height;
-
-            // Calculate scale to fit (with 50px padding)
             const scale = Math.min(1, Math.min(svgWidth / (graphWidth + 50), svgHeight / (graphHeight + 50)));
             const x = (svgWidth - graphWidth * scale) / 2;
             const y = (svgHeight - graphHeight * scale) / 2;
             const transform = d3.zoomIdentity.translate(x, y).scale(scale);
-
             if (animate) svg.transition().duration(500).call(zoom.transform, transform);
             else svg.call(zoom.transform, transform);
         }
@@ -306,16 +302,13 @@
             const nodes = flatData.nodes;
             const spans = flatData.spans || [];
 
-            // 1. CLEAR & RESET
-            svg.call(zoom.transform, d3.zoomIdentity); // Reset zoom to 1:1 before calculating
-            inner.selectAll("*").remove(); // Clear DOM
+            svg.call(zoom.transform, d3.zoomIdentity);
+            inner.selectAll("*").remove();
 
-            // 2. INIT GRAPH
             g = new dagreD3.graphlib.Graph()
                 .setGraph({ rankdir: "TB", nodesep: 40, ranksep: 60, marginx: 20, marginy: 20 })
                 .setDefaultEdgeLabel(() => ({}));
 
-            // 3. DEFINE LABELS
             const getLabel = (n, idx) => {
                 let title = n.kind;
                 let subtitle = "";
@@ -324,10 +317,7 @@
 
                 if (n.kind === "DECLARATION") {
                     title = "DECLARATION";
-
-                    // Show ONLY the Name in the subtitle, not the type
                     subtitle = `<span style="font-size:1.1em; color:#fff">${d.name}</span>`;
-
                     if (d.constant) meta += "CONST ";
                     if (d.public) meta += "PUB ";
                 }
@@ -345,7 +335,12 @@
                 }
                 else if (n.kind === "BINARY") {
                     title = Object.keys(d)[0] || n.kind;
-                    subtitle = "Op";
+                    subtitle = "Binary";
+                }
+                else if (n.kind === "UNARY") {
+                    // Fix: Extract UNARY key (e.g., NEG, NOT)
+                    title = Object.keys(d)[0] || n.kind;
+                    subtitle = "Unary";
                 }
                 else if (n.kind === "BLOCK") {
                     title = "BLOCK";
@@ -366,7 +361,7 @@
                     </div>`;
             };
 
-            // 4. ADD NODES
+            // Add Nodes
             nodes.forEach((n, index) => {
                 g.setNode(index.toString(), {
                     labelType: "html",
@@ -376,7 +371,7 @@
                 });
             });
 
-            // 5. ADD EDGES
+            // Add Edges
             nodes.forEach((n, parentId) => {
                 const d = n.data;
                 if (!d && d !== 0) return;
@@ -416,6 +411,11 @@
                         addEdge(d[op][1], "R");
                     }
                 }
+                else if (n.kind === "UNARY") {
+                    // Fix: UNARY Edge Logic
+                    const op = Object.keys(d)[0];
+                    addEdge(d[op], "operand");
+                }
                 else if (n.kind === "IF") {
                     addEdge(d.condition, "cond");
                     addEdge(d.body, "then");
@@ -429,7 +429,6 @@
                 }
             });
 
-            // 6. RENDER
             renderEngine(inner, g);
             centerGraph(false);
         }

@@ -1,3 +1,5 @@
+use serde::Serialize;
+
 use crate::{
     ast::{
         self, Ast, Node, NodeId,
@@ -6,8 +8,9 @@ use crate::{
     },
     token_panic,
 };
-use std::{collections::HashMap};
+use std::collections::HashMap;
 
+#[derive(Serialize, Debug, Clone)]
 struct DeclarationDetails {
     node: NodeId,
     kind: String,
@@ -18,7 +21,7 @@ pub struct Parser<'a> {
     src: &'a Vec<char>,
     at: usize,
     ast: &'a mut Ast,
-    declaration_context : HashMap<String, DeclarationDetails>
+    declaration_context: HashMap<String, DeclarationDetails>,
 }
 
 impl<'a> Parser<'a> {
@@ -59,7 +62,9 @@ impl<'a> Parser<'a> {
 
         while self.tokens[self.at].kind != ast::token::Tag::EOF {
             match &self.tokens[self.at].kind {
-                ast::token::Tag::IDENT(_) => statements.push(self.parse_declaration_or_assignment()),
+                ast::token::Tag::IDENT(_) => {
+                    statements.push(self.parse_declaration_or_assignment())
+                }
                 ast::token::Tag::COMMENT(_) | ast::token::Tag::NEWLINE(_) => self.advance(),
                 ast::token::Tag::INVALID(description) => {
                     token_panic!(
@@ -88,11 +93,12 @@ impl<'a> Parser<'a> {
                 token_panic!(self.tokens[self.at], self.src, "Expected variable name.");
             }
         };
-        self.advance();
 
-        if self.declaration_context.contains_key(&name){
+        if self.declaration_context.contains_key(&name) {
             return self.parse_assignment(&name);
         }
+
+        self.advance();
 
         let is_public = match name.chars().next() {
             Some(character) => character.is_ascii_uppercase(),
@@ -113,46 +119,7 @@ impl<'a> Parser<'a> {
             self.tokens[self.at].kind, type_name
         );
 
-        let mut is_const = false;
-        let value = match &self.tokens[self.at].kind {
-            ast::token::Tag::SYMBOL(symbol) => {
-                is_const = symbol == ":";
-                self.advance();
-
-                let x = match type_name.as_str() {
-                    "type" | "union" => match self.parse_user_type_or_union() {
-                        Some(n) => n,
-                        _ => token_panic!(
-                            self.tokens[self.at],
-                            self.src,
-                            "Invalid {type_name} syntax",
-                        ),
-                    },
-                    "enum" => match self.parse_enum() {
-                        Some(n) => n,
-                        _ => token_panic!(
-                            self.tokens[self.at],
-                            self.src,
-                            "Invalid {type_name} syntax",
-                        ),
-                    },
-                    "func" => match self.parse_code_block() {
-                        Some(n) => n,
-                        _ => token_panic!(
-                            self.tokens[self.at],
-                            self.src,
-                            "Invalid {type_name} syntax",
-                        ),
-                    },
-                    "interface" => todo!("interface are not yet implemented!"),
-                    _ => self.parse_expr(0),
-                };
-
-                Some(x)
-            }
-            _ => None,
-        };
-
+        let (is_const, value) = self.parse_value(&type_name);
         let declaration = self.ast.add(
             Node::DECLARATION {
                 name: name.to_string(),
@@ -163,47 +130,71 @@ impl<'a> Parser<'a> {
             self.tokens[self.at].span,
         );
 
-        self.declaration_context.insert(name, DeclarationDetails { node: declaration, kind: type_name });
+        self.declaration_context.insert(
+            name,
+            DeclarationDetails {
+                node: declaration,
+                kind: type_name.clone(),
+            },
+        );
 
         match value {
             Some(v) => self.ast.add(
-                Node::ASSIGNMENT { declaration, value: v },
+                Node::ASSIGNMENT {
+                    declaration,
+                    value: v,
+                },
                 self.tokens[self.at].span,
             ),
-            _ => declaration
+            _ => declaration,
         }
     }
 
     fn parse_assignment(&mut self, name: &String) -> NodeId {
-        if self.tokens[self.at + 1].kind.as_str() == ":" {
-            token_panic!(self.tokens[self.at + 1], self.src, "Assignments can only be mutable.");
+        if self.tokens[self.at + 1].kind.as_str() != "=" {
+            token_panic!(
+                self.tokens[self.at + 1],
+                self.src,
+                "'{:?}' is already declared. If you are trying to assign a value '= <value>' is expected.",
+                name
+            );
         }
-        self.expect_str("=");
+        // self.expect_str("=");
 
-        if self.tokens[self.at].kind.as_str() == "{" {
-            token_panic!(self.tokens[self.at], self.src, "Assignments only supporting expressions.");
-        }
-
-        let value = self.parse_expr(0);
-
-        println!(
-            "      ±§ (parse_assignment): {:?} -> '{:?}'",
-            self.tokens[self.at].kind, value
-        );
-
-        let declaration = match self.declaration_context.get(name){
-            Some(decl) => decl,
-            _ => token_panic!(self.tokens[self.at], self.src, "Trying to assign value to variable that is not yet declared."),
+        let declaration = match self.declaration_context.get(name) {
+            Some(decl) => decl.clone(),
+            _ => token_panic!(
+                self.tokens[self.at],
+                self.src,
+                "Trying to assign value to variable that is not yet declared."
+            ),
         };
 
-        self.ast.add(
-            Node::ASSIGNMENT {declaration: declaration.node, value},
-            self.tokens[self.at].span,
-        )
+        self.advance();
+        let (_, value) = self.parse_value(&declaration.kind);
+
+
+        match value {
+            Some(v) => self.ast.add(
+                Node::ASSIGNMENT {
+                    declaration: declaration.node,
+                    value: v,
+                },
+                self.tokens[self.at].span,
+            ),
+            _ => token_panic!(
+                self.tokens[self.at],
+                self.src,
+                "An assignment should always be assigned a value."
+            ),
+        }
     }
 
-    fn parse_value(&mut self, type_name: String) -> (bool, Option<NodeId>) {
+    fn parse_value(&mut self, type_name: &String) -> (bool, Option<NodeId>) {
         let mut is_const = true;
+
+        println!("          ±±§§§ {:?}", self.tokens[self.at]);
+
         let value = match &self.tokens[self.at].kind {
             ast::token::Tag::SYMBOL(symbol) => {
                 is_const = symbol == ":";
@@ -582,7 +573,9 @@ impl<'a> Parser<'a> {
                 Tag::NEWLINE(_) | Tag::COMMENT(_) => self.advance(),
                 Tag::IDENT(s) => {
                     node_id = match &self.tokens[self.at + 1].kind {
-                        Tag::IDENT(_) | Tag::KEYWORD(_) => Some(self.parse_declaration_or_assignment()),
+                        Tag::IDENT(_) | Tag::KEYWORD(_) => {
+                            Some(self.parse_declaration_or_assignment())
+                        }
                         Tag::SYMBOL(_) => {
                             self.advance();
                             self.expect_str("(");

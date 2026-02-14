@@ -5,14 +5,18 @@ int1 u16 : 1
 Int2 i32 = -1
 
 # floats
-float0 f32 : 3.14
+float0 f32 = 3.14
+float0 = - 6.28
 
 # bools
 bool0 bool = true
 bool1 bool : false
+bool0 = false
 
 # characters
 char0 char = 'a'
+char0 = 'b'
 
 # strings
-str0 str : "The quick \"brown fox\" jumps over the lazy dog.\n"
+str0 str = "The quick \"brown fox\" jumps over the lazy dog.\n"
+str0 = "An other \"string\""
