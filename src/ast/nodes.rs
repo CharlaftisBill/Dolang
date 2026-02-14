@@ -49,12 +49,15 @@ pub enum Node {
 
     IDENTIFIER(String),
 
-    VAR {
+    DECLARATION {
         name: String,
         kind: NodeId,
         public: bool,
         constant: bool,
-        value: Option<NodeId>,
+    },
+    ASSIGNMENT{
+        declaration: NodeId,
+        value: NodeId
     },
     BLOCK(Vec<NodeId>),
 

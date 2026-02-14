@@ -1,16 +1,18 @@
-a i32: 1
+# integers
+int0 i8
+int0 = 1
+int1 u16 : 1
+Int2 i32 = -1
 
-great () : {
-    print("Hello!" )
-}
+# floats
+float0 f32 : 3.14
 
-sum (lh i32, rh i32) i32 : {
-    success lh + rh
-}
+# bools
+bool0 bool = true
+bool1 bool : false
 
-div (lh i32, rh i32) f32 : {
-    if rh == 0 {
-        failure DivByZero math.inf
-    }
-    success lh / rh
-}
+# characters
+char0 char = 'a'
+
+# strings
+str0 str : "The quick \"brown fox\" jumps over the lazy dog.\n"

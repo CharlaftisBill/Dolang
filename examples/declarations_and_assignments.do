@@ -1,5 +1,6 @@
 # integers
 int0 i8
+int0 = 1
 int1 u16 : 1
 Int2 i32 = -1
 
