@@ -42,7 +42,7 @@ impl Lexer {
                 '\n' => tokens.push(self.consume_new_lines()),
                 ' ' | '\t' | '\r' => self.at += 1,
                 '=' | ':' | '+' | '-' | '*' | '%' | '/' | '^' | '!' | '|' | '&' | '.' | '{'
-                | '}' | '(' | ')' | '<' | '>' | ',' => tokens.push(self.consume_symbol()),
+                | '}' | '(' | ')' | '[' | ']' | '<' | '>' | ',' => tokens.push(self.consume_symbol()),
                 '0'..='9' => tokens.push(self.consume_number()),
                 '"' => tokens.push(self.consume_string_literal()),
                 '\'' => tokens.push(self.consume_character_literal()),
@@ -85,8 +85,8 @@ impl Lexer {
         let mut symbol = String::new();
 
         let symbols: Vec<char> = vec![
-            '=', ':', '+', '-', '*', '%', '/', '^', '!', '|', '&', '.', '{', '}', '(', ')', '<',
-            '>', ',',
+            '=', ':', '+', '-', '*', '%', '/', '^', '!', '|', '&', '.', '{', '}', '(', ')', '[',
+            ']', '<', '>', ',',
         ];
         let operators: Vec<char> = vec![
             '*', '/', '%', '<', '>', '&', '+', '-', '|', '^', '=', '!', '<', '>', '&',

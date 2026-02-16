@@ -1,12 +1,12 @@
 # Dolang roadmap
 
-## Version 0.1.0 (basic blocks) [11/21]
+## Version 0.1.0 (basic blocks) [14/21]
 
 1. Declarations & Assignments:
    1. Variable & Constant declarations ✔
    2. Plain type assignments ✔
-   3. Arrays declaration
-   4. Arrays assignments
+   3. Arrays declaration ✔
+   4. Arrays assignments ✔
    5. Function declarations ✔
    6. function assignment ✔
 2. Expressions:
@@ -29,9 +29,11 @@
    5. Continue
 
 ## Version 0.2.0 (first run) [1/4]
-
+0. Tests:
+   1. make concrete `.do examples` and make sure that the produced `ast.json` is matching the one that is been stored.
 1. Type checking:
-   1. Type checking
+   1. Define the primitive types,
+   2. Type checking
 2. Syntactic rules:
    1. Only declarations and comments are valid out of functions blocks ✔
    2. Non constant declarations out of functions are forbidden
@@ -39,7 +41,7 @@
 3. Code generation:
    1. C code generation
 
-## Version 0.3.0 (User defined types refinement) [5/8]
+## Version 0.3.0 (User defined types refinement) [5/10]
 
 1. Custom Types:
    1. Type declaration ✔
@@ -52,21 +54,28 @@
    1. Union declarations ✔
    2. Union assignment
    3. Union type in Match block
+4. Interfaces:
+   1. Interface declarations 
+   2. Interface assignment
 
 ## Version 0.4.0 (optimizing run)
 
 1. Code clean up:
-   1.
-2. Type assertion:
-   1.
+   1. reduce duplicate code
+   1. reduce duplicate code
+2. Type inference:
+   1. local type inference
 3. Expressions folding:
    1.
 
 ## Version 0.5.0 (generics)
 
 1. Generics:
+   1. restricted local type inference
+   2. C code generation for run-time generics  
 
 # Backlog:
 
 Assignment:
-   1. allow custom types to be able to re-assigned after the declaration-assignment
+   1. allow custom types to be able to re-assigned after the declaration-assignment,
+   2. syntactic sugar for 'ranges' (ex. 1..=5)

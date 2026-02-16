@@ -47,6 +47,15 @@ pub enum Node {
     CHAR(char),
     BOOL(bool),
 
+    ARRAYKIND {
+        kind: NodeId,
+        size: usize
+    },
+    ARRAYVALUE{
+        kind: NodeId,
+        value: Vec<NodeId>
+    },
+
     IDENTIFIER(String),
 
     DECLARATION {

@@ -8,7 +8,7 @@ use crate::{
     },
     token_panic,
 };
-use std::collections::HashMap;
+use std::{collections::HashMap, usize};
 
 #[derive(Serialize, Debug, Clone)]
 struct DeclarationDetails {
@@ -99,7 +99,6 @@ impl<'a> Parser<'a> {
         }
 
         self.advance();
-
         let is_public = match name.chars().next() {
             Some(character) => character.is_ascii_uppercase(),
             None => {
@@ -173,7 +172,6 @@ impl<'a> Parser<'a> {
         self.advance();
         let (_, value) = self.parse_value(&declaration.kind);
 
-
         match value {
             Some(v) => self.ast.add(
                 Node::ASSIGNMENT {
@@ -225,7 +223,8 @@ impl<'a> Parser<'a> {
                             "Invalid {type_name} syntax",
                         ),
                     },
-                    "interface" => todo!("interface are not yet implemented!"),
+                    "array" => self.parse_array(),
+                    "interface" => todo!("interfaces are not yet implemented!"),
                     _ => self.parse_expr(0),
                 };
 
@@ -394,6 +393,30 @@ impl<'a> Parser<'a> {
                         returns: self.parse_identifier_list(")", ":"),
                     };
                     self.ast.add(signature, self.tokens[self.at - 1].span)
+                }
+                "[" => {
+                    node_type = "array";
+                    self.advance();
+                    let size = match &self.tokens[self.at].kind {
+                        Tag::INTEGER(i) => i.parse::<usize>().unwrap(),
+                        _ => token_panic!(
+                            current_token,
+                            self.src,
+                            "Invalid array size: Array size should always be an integer.",
+                        ),
+                    };
+                    self.advance();
+                    self.expect_str("]");
+
+                    let kind = match &self.tokens[self.at].kind {
+                        Tag::IDENT(s) => self
+                            .ast
+                            .add(Node::IDENTIFIER(s.to_string()), self.tokens[self.at].span),
+                        _ => token_panic!(current_token, self.src, "Invalid array type.",),
+                    };
+
+                    self.ast
+                        .add(Node::ARRAYKIND { kind, size }, self.tokens[self.at].span)
                 }
                 _ => token_panic!(
                     current_token,
@@ -694,6 +717,26 @@ impl<'a> Parser<'a> {
         self.advance();
 
         Some(self.ast.add(Node::BLOCK(block), start_token.span))
+    }
+
+    fn parse_array(&mut self) -> NodeId {
+        self.expect_str("[");
+
+        let kind = match &self.tokens[self.at].kind {
+            Tag::IDENT(i) => self
+                .ast
+                .add(Node::IDENTIFIER(i.to_string()), self.tokens[self.at].span),
+            _ => token_panic!(self.tokens[self.at], self.src, "Expected array type."),
+        };
+        self.advance();
+
+        self.expect_str(":");
+        let value = self.parse_expression_list();
+
+        self.expect_str("]");
+
+        self.ast
+            .add(Node::ARRAYVALUE { kind, value }, self.tokens[self.at].span)
     }
 
     fn token_to_binary_op(&self, kind: &str, lhs: NodeId, rhs: NodeId) -> BinaryOp {

@@ -25,6 +25,9 @@
             --color-op: #c678dd;
             /* Purple */
             --bg-op: #2a202e;
+            --color-array: #c586c0;
+            /* Magenta/Pink for Arrays */
+            --bg-array: #2d202a;
             --color-block: #abb2bf;
             /* Gray */
             --bg-block: #232323;
@@ -137,11 +140,6 @@
             stroke-width: 2px;
         }
 
-        g.type-VAR>rect {
-            stroke: var(--color-decl);
-            fill: var(--bg-decl);
-        }
-
         g.type-IDENTIFIER>rect {
             stroke: var(--color-id);
             fill: var(--bg-id);
@@ -154,13 +152,19 @@
             fill: var(--bg-val);
         }
 
+        /* Array Styling */
+        g.type-ARRAYKIND>rect,
+        g.type-ARRAYVALUE>rect {
+            stroke: var(--color-array);
+            fill: var(--bg-array);
+        }
+
         g.type-CALL>rect {
             stroke: var(--color-assign);
             fill: var(--bg-assign);
             stroke-width: 2.5px;
         }
 
-        /* Updated: Include UNARY in the operation styling */
         g.type-BINARY>rect,
         g.type-UNARY>rect {
             stroke: var(--color-op);
@@ -227,6 +231,9 @@
         <div class="legend-item">
             <div class="swatch" style="border-color: var(--color-assign); background: var(--bg-assign);"></div>
             Assignments
+        </div>
+        <div class="legend-item">
+            <div class="swatch" style="border-color: var(--color-array); background: var(--bg-array);"></div> Arrays
         </div>
         <div class="legend-item">
             <div class="swatch" style="border-color: var(--color-val); background: var(--bg-val);"></div> Literals
@@ -318,12 +325,28 @@
                 if (n.kind === "DECLARATION") {
                     title = "DECLARATION";
                     subtitle = `<span style="font-size:1.1em; color:#fff">${d.name}</span>`;
+
+                    const typeNode = nodes[d.kind];
+                    if (typeNode && typeNode.kind === "ARRAYKIND") {
+                        const innerType = nodes[typeNode.data.kind];
+                        const innerName = innerType ? innerType.data : "?";
+                        subtitle += `<br/><span style="font-size:0.8em; color:#aaa">[${innerName}; ${typeNode.data.size}]</span>`;
+                    }
+
                     if (d.constant) meta += "CONST ";
                     if (d.public) meta += "PUB ";
                 }
                 else if (n.kind === "ASSIGNMENT") {
                     title = "ASSIGN";
                     subtitle = "=";
+                }
+                else if (n.kind === "ARRAYKIND") {
+                    title = "ARRAY TYPE";
+                    subtitle = `Size: ${d.size}`;
+                }
+                else if (n.kind === "ARRAYVALUE") {
+                    title = "ARRAY LITERAL";
+                    subtitle = `Len: ${Array.isArray(d.value) ? d.value.length : 0}`;
                 }
                 else if (n.kind === "VAR") {
                     title = d.name;
@@ -338,7 +361,6 @@
                     subtitle = "Binary";
                 }
                 else if (n.kind === "UNARY") {
-                    // Fix: Extract UNARY key (e.g., NEG, NOT)
                     title = Object.keys(d)[0] || n.kind;
                     subtitle = "Unary";
                 }
@@ -393,6 +415,17 @@
                     addEdge(d.declaration, "target");
                     addEdge(d.value, "value");
                 }
+                else if (n.kind === "ARRAYKIND") {
+                    addEdge(d.kind, "elem type");
+                }
+                else if (n.kind === "ARRAYVALUE") {
+                    // NEW: Connect Array Literal to its Type
+                    addEdge(d.kind, "type");
+                    // Connect elements
+                    if (Array.isArray(d.value)) {
+                        d.value.forEach((val, i) => addEdge(val, `[${i}]`));
+                    }
+                }
                 else if (n.kind === "VAR") {
                     addEdge(d.kind, "type");
                     if (d.value !== null) addEdge(d.value, "init");
@@ -412,7 +445,6 @@
                     }
                 }
                 else if (n.kind === "UNARY") {
-                    // Fix: UNARY Edge Logic
                     const op = Object.keys(d)[0];
                     addEdge(d[op], "operand");
                 }
