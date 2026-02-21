@@ -36,12 +36,17 @@
         "name": "great",
         "kind": 0,
         "public": false,
-        "constant": false
+        "constant": true
       }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": ":"
     },
     {
       "kind": "ASSIGNMENT",
       "data": {
+        "operator": 6,
         "declaration": 5,
         "value": 4
       }
@@ -54,7 +59,7 @@
       "kind": "DECLARATION",
       "data": {
         "name": "lh",
-        "kind": 7,
+        "kind": 8,
         "public": false,
         "constant": false
       }
@@ -67,43 +72,24 @@
       "kind": "DECLARATION",
       "data": {
         "name": "rh",
-        "kind": 9,
+        "kind": 10,
         "public": false,
         "constant": false
       }
     },
     {
+      "kind": "IDENTIFIER",
+      "data": "i32"
+    },
+    {
       "kind": "FUNCSIGNATURE",
       "data": {
         "params": [
-          8,
-          10
+          9,
+          11
         ],
-        "returns": []
-      }
-    },
-    {
-      "kind": "IDENTIFIER",
-      "data": "lh"
-    },
-    {
-      "kind": "IDENTIFIER",
-      "data": "rh"
-    },
-    {
-      "kind": "BINARY",
-      "data": {
-        "ADD": [
-          12,
-          13
-        ]
-      }
-    },
-    {
-      "kind": "SUCCESS",
-      "data": {
-        "return_values": [
-          14
+        "returns": [
+          12
         ]
       }
     },
@@ -118,33 +104,63 @@
     {
       "kind": "CALL",
       "data": {
-        "func": 16,
+        "func": 14,
         "args": [
-          17
+          15
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "lh"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "rh"
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "ADD": [
+          17,
+          18
+        ]
+      }
+    },
+    {
+      "kind": "SUCCESS",
+      "data": {
+        "return_values": [
+          19
         ]
       }
     },
     {
       "kind": "BLOCK",
       "data": [
-        15,
-        18
+        16,
+        20
       ]
     },
     {
       "kind": "DECLARATION",
       "data": {
         "name": "sum",
-        "kind": 11,
+        "kind": 13,
         "public": false,
-        "constant": false
+        "constant": true
       }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": ":"
     },
     {
       "kind": "ASSIGNMENT",
       "data": {
-        "declaration": 20,
-        "value": 19
+        "operator": 23,
+        "declaration": 22,
+        "value": 21
       }
     },
     {
@@ -155,7 +171,7 @@
       "kind": "DECLARATION",
       "data": {
         "name": "lh",
-        "kind": 22,
+        "kind": 25,
         "public": false,
         "constant": false
       }
@@ -168,19 +184,30 @@
       "kind": "DECLARATION",
       "data": {
         "name": "rh",
-        "kind": 24,
+        "kind": 27,
         "public": false,
         "constant": false
       }
     },
     {
+      "kind": "IDENTIFIER",
+      "data": "f32"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "f32"
+    },
+    {
       "kind": "FUNCSIGNATURE",
       "data": {
         "params": [
-          23,
-          25
+          26,
+          28
         ],
-        "returns": []
+        "returns": [
+          29,
+          30
+        ]
       }
     },
     {
@@ -195,35 +222,40 @@
       "kind": "BINARY",
       "data": {
         "EQ": [
-          27,
-          28
+          32,
+          33
         ]
       }
     },
     {
-      "kind": "IDENTIFIER",
-      "data": "math.inf"
+      "kind": "I32",
+      "data": 0
+    },
+    {
+      "kind": "I32",
+      "data": 0
     },
     {
       "kind": "FAILURE",
       "data": {
         "reason": "DivByZero",
         "return_values": [
-          30
+          35,
+          36
         ]
       }
     },
     {
       "kind": "BLOCK",
       "data": [
-        31
+        37
       ]
     },
     {
       "kind": "IF",
       "data": {
-        "condition": 29,
-        "body": 32
+        "condition": 34,
+        "body": 38
       }
     },
     {
@@ -238,8 +270,25 @@
       "kind": "BINARY",
       "data": {
         "DIV": [
-          34,
-          35
+          40,
+          41
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "lh"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "rh"
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "REM": [
+          43,
+          44
         ]
       }
     },
@@ -247,47 +296,53 @@
       "kind": "SUCCESS",
       "data": {
         "return_values": [
-          36
+          42,
+          45
         ]
       }
     },
     {
       "kind": "BLOCK",
       "data": [
-        33,
-        37
+        39,
+        46
       ]
     },
     {
       "kind": "DECLARATION",
       "data": {
         "name": "div",
-        "kind": 26,
+        "kind": 31,
         "public": false,
-        "constant": false
+        "constant": true
       }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": ":"
     },
     {
       "kind": "ASSIGNMENT",
       "data": {
-        "declaration": 39,
-        "value": 38
+        "operator": 49,
+        "declaration": 48,
+        "value": 47
       }
     },
     {
       "kind": "BLOCK",
       "data": [
-        6,
-        21,
-        40
+        7,
+        24,
+        50
       ]
     }
   ],
   "spans": [
     {
       "line": 1,
-      "start": 19,
-      "end": 20,
+      "start": 21,
+      "end": 22,
       "current_line_start": 12
     },
     {
@@ -313,6 +368,12 @@
       "start": 24,
       "end": 25,
       "current_line_start": 25
+    },
+    {
+      "line": 5,
+      "start": 47,
+      "end": 49,
+      "current_line_start": 49
     },
     {
       "line": 5,
@@ -357,52 +418,64 @@
       "current_line_start": 49
     },
     {
+      "line": 5,
+      "start": 74,
+      "end": 75,
+      "current_line_start": 49
+    },
+    {
       "line": 6,
-      "start": 91,
+      "start": 77,
+      "end": 78,
+      "current_line_start": 78
+    },
+    {
+      "line": 6,
+      "start": 90,
       "end": 93,
       "current_line_start": 78
     },
     {
       "line": 6,
-      "start": 96,
-      "end": 98,
-      "current_line_start": 78
-    },
-    {
-      "line": 6,
-      "start": 94,
-      "end": 95,
-      "current_line_start": 78
-    },
-    {
-      "line": 6,
-      "start": 77,
-      "end": 78,
-      "current_line_start": 78
-    },
-    {
-      "line": 6,
-      "start": 77,
-      "end": 78,
+      "start": 90,
+      "end": 93,
       "current_line_start": 78
     },
     {
       "line": 7,
-      "start": 112,
-      "end": 115,
-      "current_line_start": 100
+      "start": 108,
+      "end": 110,
+      "current_line_start": 95
     },
     {
       "line": 7,
-      "start": 112,
+      "start": 113,
       "end": 115,
-      "current_line_start": 100
+      "current_line_start": 95
+    },
+    {
+      "line": 7,
+      "start": 111,
+      "end": 112,
+      "current_line_start": 95
     },
     {
       "line": 6,
       "start": 77,
       "end": 78,
       "current_line_start": 78
+    },
+    {
+      "line": 6,
+      "start": 77,
+      "end": 78,
+      "current_line_start": 78
+    },
+    {
+      "line": 10,
+      "start": 118,
+      "end": 120,
+      "current_line_start": 120
     },
     {
       "line": 10,
@@ -447,94 +520,136 @@
       "current_line_start": 120
     },
     {
-      "line": 11,
-      "start": 156,
-      "end": 158,
-      "current_line_start": 149
+      "line": 10,
+      "start": 146,
+      "end": 149,
+      "current_line_start": 120
+    },
+    {
+      "line": 10,
+      "start": 150,
+      "end": 151,
+      "current_line_start": 120
     },
     {
       "line": 11,
-      "start": 162,
+      "start": 161,
       "end": 163,
-      "current_line_start": 149
+      "current_line_start": 154
     },
     {
       "line": 11,
-      "start": 159,
-      "end": 161,
-      "current_line_start": 149
+      "start": 167,
+      "end": 168,
+      "current_line_start": 154
     },
     {
-      "line": 12,
-      "start": 192,
-      "end": 200,
-      "current_line_start": 166
-    },
-    {
-      "line": 12,
-      "start": 165,
+      "line": 11,
+      "start": 164,
       "end": 166,
-      "current_line_start": 166
+      "current_line_start": 154
     },
     {
       "line": 12,
-      "start": 165,
-      "end": 166,
-      "current_line_start": 166
+      "start": 197,
+      "end": 198,
+      "current_line_start": 171
+    },
+    {
+      "line": 12,
+      "start": 200,
+      "end": 201,
+      "current_line_start": 171
+    },
+    {
+      "line": 12,
+      "start": 170,
+      "end": 171,
+      "current_line_start": 171
+    },
+    {
+      "line": 12,
+      "start": 170,
+      "end": 171,
+      "current_line_start": 171
     },
     {
       "line": 11,
-      "start": 148,
-      "end": 149,
-      "current_line_start": 149
+      "start": 153,
+      "end": 154,
+      "current_line_start": 154
     },
     {
       "line": 14,
-      "start": 219,
-      "end": 221,
-      "current_line_start": 207
+      "start": 220,
+      "end": 222,
+      "current_line_start": 208
     },
     {
       "line": 14,
-      "start": 224,
-      "end": 226,
-      "current_line_start": 207
+      "start": 225,
+      "end": 227,
+      "current_line_start": 208
     },
     {
       "line": 14,
-      "start": 222,
-      "end": 223,
-      "current_line_start": 207
+      "start": 223,
+      "end": 224,
+      "current_line_start": 208
+    },
+    {
+      "line": 14,
+      "start": 229,
+      "end": 231,
+      "current_line_start": 208
+    },
+    {
+      "line": 14,
+      "start": 234,
+      "end": 236,
+      "current_line_start": 208
+    },
+    {
+      "line": 14,
+      "start": 232,
+      "end": 233,
+      "current_line_start": 208
     },
     {
       "line": 11,
-      "start": 148,
-      "end": 149,
-      "current_line_start": 149
+      "start": 153,
+      "end": 154,
+      "current_line_start": 154
     },
     {
       "line": 11,
-      "start": 148,
-      "end": 149,
-      "current_line_start": 149
+      "start": 153,
+      "end": 154,
+      "current_line_start": 154
     },
     {
       "line": 15,
-      "start": 228,
-      "end": 228,
-      "current_line_start": 227
+      "start": 238,
+      "end": 238,
+      "current_line_start": 237
     },
     {
       "line": 15,
-      "start": 228,
-      "end": 228,
-      "current_line_start": 227
+      "start": 238,
+      "end": 238,
+      "current_line_start": 237
     },
     {
       "line": 15,
-      "start": 228,
-      "end": 228,
-      "current_line_start": 227
+      "start": 238,
+      "end": 238,
+      "current_line_start": 237
+    },
+    {
+      "line": 15,
+      "start": 238,
+      "end": 238,
+      "current_line_start": 237
     }
   ]
 }

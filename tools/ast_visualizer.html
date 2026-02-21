@@ -29,7 +29,7 @@
             /* Magenta/Pink */
             --bg-array: #2d202a;
             --color-flow: #d19a66;
-            /* Orange (If/Else/While) */
+            /* Orange */
             --bg-flow: #2b221a;
             --color-block: #abb2bf;
             /* Gray */
@@ -148,9 +148,12 @@
             fill: var(--bg-id);
         }
 
+        /* Value Types */
         g.type-I32>rect,
         g.type-F32>rect,
-        g.type-STR>rect {
+        g.type-STR>rect,
+        g.type-BOOL>rect,
+        g.type-CHAR>rect {
             stroke: var(--color-val);
             fill: var(--bg-val);
         }
@@ -173,7 +176,6 @@
             fill: var(--bg-op);
         }
 
-        /* Control Flow: IF, ELSE, WHILE */
         g.type-IF>rect,
         g.type-ELSE>rect,
         g.type-WHILE>rect {
@@ -249,7 +251,8 @@
             <div class="swatch" style="border-color: var(--color-array); background: var(--bg-array);"></div> Arrays
         </div>
         <div class="legend-item">
-            <div class="swatch" style="border-color: var(--color-val); background: var(--bg-val);"></div> Literals
+            <div class="swatch" style="border-color: var(--color-val); background: var(--bg-val);"></div> Values /
+            Literals
         </div>
         <div class="legend-item">
             <div class="swatch" style="border-color: var(--color-id); background: var(--bg-id);"></div> Identifiers
@@ -281,11 +284,13 @@
         const renderEngine = new dagreD3.render();
         let g = new dagreD3.graphlib.Graph();
 
+        // --- Zoom Setup ---
         const zoom = d3.zoom().on("zoom", () => {
             inner.attr("transform", d3.event.transform);
         });
         svg.call(zoom);
 
+        // --- Navigation Buttons ---
         document.getElementById('zoom-in').onclick = () => svg.transition().duration(300).call(zoom.scaleBy, 1.2);
         document.getElementById('zoom-out').onclick = () => svg.transition().duration(300).call(zoom.scaleBy, 0.8);
         document.getElementById('zoom-reset').onclick = () => svg.transition().duration(300).call(zoom.transform, d3.zoomIdentity);
@@ -305,6 +310,7 @@
             else svg.call(zoom.transform, transform);
         }
 
+        // --- File Upload ---
         document.getElementById('fileInput').addEventListener('change', function (event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -318,10 +324,12 @@
             reader.readAsText(file);
         });
 
+        // --- Graph Builder ---
         function buildGraph(flatData) {
             const nodes = flatData.nodes;
             const spans = flatData.spans || [];
 
+            // Hard Reset for layout consistency
             svg.call(zoom.transform, d3.zoomIdentity);
             inner.selectAll("*").remove();
 
@@ -350,7 +358,11 @@
                 }
                 else if (n.kind === "ASSIGNMENT") {
                     title = "ASSIGN";
-                    subtitle = "=";
+                    if (d.operator !== undefined && nodes[d.operator]) {
+                        subtitle = `<span style="font-size:1.5em; font-weight:bold; color:#fff">${nodes[d.operator].data}</span>`;
+                    } else {
+                        subtitle = "=";
+                    }
                 }
                 else if (n.kind === "ARRAYKIND") {
                     title = "ARRAY TYPE";
@@ -380,19 +392,20 @@
                     title = "SIGNATURE";
                     subtitle = `Params: ${d.params.length}`;
                 }
-                // Control Flow
-                else if (n.kind === "IF") {
-                    title = "IF";
-                    subtitle = "Control Flow";
-                }
+                else if (n.kind === "IF") { title = "IF"; subtitle = "Control Flow"; }
                 else if (n.kind === "ELSE") {
                     title = (d.condition !== null) ? "ELSE IF" : "ELSE";
                     subtitle = "Control Flow";
                 }
-                // --- NEW: WHILE LOGIC ---
-                else if (n.kind === "WHILE") {
-                    title = "WHILE";
-                    subtitle = "Loop";
+                else if (n.kind === "WHILE") { title = "WHILE"; subtitle = "Loop"; }
+                else if (n.kind === "SUCCESS") {
+                    title = "SUCCESS";
+                    subtitle = "Result";
+                }
+                else if (n.kind === "FAILURE") {
+                    title = "FAILURE";
+                    // UPDATED: Show failure reason explicitly and distinctly
+                    subtitle = d.reason ? `<span style="color:#e06c75; font-weight:bold; font-style:italic;">"${d.reason}"</span>` : "Error";
                 }
 
                 let spanHtml = spans[idx] ? `<br/><span style="color:#666; font-size:9px;">L${spans[idx].line}</span>` : "";
@@ -420,11 +433,12 @@
                 const d = n.data;
                 if (!d && d !== 0) return;
 
-                const addEdge = (childId, label = "") => {
+                const addEdge = (childId, label = "", opts = {}) => {
                     if (childId !== null && childId !== undefined) {
                         g.setEdge(parentId.toString(), childId.toString(), {
                             label: label,
-                            curve: d3.curveBasis
+                            curve: d3.curveBasis,
+                            ...opts
                         });
                     }
                 };
@@ -434,17 +448,18 @@
                     if (d.value !== undefined && d.value !== null) addEdge(d.value, "init");
                 }
                 else if (n.kind === "ASSIGNMENT") {
-                    addEdge(d.declaration, "target");
+                    // Ignore hierarchy constraint for Declaration edge (dashed reference)
+                    addEdge(d.declaration, "target", { constraint: false, style: "stroke-dasharray: 5, 5; stroke: #666;" });
                     addEdge(d.value, "value");
+                    // Edge to the operator identifier
+                    if (d.operator !== undefined) addEdge(d.operator, "op");
                 }
                 else if (n.kind === "ARRAYKIND") {
                     addEdge(d.kind, "elem type");
                 }
                 else if (n.kind === "ARRAYVALUE") {
                     addEdge(d.kind, "type");
-                    if (Array.isArray(d.value)) {
-                        d.value.forEach((val, i) => addEdge(val, `[${i}]`));
-                    }
+                    if (Array.isArray(d.value)) d.value.forEach((val, i) => addEdge(val, `[${i}]`));
                 }
                 else if (n.kind === "VAR") {
                     addEdge(d.kind, "type");
@@ -459,16 +474,12 @@
                 }
                 else if (n.kind === "BINARY") {
                     const op = Object.keys(d)[0];
-                    if (Array.isArray(d[op])) {
-                        addEdge(d[op][0], "L");
-                        addEdge(d[op][1], "R");
-                    }
+                    if (Array.isArray(d[op])) { addEdge(d[op][0], "L"); addEdge(d[op][1], "R"); }
                 }
                 else if (n.kind === "UNARY") {
                     const op = Object.keys(d)[0];
                     addEdge(d[op], "operand");
                 }
-                // Control Flow Edges
                 else if (n.kind === "IF") {
                     addEdge(d.condition, "cond");
                     addEdge(d.body, "then");
@@ -477,7 +488,6 @@
                     if (d.condition !== null) addEdge(d.condition, "cond");
                     addEdge(d.body, "body");
                 }
-                // --- NEW: WHILE EDGE LOGIC ---
                 else if (n.kind === "WHILE") {
                     addEdge(d.condition, "cond");
                     addEdge(d.body, "do");

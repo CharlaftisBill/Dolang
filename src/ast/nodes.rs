@@ -65,6 +65,7 @@ pub enum Node {
         constant: bool,
     },
     ASSIGNMENT{
+        operator: NodeId,
         declaration: NodeId,
         value: NodeId
     },

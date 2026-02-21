@@ -1,10 +1,10 @@
 # Dolang roadmap
 
-## Bugs:
-* Assignment is not curring the operator kind (: =, +=, -=, ...),
-* Functions are not parsing them return values
+## Bugs: [2/2]
+* Assignment is not curring the operator kind (: =, +=, -=, ...) ✔
+* Functions are not parsing them return values ✔
 
-## Version 0.1.0 (basic blocks) [14/21]
+## Version 0.1.0 (basic blocks) [15/21]
 
 1. Declarations & Assignments:
    1. Variable & Constant declarations ✔
@@ -20,7 +20,7 @@
    4. Priorities ✔
 3. Conditional Blocks
    1. If ✔
-   2. Else
+   2. Else ✔
    3. Match
    4. Catch
    5. For

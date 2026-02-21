@@ -38,7 +38,7 @@ pub fn assert_json_snapshot(snapshot_name: &str, actual_ast: &impl serde::Serial
     );
 
     if has_errors {
-        eprintln!("\n❌ AST Mismatch for '{}'", snapshot_name);
+        eprintln!("\nAST Mismatch for '{}'", snapshot_name);
         eprintln!("File: {:?}", snapshot_path);
 
         std::fs::write("/tmp/ast.json", actual_json_str).expect("Unable to write file");

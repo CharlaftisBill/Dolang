@@ -4,13 +4,13 @@ great () : {
 }
 
 sum (lh i32, rh i32) i32 : {
-    success (lh + rh)
     print("hey")
+    success (lh + rh)
 }
 
-div (lh i32, rh i32) f32 : {
+div (lh i32, rh i32) f32, f32 : {
     if rh == 0 {
-        failure DivByZero math.inf
+        failure DivByZero 0, 0
     }
-    success lh / rh
+    success lh / rh, lh % rh
 }

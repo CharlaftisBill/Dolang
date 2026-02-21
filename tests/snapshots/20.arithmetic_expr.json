@@ -31,8 +31,13 @@
       }
     },
     {
+      "kind": "IDENTIFIER",
+      "data": ":"
+    },
+    {
       "kind": "ASSIGNMENT",
       "data": {
+        "operator": 5,
         "declaration": 4,
         "value": 3
       }
@@ -53,8 +58,8 @@
       "kind": "BINARY",
       "data": {
         "SUB": [
-          7,
-          8
+          8,
+          9
         ]
       }
     },
@@ -62,16 +67,21 @@
       "kind": "DECLARATION",
       "data": {
         "name": "arith1",
-        "kind": 6,
+        "kind": 7,
         "public": false,
         "constant": false
       }
     },
     {
+      "kind": "IDENTIFIER",
+      "data": "="
+    },
+    {
       "kind": "ASSIGNMENT",
       "data": {
-        "declaration": 10,
-        "value": 9
+        "operator": 12,
+        "declaration": 11,
+        "value": 10
       }
     },
     {
@@ -90,8 +100,8 @@
       "kind": "BINARY",
       "data": {
         "DIV": [
-          13,
-          14
+          15,
+          16
         ]
       }
     },
@@ -99,16 +109,21 @@
       "kind": "DECLARATION",
       "data": {
         "name": "arith2",
-        "kind": 12,
+        "kind": 14,
         "public": false,
         "constant": false
       }
     },
     {
+      "kind": "IDENTIFIER",
+      "data": "="
+    },
+    {
       "kind": "ASSIGNMENT",
       "data": {
-        "declaration": 16,
-        "value": 15
+        "operator": 19,
+        "declaration": 18,
+        "value": 17
       }
     },
     {
@@ -127,8 +142,8 @@
       "kind": "BINARY",
       "data": {
         "REM": [
-          19,
-          20
+          22,
+          23
         ]
       }
     },
@@ -136,16 +151,21 @@
       "kind": "DECLARATION",
       "data": {
         "name": "arith3",
-        "kind": 18,
+        "kind": 21,
         "public": false,
         "constant": false
       }
     },
     {
+      "kind": "IDENTIFIER",
+      "data": "="
+    },
+    {
       "kind": "ASSIGNMENT",
       "data": {
-        "declaration": 22,
-        "value": 21
+        "operator": 26,
+        "declaration": 25,
+        "value": 24
       }
     },
     {
@@ -164,8 +184,8 @@
       "kind": "BINARY",
       "data": {
         "MUL": [
-          25,
-          26
+          29,
+          30
         ]
       }
     },
@@ -173,16 +193,21 @@
       "kind": "DECLARATION",
       "data": {
         "name": "arith4",
-        "kind": 24,
+        "kind": 28,
         "public": false,
         "constant": false
       }
     },
     {
+      "kind": "IDENTIFIER",
+      "data": "="
+    },
+    {
       "kind": "ASSIGNMENT",
       "data": {
-        "declaration": 28,
-        "value": 27
+        "operator": 33,
+        "declaration": 32,
+        "value": 31
       }
     },
     {
@@ -205,8 +230,8 @@
       "kind": "BINARY",
       "data": {
         "SUB": [
-          32,
-          33
+          37,
+          38
         ]
       }
     },
@@ -214,8 +239,8 @@
       "kind": "BINARY",
       "data": {
         "ADD": [
-          31,
-          34
+          36,
+          39
         ]
       }
     },
@@ -227,8 +252,8 @@
       "kind": "BINARY",
       "data": {
         "DIV": [
-          35,
-          36
+          40,
+          41
         ]
       }
     },
@@ -240,8 +265,8 @@
       "kind": "BINARY",
       "data": {
         "MUL": [
-          37,
-          38
+          42,
+          43
         ]
       }
     },
@@ -253,8 +278,8 @@
       "kind": "BINARY",
       "data": {
         "REM": [
-          39,
-          40
+          44,
+          45
         ]
       }
     },
@@ -262,16 +287,21 @@
       "kind": "DECLARATION",
       "data": {
         "name": "arith5",
-        "kind": 30,
+        "kind": 35,
         "public": false,
         "constant": false
       }
     },
     {
+      "kind": "IDENTIFIER",
+      "data": "="
+    },
+    {
       "kind": "ASSIGNMENT",
       "data": {
-        "declaration": 42,
-        "value": 41
+        "operator": 48,
+        "declaration": 47,
+        "value": 46
       }
     },
     {
@@ -294,8 +324,8 @@
       "kind": "BINARY",
       "data": {
         "SUB": [
-          46,
-          47
+          52,
+          53
         ]
       }
     },
@@ -303,8 +333,8 @@
       "kind": "BINARY",
       "data": {
         "ADD": [
-          45,
-          48
+          51,
+          54
         ]
       }
     },
@@ -316,8 +346,8 @@
       "kind": "BINARY",
       "data": {
         "DIV": [
-          49,
-          50
+          55,
+          56
         ]
       }
     },
@@ -329,8 +359,8 @@
       "kind": "BINARY",
       "data": {
         "MUL": [
-          51,
-          52
+          57,
+          58
         ]
       }
     },
@@ -342,8 +372,8 @@
       "kind": "BINARY",
       "data": {
         "REM": [
-          53,
-          54
+          59,
+          60
         ]
       }
     },
@@ -351,58 +381,21 @@
       "kind": "DECLARATION",
       "data": {
         "name": "arith6",
-        "kind": 44,
+        "kind": 50,
         "public": false,
         "constant": false
       }
     },
     {
-      "kind": "ASSIGNMENT",
-      "data": {
-        "declaration": 56,
-        "value": 55
-      }
-    },
-    {
       "kind": "IDENTIFIER",
-      "data": "f32"
-    },
-    {
-      "kind": "IDENTIFIER",
-      "data": "sum"
-    },
-    {
-      "kind": "I32",
-      "data": 1
-    },
-    {
-      "kind": "I32",
-      "data": 2
-    },
-    {
-      "kind": "CALL",
-      "data": {
-        "func": 59,
-        "args": [
-          60,
-          61
-        ]
-      }
-    },
-    {
-      "kind": "DECLARATION",
-      "data": {
-        "name": "arith7",
-        "kind": 58,
-        "public": false,
-        "constant": true
-      }
+      "data": "="
     },
     {
       "kind": "ASSIGNMENT",
       "data": {
-        "declaration": 63,
-        "value": 62
+        "operator": 63,
+        "declaration": 62,
+        "value": 61
       }
     },
     {
@@ -432,6 +425,53 @@
       }
     },
     {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "arith7",
+        "kind": 65,
+        "public": false,
+        "constant": true
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": ":"
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "operator": 71,
+        "declaration": 70,
+        "value": 69
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "f32"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "sum"
+    },
+    {
+      "kind": "I32",
+      "data": 1
+    },
+    {
+      "kind": "I32",
+      "data": 2
+    },
+    {
+      "kind": "CALL",
+      "data": {
+        "func": 74,
+        "args": [
+          75,
+          76
+        ]
+      }
+    },
+    {
       "kind": "IDENTIFIER",
       "data": "arith1"
     },
@@ -443,8 +483,8 @@
       "kind": "BINARY",
       "data": {
         "SUB": [
-          70,
-          71
+          78,
+          79
         ]
       }
     },
@@ -452,8 +492,8 @@
       "kind": "BINARY",
       "data": {
         "ADD": [
-          69,
-          72
+          77,
+          80
         ]
       }
     },
@@ -465,8 +505,8 @@
       "kind": "BINARY",
       "data": {
         "DIV": [
-          73,
-          74
+          81,
+          82
         ]
       }
     },
@@ -478,8 +518,8 @@
       "kind": "BINARY",
       "data": {
         "MUL": [
-          75,
-          76
+          83,
+          84
         ]
       }
     },
@@ -491,8 +531,8 @@
       "kind": "BINARY",
       "data": {
         "REM": [
-          77,
-          78
+          85,
+          86
         ]
       }
     },
@@ -500,30 +540,35 @@
       "kind": "DECLARATION",
       "data": {
         "name": "arith8",
-        "kind": 65,
+        "kind": 73,
         "public": false,
         "constant": false
       }
     },
     {
+      "kind": "IDENTIFIER",
+      "data": "="
+    },
+    {
       "kind": "ASSIGNMENT",
       "data": {
-        "declaration": 80,
-        "value": 79
+        "operator": 89,
+        "declaration": 88,
+        "value": 87
       }
     },
     {
       "kind": "BLOCK",
       "data": [
-        5,
-        11,
-        17,
-        23,
-        29,
-        43,
-        57,
+        6,
+        13,
+        20,
+        27,
+        34,
+        49,
         64,
-        81
+        72,
+        90
       ]
     }
   ],
@@ -551,6 +596,12 @@
       "start": 30,
       "end": 31,
       "current_line_start": 15
+    },
+    {
+      "line": 2,
+      "start": 33,
+      "end": 34,
+      "current_line_start": 34
     },
     {
       "line": 2,
@@ -602,6 +653,12 @@
     },
     {
       "line": 3,
+      "start": 52,
+      "end": 53,
+      "current_line_start": 53
+    },
+    {
+      "line": 3,
       "start": 60,
       "end": 63,
       "current_line_start": 53
@@ -623,6 +680,12 @@
       "start": 68,
       "end": 69,
       "current_line_start": 53
+    },
+    {
+      "line": 4,
+      "start": 71,
+      "end": 72,
+      "current_line_start": 72
     },
     {
       "line": 4,
@@ -674,6 +737,12 @@
     },
     {
       "line": 5,
+      "start": 90,
+      "end": 91,
+      "current_line_start": 91
+    },
+    {
+      "line": 5,
       "start": 98,
       "end": 101,
       "current_line_start": 91
@@ -695,6 +764,12 @@
       "start": 106,
       "end": 107,
       "current_line_start": 91
+    },
+    {
+      "line": 7,
+      "start": 110,
+      "end": 112,
+      "current_line_start": 112
     },
     {
       "line": 7,
@@ -794,6 +869,12 @@
     },
     {
       "line": 8,
+      "start": 150,
+      "end": 151,
+      "current_line_start": 151
+    },
+    {
+      "line": 8,
       "start": 158,
       "end": 161,
       "current_line_start": 151
@@ -878,6 +959,12 @@
     },
     {
       "line": 9,
+      "start": 214,
+      "end": 215,
+      "current_line_start": 215
+    },
+    {
+      "line": 9,
       "start": 222,
       "end": 225,
       "current_line_start": 215
@@ -905,6 +992,12 @@
       "start": 232,
       "end": 233,
       "current_line_start": 215
+    },
+    {
+      "line": 10,
+      "start": 237,
+      "end": 238,
+      "current_line_start": 238
     },
     {
       "line": 10,
@@ -1007,6 +1100,12 @@
       "start": 301,
       "end": 302,
       "current_line_start": 238
+    },
+    {
+      "line": 11,
+      "start": 309,
+      "end": 310,
+      "current_line_start": 310
     },
     {
       "line": 11,
