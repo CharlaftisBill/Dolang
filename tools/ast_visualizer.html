@@ -26,8 +26,11 @@
             /* Purple */
             --bg-op: #2a202e;
             --color-array: #c586c0;
-            /* Magenta/Pink for Arrays */
+            /* Magenta/Pink */
             --bg-array: #2d202a;
+            --color-flow: #d19a66;
+            /* Orange (If/Else/While) */
+            --bg-flow: #2b221a;
             --color-block: #abb2bf;
             /* Gray */
             --bg-block: #232323;
@@ -152,7 +155,6 @@
             fill: var(--bg-val);
         }
 
-        /* Array Styling */
         g.type-ARRAYKIND>rect,
         g.type-ARRAYVALUE>rect {
             stroke: var(--color-array);
@@ -169,6 +171,14 @@
         g.type-UNARY>rect {
             stroke: var(--color-op);
             fill: var(--bg-op);
+        }
+
+        /* Control Flow: IF, ELSE, WHILE */
+        g.type-IF>rect,
+        g.type-ELSE>rect,
+        g.type-WHILE>rect {
+            stroke: var(--color-flow);
+            fill: var(--bg-flow);
         }
 
         g.type-BLOCK>rect {
@@ -231,6 +241,9 @@
         <div class="legend-item">
             <div class="swatch" style="border-color: var(--color-assign); background: var(--bg-assign);"></div>
             Assignments
+        </div>
+        <div class="legend-item">
+            <div class="swatch" style="border-color: var(--color-flow); background: var(--bg-flow);"></div> Control Flow
         </div>
         <div class="legend-item">
             <div class="swatch" style="border-color: var(--color-array); background: var(--bg-array);"></div> Arrays
@@ -332,7 +345,6 @@
                         const innerName = innerType ? innerType.data : "?";
                         subtitle += `<br/><span style="font-size:0.8em; color:#aaa">[${innerName}; ${typeNode.data.size}]</span>`;
                     }
-
                     if (d.constant) meta += "CONST ";
                     if (d.public) meta += "PUB ";
                 }
@@ -356,13 +368,9 @@
                     title = String(d);
                     subtitle = n.kind;
                 }
-                else if (n.kind === "BINARY") {
+                else if (n.kind === "BINARY" || n.kind === "UNARY") {
                     title = Object.keys(d)[0] || n.kind;
-                    subtitle = "Binary";
-                }
-                else if (n.kind === "UNARY") {
-                    title = Object.keys(d)[0] || n.kind;
-                    subtitle = "Unary";
+                    subtitle = n.kind === "BINARY" ? "Binary" : "Unary";
                 }
                 else if (n.kind === "BLOCK") {
                     title = "BLOCK";
@@ -371,6 +379,20 @@
                 else if (n.kind === "FUNCSIGNATURE") {
                     title = "SIGNATURE";
                     subtitle = `Params: ${d.params.length}`;
+                }
+                // Control Flow
+                else if (n.kind === "IF") {
+                    title = "IF";
+                    subtitle = "Control Flow";
+                }
+                else if (n.kind === "ELSE") {
+                    title = (d.condition !== null) ? "ELSE IF" : "ELSE";
+                    subtitle = "Control Flow";
+                }
+                // --- NEW: WHILE LOGIC ---
+                else if (n.kind === "WHILE") {
+                    title = "WHILE";
+                    subtitle = "Loop";
                 }
 
                 let spanHtml = spans[idx] ? `<br/><span style="color:#666; font-size:9px;">L${spans[idx].line}</span>` : "";
@@ -419,9 +441,7 @@
                     addEdge(d.kind, "elem type");
                 }
                 else if (n.kind === "ARRAYVALUE") {
-                    // NEW: Connect Array Literal to its Type
                     addEdge(d.kind, "type");
-                    // Connect elements
                     if (Array.isArray(d.value)) {
                         d.value.forEach((val, i) => addEdge(val, `[${i}]`));
                     }
@@ -448,9 +468,19 @@
                     const op = Object.keys(d)[0];
                     addEdge(d[op], "operand");
                 }
+                // Control Flow Edges
                 else if (n.kind === "IF") {
                     addEdge(d.condition, "cond");
                     addEdge(d.body, "then");
+                }
+                else if (n.kind === "ELSE") {
+                    if (d.condition !== null) addEdge(d.condition, "cond");
+                    addEdge(d.body, "body");
+                }
+                // --- NEW: WHILE EDGE LOGIC ---
+                else if (n.kind === "WHILE") {
+                    addEdge(d.condition, "cond");
+                    addEdge(d.body, "do");
                 }
                 else if (n.kind === "FUNCSIGNATURE") {
                     d.params.forEach(p => addEdge(p, "param"));

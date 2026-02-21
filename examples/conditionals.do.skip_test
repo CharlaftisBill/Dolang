@@ -10,8 +10,8 @@ if x == 5 {
 }
 
 # Match
-user_input = io.ask("Do you want to continue? [y/yes, n/no, a/aboard]")
-continue bool = false
+user_input str = io.ask("Do you want to continue? [y/yes, n/no, a/aboard]")
+should_continue bool = false
 match user_input {
     "y", "yes", "Y", "YES" -> continue = true,
     "n", "no", "N", "NO" -> continue = false,

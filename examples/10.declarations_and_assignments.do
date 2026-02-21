@@ -1,6 +1,12 @@
 # integers
 int0 i8
 int0 = 1
+int0 += 2
+int0 *= 3
+int0 /= 4
+int0 -= 5
+int0 %= 6
+
 int1 u16 : 1
 Int2 i32 = -1
 

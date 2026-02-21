@@ -1,0 +1,1030 @@
+{
+  "nodes": [
+    {
+      "kind": "IDENTIFIER",
+      "data": "f32"
+    },
+    {
+      "kind": "I32",
+      "data": 1
+    },
+    {
+      "kind": "I32",
+      "data": 2
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "ADD": [
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "arith0",
+        "kind": 0,
+        "public": false,
+        "constant": true
+      }
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "declaration": 4,
+        "value": 3
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "f32"
+    },
+    {
+      "kind": "I32",
+      "data": 3
+    },
+    {
+      "kind": "I32",
+      "data": 4
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "SUB": [
+          7,
+          8
+        ]
+      }
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "arith1",
+        "kind": 6,
+        "public": false,
+        "constant": false
+      }
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "declaration": 10,
+        "value": 9
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "f32"
+    },
+    {
+      "kind": "I32",
+      "data": 5
+    },
+    {
+      "kind": "I32",
+      "data": 6
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "DIV": [
+          13,
+          14
+        ]
+      }
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "arith2",
+        "kind": 12,
+        "public": false,
+        "constant": false
+      }
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "declaration": 16,
+        "value": 15
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "f32"
+    },
+    {
+      "kind": "I32",
+      "data": 7
+    },
+    {
+      "kind": "I32",
+      "data": 8
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "REM": [
+          19,
+          20
+        ]
+      }
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "arith3",
+        "kind": 18,
+        "public": false,
+        "constant": false
+      }
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "declaration": 22,
+        "value": 21
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "f32"
+    },
+    {
+      "kind": "I32",
+      "data": 9
+    },
+    {
+      "kind": "I32",
+      "data": 10
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "MUL": [
+          25,
+          26
+        ]
+      }
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "arith4",
+        "kind": 24,
+        "public": false,
+        "constant": false
+      }
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "declaration": 28,
+        "value": 27
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "f32"
+    },
+    {
+      "kind": "I32",
+      "data": 1
+    },
+    {
+      "kind": "I32",
+      "data": 2
+    },
+    {
+      "kind": "I32",
+      "data": 3
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "SUB": [
+          32,
+          33
+        ]
+      }
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "ADD": [
+          31,
+          34
+        ]
+      }
+    },
+    {
+      "kind": "I32",
+      "data": 4
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "DIV": [
+          35,
+          36
+        ]
+      }
+    },
+    {
+      "kind": "I32",
+      "data": 5
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "MUL": [
+          37,
+          38
+        ]
+      }
+    },
+    {
+      "kind": "I32",
+      "data": 6
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "REM": [
+          39,
+          40
+        ]
+      }
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "arith5",
+        "kind": 30,
+        "public": false,
+        "constant": false
+      }
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "declaration": 42,
+        "value": 41
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "f32"
+    },
+    {
+      "kind": "I32",
+      "data": 1
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "arith1"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "arith2"
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "SUB": [
+          46,
+          47
+        ]
+      }
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "ADD": [
+          45,
+          48
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "arith3"
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "DIV": [
+          49,
+          50
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "arith0"
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "MUL": [
+          51,
+          52
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "arith4"
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "REM": [
+          53,
+          54
+        ]
+      }
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "arith6",
+        "kind": 44,
+        "public": false,
+        "constant": false
+      }
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "declaration": 56,
+        "value": 55
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "f32"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "sum"
+    },
+    {
+      "kind": "I32",
+      "data": 1
+    },
+    {
+      "kind": "I32",
+      "data": 2
+    },
+    {
+      "kind": "CALL",
+      "data": {
+        "func": 59,
+        "args": [
+          60,
+          61
+        ]
+      }
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "arith7",
+        "kind": 58,
+        "public": false,
+        "constant": true
+      }
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "declaration": 63,
+        "value": 62
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "f32"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "sum"
+    },
+    {
+      "kind": "I32",
+      "data": 1
+    },
+    {
+      "kind": "I32",
+      "data": 2
+    },
+    {
+      "kind": "CALL",
+      "data": {
+        "func": 66,
+        "args": [
+          67,
+          68
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "arith1"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "arith2"
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "SUB": [
+          70,
+          71
+        ]
+      }
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "ADD": [
+          69,
+          72
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "arith3"
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "DIV": [
+          73,
+          74
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "arith0"
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "MUL": [
+          75,
+          76
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "arith4"
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "REM": [
+          77,
+          78
+        ]
+      }
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "arith8",
+        "kind": 65,
+        "public": false,
+        "constant": false
+      }
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "declaration": 80,
+        "value": 79
+      }
+    },
+    {
+      "kind": "BLOCK",
+      "data": [
+        5,
+        11,
+        17,
+        23,
+        29,
+        43,
+        57,
+        64,
+        81
+      ]
+    }
+  ],
+  "spans": [
+    {
+      "line": 1,
+      "start": 22,
+      "end": 25,
+      "current_line_start": 15
+    },
+    {
+      "line": 1,
+      "start": 28,
+      "end": 29,
+      "current_line_start": 15
+    },
+    {
+      "line": 1,
+      "start": 32,
+      "end": 33,
+      "current_line_start": 15
+    },
+    {
+      "line": 1,
+      "start": 30,
+      "end": 31,
+      "current_line_start": 15
+    },
+    {
+      "line": 2,
+      "start": 33,
+      "end": 34,
+      "current_line_start": 34
+    },
+    {
+      "line": 2,
+      "start": 33,
+      "end": 34,
+      "current_line_start": 34
+    },
+    {
+      "line": 2,
+      "start": 41,
+      "end": 44,
+      "current_line_start": 34
+    },
+    {
+      "line": 2,
+      "start": 47,
+      "end": 48,
+      "current_line_start": 34
+    },
+    {
+      "line": 2,
+      "start": 51,
+      "end": 52,
+      "current_line_start": 34
+    },
+    {
+      "line": 2,
+      "start": 49,
+      "end": 50,
+      "current_line_start": 34
+    },
+    {
+      "line": 3,
+      "start": 52,
+      "end": 53,
+      "current_line_start": 53
+    },
+    {
+      "line": 3,
+      "start": 52,
+      "end": 53,
+      "current_line_start": 53
+    },
+    {
+      "line": 3,
+      "start": 60,
+      "end": 63,
+      "current_line_start": 53
+    },
+    {
+      "line": 3,
+      "start": 66,
+      "end": 67,
+      "current_line_start": 53
+    },
+    {
+      "line": 3,
+      "start": 70,
+      "end": 71,
+      "current_line_start": 53
+    },
+    {
+      "line": 3,
+      "start": 68,
+      "end": 69,
+      "current_line_start": 53
+    },
+    {
+      "line": 4,
+      "start": 71,
+      "end": 72,
+      "current_line_start": 72
+    },
+    {
+      "line": 4,
+      "start": 71,
+      "end": 72,
+      "current_line_start": 72
+    },
+    {
+      "line": 4,
+      "start": 79,
+      "end": 82,
+      "current_line_start": 72
+    },
+    {
+      "line": 4,
+      "start": 85,
+      "end": 86,
+      "current_line_start": 72
+    },
+    {
+      "line": 4,
+      "start": 89,
+      "end": 90,
+      "current_line_start": 72
+    },
+    {
+      "line": 4,
+      "start": 87,
+      "end": 88,
+      "current_line_start": 72
+    },
+    {
+      "line": 5,
+      "start": 90,
+      "end": 91,
+      "current_line_start": 91
+    },
+    {
+      "line": 5,
+      "start": 90,
+      "end": 91,
+      "current_line_start": 91
+    },
+    {
+      "line": 5,
+      "start": 98,
+      "end": 101,
+      "current_line_start": 91
+    },
+    {
+      "line": 5,
+      "start": 104,
+      "end": 105,
+      "current_line_start": 91
+    },
+    {
+      "line": 5,
+      "start": 108,
+      "end": 110,
+      "current_line_start": 91
+    },
+    {
+      "line": 5,
+      "start": 106,
+      "end": 107,
+      "current_line_start": 91
+    },
+    {
+      "line": 7,
+      "start": 110,
+      "end": 112,
+      "current_line_start": 112
+    },
+    {
+      "line": 7,
+      "start": 110,
+      "end": 112,
+      "current_line_start": 112
+    },
+    {
+      "line": 7,
+      "start": 119,
+      "end": 122,
+      "current_line_start": 112
+    },
+    {
+      "line": 7,
+      "start": 126,
+      "end": 127,
+      "current_line_start": 112
+    },
+    {
+      "line": 7,
+      "start": 131,
+      "end": 132,
+      "current_line_start": 112
+    },
+    {
+      "line": 7,
+      "start": 135,
+      "end": 136,
+      "current_line_start": 112
+    },
+    {
+      "line": 7,
+      "start": 133,
+      "end": 134,
+      "current_line_start": 112
+    },
+    {
+      "line": 7,
+      "start": 128,
+      "end": 129,
+      "current_line_start": 112
+    },
+    {
+      "line": 7,
+      "start": 141,
+      "end": 142,
+      "current_line_start": 112
+    },
+    {
+      "line": 7,
+      "start": 139,
+      "end": 140,
+      "current_line_start": 112
+    },
+    {
+      "line": 7,
+      "start": 145,
+      "end": 146,
+      "current_line_start": 112
+    },
+    {
+      "line": 7,
+      "start": 143,
+      "end": 144,
+      "current_line_start": 112
+    },
+    {
+      "line": 7,
+      "start": 149,
+      "end": 150,
+      "current_line_start": 112
+    },
+    {
+      "line": 7,
+      "start": 147,
+      "end": 148,
+      "current_line_start": 112
+    },
+    {
+      "line": 8,
+      "start": 150,
+      "end": 151,
+      "current_line_start": 151
+    },
+    {
+      "line": 8,
+      "start": 150,
+      "end": 151,
+      "current_line_start": 151
+    },
+    {
+      "line": 8,
+      "start": 158,
+      "end": 161,
+      "current_line_start": 151
+    },
+    {
+      "line": 8,
+      "start": 165,
+      "end": 166,
+      "current_line_start": 151
+    },
+    {
+      "line": 8,
+      "start": 170,
+      "end": 176,
+      "current_line_start": 151
+    },
+    {
+      "line": 8,
+      "start": 179,
+      "end": 185,
+      "current_line_start": 151
+    },
+    {
+      "line": 8,
+      "start": 177,
+      "end": 178,
+      "current_line_start": 151
+    },
+    {
+      "line": 8,
+      "start": 167,
+      "end": 168,
+      "current_line_start": 151
+    },
+    {
+      "line": 8,
+      "start": 190,
+      "end": 196,
+      "current_line_start": 151
+    },
+    {
+      "line": 8,
+      "start": 188,
+      "end": 189,
+      "current_line_start": 151
+    },
+    {
+      "line": 8,
+      "start": 199,
+      "end": 205,
+      "current_line_start": 151
+    },
+    {
+      "line": 8,
+      "start": 197,
+      "end": 198,
+      "current_line_start": 151
+    },
+    {
+      "line": 8,
+      "start": 208,
+      "end": 214,
+      "current_line_start": 151
+    },
+    {
+      "line": 8,
+      "start": 206,
+      "end": 207,
+      "current_line_start": 151
+    },
+    {
+      "line": 9,
+      "start": 214,
+      "end": 215,
+      "current_line_start": 215
+    },
+    {
+      "line": 9,
+      "start": 214,
+      "end": 215,
+      "current_line_start": 215
+    },
+    {
+      "line": 9,
+      "start": 222,
+      "end": 225,
+      "current_line_start": 215
+    },
+    {
+      "line": 9,
+      "start": 228,
+      "end": 231,
+      "current_line_start": 215
+    },
+    {
+      "line": 9,
+      "start": 232,
+      "end": 233,
+      "current_line_start": 215
+    },
+    {
+      "line": 9,
+      "start": 235,
+      "end": 236,
+      "current_line_start": 215
+    },
+    {
+      "line": 9,
+      "start": 232,
+      "end": 233,
+      "current_line_start": 215
+    },
+    {
+      "line": 10,
+      "start": 237,
+      "end": 238,
+      "current_line_start": 238
+    },
+    {
+      "line": 10,
+      "start": 237,
+      "end": 238,
+      "current_line_start": 238
+    },
+    {
+      "line": 10,
+      "start": 245,
+      "end": 248,
+      "current_line_start": 238
+    },
+    {
+      "line": 10,
+      "start": 252,
+      "end": 255,
+      "current_line_start": 238
+    },
+    {
+      "line": 10,
+      "start": 256,
+      "end": 257,
+      "current_line_start": 238
+    },
+    {
+      "line": 10,
+      "start": 259,
+      "end": 260,
+      "current_line_start": 238
+    },
+    {
+      "line": 10,
+      "start": 256,
+      "end": 257,
+      "current_line_start": 238
+    },
+    {
+      "line": 10,
+      "start": 265,
+      "end": 271,
+      "current_line_start": 238
+    },
+    {
+      "line": 10,
+      "start": 274,
+      "end": 280,
+      "current_line_start": 238
+    },
+    {
+      "line": 10,
+      "start": 272,
+      "end": 273,
+      "current_line_start": 238
+    },
+    {
+      "line": 10,
+      "start": 262,
+      "end": 263,
+      "current_line_start": 238
+    },
+    {
+      "line": 10,
+      "start": 285,
+      "end": 291,
+      "current_line_start": 238
+    },
+    {
+      "line": 10,
+      "start": 283,
+      "end": 284,
+      "current_line_start": 238
+    },
+    {
+      "line": 10,
+      "start": 294,
+      "end": 300,
+      "current_line_start": 238
+    },
+    {
+      "line": 10,
+      "start": 292,
+      "end": 293,
+      "current_line_start": 238
+    },
+    {
+      "line": 10,
+      "start": 303,
+      "end": 309,
+      "current_line_start": 238
+    },
+    {
+      "line": 10,
+      "start": 301,
+      "end": 302,
+      "current_line_start": 238
+    },
+    {
+      "line": 11,
+      "start": 309,
+      "end": 310,
+      "current_line_start": 310
+    },
+    {
+      "line": 11,
+      "start": 309,
+      "end": 310,
+      "current_line_start": 310
+    },
+    {
+      "line": 11,
+      "start": 310,
+      "end": 310,
+      "current_line_start": 310
+    }
+  ]
+}

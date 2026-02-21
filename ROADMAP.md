@@ -1,5 +1,9 @@
 # Dolang roadmap
 
+## Bugs:
+* Assignment is not curring the operator kind (: =, +=, -=, ...),
+* Functions are not parsing them return values
+
 ## Version 0.1.0 (basic blocks) [14/21]
 
 1. Declarations & Assignments:

@@ -1,0 +1,540 @@
+{
+  "nodes": [
+    {
+      "kind": "FUNCSIGNATURE",
+      "data": {
+        "params": [],
+        "returns": []
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "print"
+    },
+    {
+      "kind": "STR",
+      "data": "Hello!"
+    },
+    {
+      "kind": "CALL",
+      "data": {
+        "func": 1,
+        "args": [
+          2
+        ]
+      }
+    },
+    {
+      "kind": "BLOCK",
+      "data": [
+        3
+      ]
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "great",
+        "kind": 0,
+        "public": false,
+        "constant": false
+      }
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "declaration": 5,
+        "value": 4
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "i32"
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "lh",
+        "kind": 7,
+        "public": false,
+        "constant": false
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "i32"
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "rh",
+        "kind": 9,
+        "public": false,
+        "constant": false
+      }
+    },
+    {
+      "kind": "FUNCSIGNATURE",
+      "data": {
+        "params": [
+          8,
+          10
+        ],
+        "returns": []
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "lh"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "rh"
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "ADD": [
+          12,
+          13
+        ]
+      }
+    },
+    {
+      "kind": "SUCCESS",
+      "data": {
+        "return_values": [
+          14
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "print"
+    },
+    {
+      "kind": "STR",
+      "data": "hey"
+    },
+    {
+      "kind": "CALL",
+      "data": {
+        "func": 16,
+        "args": [
+          17
+        ]
+      }
+    },
+    {
+      "kind": "BLOCK",
+      "data": [
+        15,
+        18
+      ]
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "sum",
+        "kind": 11,
+        "public": false,
+        "constant": false
+      }
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "declaration": 20,
+        "value": 19
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "i32"
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "lh",
+        "kind": 22,
+        "public": false,
+        "constant": false
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "i32"
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "rh",
+        "kind": 24,
+        "public": false,
+        "constant": false
+      }
+    },
+    {
+      "kind": "FUNCSIGNATURE",
+      "data": {
+        "params": [
+          23,
+          25
+        ],
+        "returns": []
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "rh"
+    },
+    {
+      "kind": "I32",
+      "data": 0
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "EQ": [
+          27,
+          28
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "math.inf"
+    },
+    {
+      "kind": "FAILURE",
+      "data": {
+        "reason": "DivByZero",
+        "return_values": [
+          30
+        ]
+      }
+    },
+    {
+      "kind": "BLOCK",
+      "data": [
+        31
+      ]
+    },
+    {
+      "kind": "IF",
+      "data": {
+        "condition": 29,
+        "body": 32
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "lh"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "rh"
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "DIV": [
+          34,
+          35
+        ]
+      }
+    },
+    {
+      "kind": "SUCCESS",
+      "data": {
+        "return_values": [
+          36
+        ]
+      }
+    },
+    {
+      "kind": "BLOCK",
+      "data": [
+        33,
+        37
+      ]
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "div",
+        "kind": 26,
+        "public": false,
+        "constant": false
+      }
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "declaration": 39,
+        "value": 38
+      }
+    },
+    {
+      "kind": "BLOCK",
+      "data": [
+        6,
+        21,
+        40
+      ]
+    }
+  ],
+  "spans": [
+    {
+      "line": 1,
+      "start": 19,
+      "end": 20,
+      "current_line_start": 12
+    },
+    {
+      "line": 2,
+      "start": 24,
+      "end": 25,
+      "current_line_start": 25
+    },
+    {
+      "line": 2,
+      "start": 37,
+      "end": 43,
+      "current_line_start": 25
+    },
+    {
+      "line": 2,
+      "start": 37,
+      "end": 43,
+      "current_line_start": 25
+    },
+    {
+      "line": 2,
+      "start": 24,
+      "end": 25,
+      "current_line_start": 25
+    },
+    {
+      "line": 5,
+      "start": 47,
+      "end": 49,
+      "current_line_start": 49
+    },
+    {
+      "line": 5,
+      "start": 47,
+      "end": 49,
+      "current_line_start": 49
+    },
+    {
+      "line": 5,
+      "start": 57,
+      "end": 60,
+      "current_line_start": 49
+    },
+    {
+      "line": 5,
+      "start": 54,
+      "end": 56,
+      "current_line_start": 49
+    },
+    {
+      "line": 5,
+      "start": 65,
+      "end": 68,
+      "current_line_start": 49
+    },
+    {
+      "line": 5,
+      "start": 62,
+      "end": 64,
+      "current_line_start": 49
+    },
+    {
+      "line": 5,
+      "start": 70,
+      "end": 73,
+      "current_line_start": 49
+    },
+    {
+      "line": 6,
+      "start": 91,
+      "end": 93,
+      "current_line_start": 78
+    },
+    {
+      "line": 6,
+      "start": 96,
+      "end": 98,
+      "current_line_start": 78
+    },
+    {
+      "line": 6,
+      "start": 94,
+      "end": 95,
+      "current_line_start": 78
+    },
+    {
+      "line": 6,
+      "start": 77,
+      "end": 78,
+      "current_line_start": 78
+    },
+    {
+      "line": 6,
+      "start": 77,
+      "end": 78,
+      "current_line_start": 78
+    },
+    {
+      "line": 7,
+      "start": 112,
+      "end": 115,
+      "current_line_start": 100
+    },
+    {
+      "line": 7,
+      "start": 112,
+      "end": 115,
+      "current_line_start": 100
+    },
+    {
+      "line": 6,
+      "start": 77,
+      "end": 78,
+      "current_line_start": 78
+    },
+    {
+      "line": 10,
+      "start": 118,
+      "end": 120,
+      "current_line_start": 120
+    },
+    {
+      "line": 10,
+      "start": 118,
+      "end": 120,
+      "current_line_start": 120
+    },
+    {
+      "line": 10,
+      "start": 128,
+      "end": 131,
+      "current_line_start": 120
+    },
+    {
+      "line": 10,
+      "start": 125,
+      "end": 127,
+      "current_line_start": 120
+    },
+    {
+      "line": 10,
+      "start": 136,
+      "end": 139,
+      "current_line_start": 120
+    },
+    {
+      "line": 10,
+      "start": 133,
+      "end": 135,
+      "current_line_start": 120
+    },
+    {
+      "line": 10,
+      "start": 141,
+      "end": 144,
+      "current_line_start": 120
+    },
+    {
+      "line": 11,
+      "start": 156,
+      "end": 158,
+      "current_line_start": 149
+    },
+    {
+      "line": 11,
+      "start": 162,
+      "end": 163,
+      "current_line_start": 149
+    },
+    {
+      "line": 11,
+      "start": 159,
+      "end": 161,
+      "current_line_start": 149
+    },
+    {
+      "line": 12,
+      "start": 192,
+      "end": 200,
+      "current_line_start": 166
+    },
+    {
+      "line": 12,
+      "start": 165,
+      "end": 166,
+      "current_line_start": 166
+    },
+    {
+      "line": 12,
+      "start": 165,
+      "end": 166,
+      "current_line_start": 166
+    },
+    {
+      "line": 11,
+      "start": 148,
+      "end": 149,
+      "current_line_start": 149
+    },
+    {
+      "line": 14,
+      "start": 219,
+      "end": 221,
+      "current_line_start": 207
+    },
+    {
+      "line": 14,
+      "start": 224,
+      "end": 226,
+      "current_line_start": 207
+    },
+    {
+      "line": 14,
+      "start": 222,
+      "end": 223,
+      "current_line_start": 207
+    },
+    {
+      "line": 11,
+      "start": 148,
+      "end": 149,
+      "current_line_start": 149
+    },
+    {
+      "line": 11,
+      "start": 148,
+      "end": 149,
+      "current_line_start": 149
+    },
+    {
+      "line": 15,
+      "start": 228,
+      "end": 228,
+      "current_line_start": 227
+    },
+    {
+      "line": 15,
+      "start": 228,
+      "end": 228,
+      "current_line_start": 227
+    },
+    {
+      "line": 15,
+      "start": 228,
+      "end": 228,
+      "current_line_start": 227
+    }
+  ]
+}

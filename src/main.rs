@@ -4,14 +4,12 @@ use crate::ast::lexer::Lexer;
 
 mod ast;
 
-// TODO: Parse: user defined types 
-
 fn main() {
     println!("Do programming language!");
 
     println!("______________| LEX |______________");
     let mut lexer =
-        Lexer::new(&"/Users/scripter/Desktop/Projects/Dolang/examples/simple.do".to_string())
+        Lexer::new(&"/Users/scripter/Desktop/Projects/Dolang/examples/simple.do.skip_test".to_string())
             .unwrap();
 
     let tokens = match lexer.lex() {

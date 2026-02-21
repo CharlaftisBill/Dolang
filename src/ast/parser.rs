@@ -150,7 +150,7 @@ impl<'a> Parser<'a> {
     }
 
     fn parse_assignment(&mut self, name: &String) -> NodeId {
-        if self.tokens[self.at + 1].kind.as_str() != "=" {
+        if !self.tokens[self.at + 1].kind.as_str().ends_with("=") {
             token_panic!(
                 self.tokens[self.at + 1],
                 self.src,
@@ -596,10 +596,16 @@ impl<'a> Parser<'a> {
                 Tag::NEWLINE(_) | Tag::COMMENT(_) => self.advance(),
                 Tag::IDENT(s) => {
                     node_id = match &self.tokens[self.at + 1].kind {
-                        Tag::IDENT(_) | Tag::KEYWORD(_) => {
+                        Tag::IDENT(_) => {
                             Some(self.parse_declaration_or_assignment())
                         }
-                        Tag::SYMBOL(_) => {
+                        Tag::SYMBOL(sym) => {
+                            if sym.contains("=") {
+                                let assign =  Some(self.parse_assignment(s));
+                                println!("----------------------------------------------> {:?}, {:?}, {:?}",self.tokens[self.at - 1].kind, self.tokens[self.at].kind, self.tokens[self.at + 1].kind);
+                                return assign;
+                            }
+
                             self.advance();
                             self.expect_str("(");
 
@@ -608,6 +614,7 @@ impl<'a> Parser<'a> {
                                 .add(Node::IDENTIFIER(s.to_string()), start_token.span);
 
                             Some(self.parse_call(func_node_id))
+                            
                         }
                         _ => token_panic!(start_token, self.src, "Invalid code in block."),
                     }
@@ -623,82 +630,11 @@ impl<'a> Parser<'a> {
                     )
                 }
                 Tag::KEYWORD(s) => match s.as_str() {
-                    "success" => {
-                        self.advance();
-                        let return_values = self.parse_expression_list();
-                        node_id = Some(
-                            self.ast
-                                .add(Node::SUCCESS { return_values }, start_token.span),
-                        );
-                    }
-                    "failure" => {
-                        let next_token = &self.tokens[self.at + 1];
-                        if !matches!(next_token.kind, Tag::IDENT(_)) {
-                            token_panic!(
-                                next_token,
-                                self.src,
-                                "Expected failure reason, instead got '{:?}'",
-                                next_token.kind.as_str()
-                            )
-                        }
-
-                        self.advance();
-                        let reason = next_token.kind.as_str();
-                        self.advance();
-
-                        let return_values = self.parse_expression_list();
-                        node_id = Some(self.ast.add(
-                            Node::FAILURE {
-                                reason: reason.to_string(),
-                                return_values,
-                            },
-                            start_token.span,
-                        ));
-                    }
-                    "if" => {
-                        self.advance();
-
-                        let condition = self.parse_expr(0);
-                        self.expect_str("{");
-                        let body = self.parse_code_block();
-
-                        node_id =
-                            Some(self.ast.add(Node::IF { condition, body }, start_token.span));
-                    }
-                    "else" => {
-                        self.advance();
-
-                        let condition = match self.tokens[self.at + 1].kind.as_str() {
-                            "{" => None,
-                            _ => Some(self.parse_expr(0)),
-                        };
-                        self.expect_str("{");
-                        let body = self.parse_code_block();
-
-                        node_id = Some(
-                            self.ast
-                                .add(Node::ELSE { condition, body }, start_token.span),
-                        );
-                    }
-                    "while" => {
-                        self.advance();
-
-                        let condition = self.parse_expr(0);
-                        self.expect_str("{");
-                        let body = self.parse_code_block();
-
-                        node_id = Some(
-                            self.ast
-                                .add(Node::WHILE { condition, body }, start_token.span),
-                        );
-                    }
-                    "loop" => {
-                        self.advance();
-
-                        let body = self.parse_code_block();
-
-                        node_id = Some(self.ast.add(Node::LOOP { body }, start_token.span));
-                    }
+                    "success" => node_id = self.parse_success(start_token),
+                    "failure" => node_id = self.parse_failure(start_token),
+                    "if" => node_id = self.parse_if(start_token),
+                    "else" => node_id = self.parse_else(start_token),
+                    "while" => node_id = self.parse_while(start_token),
                     _ => unreachable!("No Keyword '{:?}', is recognizable", s),
                 },
                 _ => token_panic!(
@@ -717,6 +653,79 @@ impl<'a> Parser<'a> {
         self.advance();
 
         Some(self.ast.add(Node::BLOCK(block), start_token.span))
+    }
+
+    fn parse_success(&mut self, start_token: &Token) -> Option<NodeId> {
+        self.advance();
+        let return_values = self.parse_expression_list();
+        Some(
+            self.ast
+                .add(Node::SUCCESS { return_values }, start_token.span),
+        )
+    }
+
+    fn parse_failure(&mut self, start_token: &Token) -> Option<NodeId> {
+        let next_token = &self.tokens[self.at + 1];
+        if !matches!(next_token.kind, Tag::IDENT(_)) {
+            token_panic!(
+                next_token,
+                self.src,
+                "Expected failure reason, instead got '{:?}'",
+                next_token.kind.as_str()
+            )
+        }
+
+        self.advance();
+        let reason = next_token.kind.as_str();
+        self.advance();
+
+        let return_values = self.parse_expression_list();
+        Some(self.ast.add(
+            Node::FAILURE {
+                reason: reason.to_string(),
+                return_values,
+            },
+            start_token.span,
+        ))
+    }
+
+    fn parse_if(&mut self, start_token: &Token) -> Option<NodeId> {
+        self.advance();
+
+        let condition = self.parse_expr(0);
+        self.expect_str("{");
+        let body = self.parse_code_block();
+
+        Some(self.ast.add(Node::IF { condition, body }, start_token.span))
+    }
+
+    fn parse_else(&mut self, start_token: &Token) -> Option<NodeId> {
+        self.advance();
+
+        let condition = match self.tokens[self.at].kind.as_str() {
+            "{" => None,
+            _ => Some(self.parse_expr(0)),
+        };
+        self.expect_str("{");
+        let body = self.parse_code_block();
+
+        Some(
+            self.ast
+                .add(Node::ELSE { condition, body }, start_token.span),
+        )
+    }
+
+    fn parse_while(&mut self, start_token: &Token) -> Option<NodeId> {
+        self.advance();
+
+        let condition = self.parse_expr(0);
+        self.expect_str("{");
+        let body = self.parse_code_block();
+
+        Some(
+            self.ast
+                .add(Node::WHILE { condition, body }, start_token.span),
+        )
     }
 
     fn parse_array(&mut self) -> NodeId {

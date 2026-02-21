@@ -3,8 +3,8 @@ mod span;
 mod nodes;
 mod arena;
 mod token;
-pub(crate) mod lexer;
-pub(crate) mod parser;
+pub mod lexer;
+pub mod parser;
 
 pub use id::NodeId;
 pub use arena::Ast;

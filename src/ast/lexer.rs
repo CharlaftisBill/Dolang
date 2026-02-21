@@ -154,7 +154,6 @@ impl Lexer {
             "else",
             "while",
             "for",
-            "loop",
             "match",
             "break",
             "continue",
