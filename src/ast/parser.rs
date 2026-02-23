@@ -68,15 +68,20 @@ impl<'a> Parser<'a> {
         println!(
             "=================================================================================="
         );
-        println!(
-            "  =>  Before  : '{:?}'",
-            self.tokens[self.at - 1].kind.as_str()
-        );
+        if self.at - 1 > 0 {
+            println!(
+                "  =>  Before  : '{:?}'",
+                self.tokens[self.at - 1].kind.as_str()
+            );
+        }
         println!("  =>  Now     : '{:?}'", self.tokens[self.at].kind.as_str());
-        println!(
-            "  =>  Next    : '{:?}'",
-            self.tokens[self.at + 1].kind.as_str()
-        );
+
+        if self.at + 1 < self.tokens.len() {
+            println!(
+                "  =>  Next    : '{:?}'",
+                self.tokens[self.at + 1].kind.as_str()
+            );
+        }
         println!(
             "=================================================================================="
         );
@@ -102,7 +107,8 @@ impl<'a> Parser<'a> {
                 _ => token_panic!(
                     self.tokens[self.at],
                     src,
-                    "In this level only comments and declarations are permitted."
+                    "Invalid token '{:?}'. In this level only comments and declarations are permitted.",
+                    self.tokens[self.at].kind,
                 ),
             }
         }
@@ -136,11 +142,21 @@ impl<'a> Parser<'a> {
         };
 
         let (type_name, type_node) = self.parse_type();
-        if type_name != "func" {
-            self.advance();
-        }
 
-        let (is_const, value) = self.parse_value(&type_name);
+        self.print_head("- [0] parse_declaration_or_assignment [0] -");
+        if self.tokens[self.at].kind.as_str() != ":" && self.tokens[self.at].kind.as_str() != "=" {
+            token_panic!(
+                self.tokens[self.at],
+                self.src,
+                "Expected '=' or ':' but instead got '{:?}'.",
+                self.tokens[self.at].kind.as_str(),
+            );
+        }
+        let is_const = self.tokens[self.at].kind.as_str() == ":";
+        self.advance();
+        self.print_head("- [1] parse_declaration_or_assignment [1] -");
+
+        let value = self.parse_value(&type_name);
         let declaration = self.ast.add(
             Node::DECLARATION {
                 name: name.to_string(),
@@ -159,35 +175,22 @@ impl<'a> Parser<'a> {
             },
         );
 
-        match value {
-            Some(v) => {
-                let op = self.ast.add(
-                    Node::IDENTIFIER((if is_const { ":" } else { "=" }).to_string()),
-                    self.tokens[self.at].span,
-                );
-                self.ast.add(
-                    Node::ASSIGNMENT {
-                        declaration,
-                        operator: op,
-                        value: v,
-                    },
-                    self.tokens[self.at].span,
-                )
-            }
-            _ => declaration,
-        }
+        let op = self.ast.add(
+            Node::IDENTIFIER((if is_const { ":" } else { "=" }).to_string()),
+            self.tokens[self.at].span,
+        );
+
+        self.ast.add(
+            Node::ASSIGNMENT {
+                declaration,
+                operator: op,
+                value,
+            },
+            self.tokens[self.at].span,
+        )
     }
 
     fn parse_assignment(&mut self, name: &String) -> NodeId {
-        if !self.tokens[self.at + 1].kind.as_str().ends_with("=") {
-            token_panic!(
-                self.tokens[self.at + 1],
-                self.src,
-                "'{:?}' is already declared. If you are trying to assign a value '= <value>' is expected.",
-                name
-            );
-        }
-
         let declaration = match self.declaration_context.get(name) {
             Some(decl) => decl.clone(),
             _ => token_panic!(
@@ -197,81 +200,110 @@ impl<'a> Parser<'a> {
             ),
         };
 
+        self.print_head("- [0] parse_assignment [0] -");
         self.advance();
+        self.print_head("- [1] parse_assignment [1] -");
+
+        if !self.tokens[self.at].kind.as_str().ends_with("=") {
+            token_panic!(
+                self.tokens[self.at + 1],
+                self.src,
+                "'{:?}' is already declared. If you are trying to assign a value '= <value>' is expected.",
+                name
+            );
+        }
 
         let op = self.ast.add(
             Node::IDENTIFIER(self.tokens[self.at].kind.as_str().to_string()),
             self.tokens[self.at].span,
         );
+        self.advance();
 
-        let (_, value) = self.parse_value(&declaration.kind);
+        self.print_head("- [2] parse_assignment [2] -");
+        let value = self.parse_value(&declaration.kind);
+        self.print_head("- [3] parse_assignment [3] -");
 
-        match value {
-            Some(v) => self.ast.add(
-                Node::ASSIGNMENT {
-                    declaration: declaration.node,
-                    operator: op,
-                    value: v,
-                },
-                self.tokens[self.at].span,
-            ),
-            _ => token_panic!(
-                self.tokens[self.at],
-                self.src,
-                "An assignment should always be assigned a value."
-            ),
-        }
+        self.ast.add(
+            Node::ASSIGNMENT {
+                declaration: declaration.node,
+                operator: op,
+                value,
+            },
+            self.tokens[self.at].span,
+        )
     }
 
-    fn parse_value(&mut self, type_name: &String) -> (bool, Option<NodeId>) {
-        let mut is_const = true;
+    fn parse_value(&mut self, type_name: &String) -> NodeId {
+        self.print_head("- [0] parse_value [0] -");
 
-        let value = match &self.tokens[self.at].kind {
-            ast::token::Tag::SYMBOL(symbol) => {
-                if type_name.as_str() == "func" {
-                    is_const = self.tokens[self.at - 1].kind.as_str() == ":";
-                } else {
-                    is_const = symbol == ":";
-                }
+        println!(
+            "          ---------------------------------->>>>>> {:?}",
+            type_name
+        );
 
-                self.advance();
-
-                let x = match type_name.as_str() {
-                    "type" | "union" => match self.parse_user_type_or_union() {
-                        Some(n) => n,
-                        _ => token_panic!(
-                            self.tokens[self.at],
-                            self.src,
-                            "Invalid {type_name} syntax",
-                        ),
-                    },
-                    "enum" => match self.parse_enum() {
-                        Some(n) => n,
-                        _ => token_panic!(
-                            self.tokens[self.at],
-                            self.src,
-                            "Invalid {type_name} syntax",
-                        ),
-                    },
-                    "func" => match self.parse_code_block() {
-                        Some(n) => n,
-                        _ => token_panic!(
-                            self.tokens[self.at],
-                            self.src,
-                            "Invalid {type_name} syntax",
-                        ),
-                    },
-                    "array" => self.parse_array(),
-                    "interface" => todo!("interfaces are not yet implemented!"),
-                    _ => self.parse_expr(0),
-                };
-
-                Some(x)
-            }
-            _ => None,
+        self.print_head("- [1] parse_value [1] -");
+        let value = match type_name.as_str() {
+            "type" | "union" => match self.parse_user_type_or_union() {
+                Some(n) => n,
+                _ => token_panic!(self.tokens[self.at], self.src, "Invalid {type_name} syntax",),
+            },
+            "enum" => match self.parse_enum() {
+                Some(n) => n,
+                _ => token_panic!(self.tokens[self.at], self.src, "Invalid {type_name} syntax",),
+            },
+            "func" => match self.parse_code_block() {
+                Some(n) => n,
+                _ => token_panic!(self.tokens[self.at], self.src, "Invalid {type_name} syntax",),
+            },
+            "array" => self.parse_array(),
+            "interface" => todo!("interfaces are not yet implemented!"),
+            _ => self.parse_expr(0),
         };
+        self.print_head("- [2] parse_value [2] -");
 
-        (is_const, value)
+        value
+
+        // let value = match &self.tokens[self.at].kind {
+        //     ast::token::Tag::SYMBOL(_) => {
+        //         self.print_head("- [1] parse_value [1] -");
+        //         // self.advance();
+        //         // self.print_head("- [1] parse_value [1] -");
+
+        //         let x = match type_name.as_str() {
+        //             "type" | "union" => match self.parse_user_type_or_union() {
+        //                 Some(n) => n,
+        //                 _ => token_panic!(
+        //                     self.tokens[self.at],
+        //                     self.src,
+        //                     "Invalid {type_name} syntax",
+        //                 ),
+        //             },
+        //             "enum" => match self.parse_enum() {
+        //                 Some(n) => n,
+        //                 _ => token_panic!(
+        //                     self.tokens[self.at],
+        //                     self.src,
+        //                     "Invalid {type_name} syntax",
+        //                 ),
+        //             },
+        //             "func" => match self.parse_code_block() {
+        //                 Some(n) => n,
+        //                 _ => token_panic!(
+        //                     self.tokens[self.at],
+        //                     self.src,
+        //                     "Invalid {type_name} syntax",
+        //                 ),
+        //             },
+        //             "array" => self.parse_array(),
+        //             "interface" => todo!("interfaces are not yet implemented!"),
+        //             _ => self.parse_expr(0),
+        //         };
+
+        //         self.print_head("- [2] parse_value [2] -");
+        //         Some(x)
+        //     }
+        //     _ => None,
+        // };
     }
 
     fn parse_user_type_or_union(&mut self) -> Option<NodeId> {
@@ -309,7 +341,7 @@ impl<'a> Parser<'a> {
                         .add(Node::IDENTIFIER(s.to_string()), start_token.span),
                 )
             }
-            Tag::SYMBOL(s) => {
+            Tag::SYMBOL(_) => {
                 let ident_list = self.parse_identifier_list("{", "}");
                 node_id = Some(self.ast.add(Node::BLOCK(ident_list), start_token.span));
             }
@@ -414,12 +446,14 @@ impl<'a> Parser<'a> {
     }
 
     fn parse_type(&mut self) -> (String, NodeId) {
+        self.print_head("- [0] parse_type [0] -");
         let current_token = &self.tokens[self.at];
-        
+
         let mut node_type = "";
         let node_id = match &current_token.kind {
             Tag::IDENT(s) | Tag::KEYWORD(s) => {
                 node_type = s;
+                self.advance();
                 self.ast
                     .add(Node::IDENTIFIER(s.to_string()), self.tokens[self.at].span)
             }
@@ -432,10 +466,11 @@ impl<'a> Parser<'a> {
                     self.at -= 1;
                     let returns = self.parse_identifier_list(")", ":");
 
-                    // other hot fix
-                    if returns.len() == 0 {
-                        self.advance();
+                    // hot fix
+                    if returns.len() >0{
+                        self.at -= 1;
                     }
+                    self.print_head("- [1] parse_type [1] -");
 
                     let signature = Node::FUNCSIGNATURE { params, returns };
                     self.ast.add(signature, self.tokens[self.at - 1].span)
@@ -460,6 +495,7 @@ impl<'a> Parser<'a> {
                             .add(Node::IDENTIFIER(s.to_string()), self.tokens[self.at].span),
                         _ => token_panic!(current_token, self.src, "Invalid array type.",),
                     };
+                    self.advance();
 
                     self.ast
                         .add(Node::ARRAYKIND { kind, size }, self.tokens[self.at].span)
@@ -496,16 +532,17 @@ impl<'a> Parser<'a> {
     ) -> Vec<NodeId> {
         self.expect_str(starts_with_symbol);
 
+        self.print_head("- [0] parse_identifier_list [0] -");
+
         let mut idents = Vec::new();
         if self.tokens[self.at].kind.as_str() == ends_to_symbol {
             return idents;
         }
 
         loop {
+            self.print_head("- [1] parse_identifier_list [1] -");
+
             let current_token = &self.tokens[self.at];
-            if self.tokens[self.at].kind.as_str() == ends_to_symbol {
-                break;
-            }
 
             if !matches!(current_token.kind, Tag::IDENT(_)) {
                 token_panic!(
@@ -516,17 +553,22 @@ impl<'a> Parser<'a> {
                 );
             }
 
-            let ident = Node::IDENTIFIER(current_token.kind.as_str().to_string());
+            idents.push(self.ast.add(
+                Node::IDENTIFIER(current_token.kind.as_str().to_string()),
+                current_token.span,
+            ));
+
+            self.print_head("- [2] parse_identifier_list [2] -");
             self.advance();
+            self.print_head("- [3] parse_identifier_list [3] -");
 
-            idents.push(self.ast.add(ident, current_token.span));
-
-            if self.tokens[self.at].kind.as_str() != ends_to_symbol {
-                self.expect_str(",");
+            if self.tokens[self.at].kind.as_str() == ends_to_symbol {
+                break
             }
 
-            if matches!(self.tokens[self.at].kind, Tag::NEWLINE(_))
-            {
+            self.expect_str(",");
+
+            if matches!(self.tokens[self.at].kind, Tag::NEWLINE(_)) {
                 self.advance();
             }
         }
@@ -545,12 +587,21 @@ impl<'a> Parser<'a> {
 
         let mut variables = Vec::new();
         if self.tokens[self.at].kind.as_str() == ends_to_symbol {
+            self.print_head("- [0] parse_variable_list [0] -");
+
             self.advance();
+
+            self.print_head("- [1] parse_variable_list [1] -");
+
             return variables;
         }
 
         if matches!(self.tokens[self.at].kind, Tag::NEWLINE(_)) {
+            self.print_head("- [2] parse_variable_list [2] -");
+
             self.advance();
+
+            self.print_head("- [3] parse_variable_list [3] -");
         }
 
         loop {
@@ -569,10 +620,16 @@ impl<'a> Parser<'a> {
                 );
             }
             let var_name = current_token.kind.as_str();
+
+            self.print_head("- [4] parse_variable_list [4] -");
             self.advance();
+            self.print_head("- [5] parse_variable_list [5] -");
 
             let (_, var_type) = self.parse_type();
-            self.advance();
+
+            // self.print_head("- [6] parse_variable_list [6] -");
+            // self.expect_str(",");
+            // self.print_head("- [7] parse_variable_list [7] -");
 
             let node_id = self.ast.add(
                 Node::DECLARATION {
@@ -589,8 +646,9 @@ impl<'a> Parser<'a> {
                 break;
             }
 
+            self.print_head("- [6] parse_variable_list [6] -");
             self.expect_str(",");
-
+            self.print_head("- [7] parse_variable_list [7] -");
             if matches!(self.tokens[self.at].kind, Tag::NEWLINE(_)) {
                 self.advance();
             }
@@ -621,32 +679,39 @@ impl<'a> Parser<'a> {
     }
 
     fn parse_code_block(&mut self) -> Option<NodeId> {
+        self.print_head("- [0] parse_code_block [0] -");
+
+        self.expect_str("{");
         let start_token = &self.tokens[self.at];
 
         let mut block = vec![];
         loop {
             let mut node_id: Option<NodeId> = None;
 
+            self.print_head("- [1] parse_code_block [1] -");
+
             match &self.tokens[self.at].kind {
                 Tag::NEWLINE(_) | Tag::COMMENT(_) => self.advance(),
                 Tag::IDENT(s) => {
                     node_id = match &self.tokens[self.at + 1].kind {
-                        Tag::IDENT(_)=> Some(self.parse_declaration_or_assignment()),
+                        Tag::IDENT(_) => Some(self.parse_declaration_or_assignment()),
                         Tag::SYMBOL(sym) => {
-                            if sym.contains("=") {
-                                return Some(self.parse_assignment(s));
-                            }else if  sym == "["{
-                                return Some(self.parse_declaration_or_assignment());
+                            if sym.ends_with("=") {
+                                Some(self.parse_assignment(s))
+                            } else if sym == "[" {
+                                Some(self.parse_declaration_or_assignment())
+                            } else {
+                                self.print_head("- [2] parse_code_block [2] -");
+                                self.advance();
+                                self.expect_str("(");
+                                self.print_head("- [3] parse_code_block [3] -");
+
+                                let func_node_id = self
+                                    .ast
+                                    .add(Node::IDENTIFIER(s.to_string()), start_token.span);
+
+                                Some(self.parse_call(func_node_id))
                             }
-
-                            self.advance();
-                            self.expect_str("(");
-
-                            let func_node_id = self
-                                .ast
-                                .add(Node::IDENTIFIER(s.to_string()), start_token.span);
-
-                            Some(self.parse_call(func_node_id))
                         }
                         _ => token_panic!(start_token, self.src, "Invalid code in block."),
                     }
@@ -667,6 +732,14 @@ impl<'a> Parser<'a> {
                     "if" => node_id = self.parse_if(start_token),
                     "else" => node_id = self.parse_else(start_token),
                     "while" => node_id = self.parse_while(start_token),
+                    "continue" => {
+                        node_id = Some(self.ast.add(Node::CONTINUE, self.tokens[self.at].span));
+                        self.advance();
+                    }
+                    "break" => {
+                        node_id = Some(self.ast.add(Node::BREAK, self.tokens[self.at].span));
+                        self.advance();
+                    }
                     _ => unreachable!("No Keyword '{:?}', is recognizable", s),
                 },
                 _ => token_panic!(
@@ -677,12 +750,15 @@ impl<'a> Parser<'a> {
                 ),
             }
 
+            self.print_head("- [4] parse_code_block [4] -");
             if matches!(node_id, Some(_)) {
                 block.push(node_id?);
             }
         }
 
-        self.advance();
+        self.print_head("- [5] parse_code_block [5] -");
+        self.expect_str("}");
+        self.print_head("- [6] parse_code_block [6] -");
 
         Some(self.ast.add(Node::BLOCK(block), start_token.span))
     }
@@ -722,24 +798,26 @@ impl<'a> Parser<'a> {
     }
 
     fn parse_if(&mut self, start_token: &Token) -> Option<NodeId> {
-        self.advance();
+        self.expect_str("if");
 
+        self.print_head("- [0] parse_if [0] -");
         let condition = self.parse_expr(0);
-        self.expect_str("{");
         let body = self.parse_code_block();
+        self.print_head("- [1] parse_if [1] -");
 
         Some(self.ast.add(Node::IF { condition, body }, start_token.span))
     }
 
     fn parse_else(&mut self, start_token: &Token) -> Option<NodeId> {
-        self.advance();
+        self.expect_str("else");
 
+        self.print_head("- [0] parse_else [0] -");
         let condition = match self.tokens[self.at].kind.as_str() {
             "{" => None,
             _ => Some(self.parse_expr(0)),
         };
-        self.expect_str("{");
         let body = self.parse_code_block();
+        self.print_head("- [1] parse_else [1] -");
 
         Some(
             self.ast
@@ -748,11 +826,12 @@ impl<'a> Parser<'a> {
     }
 
     fn parse_while(&mut self, start_token: &Token) -> Option<NodeId> {
-        self.advance();
+        self.expect_str("while");
 
+        self.print_head("- [0] parse_while [0] -");
         let condition = self.parse_expr(0);
-        self.expect_str("{");
         let body = self.parse_code_block();
+        self.print_head("- [1] parse_while [1] -");
 
         Some(
             self.ast

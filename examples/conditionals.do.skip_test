@@ -48,18 +48,3 @@ while current_index <= while_limit {
     }
     current_index += 1
 }
-
-# loop
-guess u16 : 17
-loop {
-    user_number u32 = io.ask("Please choose a number").to_u32()
-
-    if user_number == guess {
-        print("you found it!")
-        break
-    } else user_number > guess{
-        print("choose something smaller")
-    } else {
-        print("choose something bigger")
-    }
-}

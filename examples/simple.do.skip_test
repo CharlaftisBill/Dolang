@@ -1,15 +1,10 @@
-# functions
-
-great () : {
-    x i32 = 10
-
-    # for
+conditionals () : {
     arr [4]i32 : [i32: 1,4,2,6]
-    for i in arr {
-        print(i)
+    for i, value in arr {
+        print(i, element)
     }
 
-    for i in [i32: 3,6,4,8] {
-        print(i)
+    for i, value in [i32: 3,6,4,8] {
+        print(i, element)
     }
 }

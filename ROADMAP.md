@@ -4,6 +4,9 @@
 * Assignment is not curring the operator kind (: =, +=, -=, ...) ✔
 * Functions are not parsing them return values ✔
 
+## Investigations [0/1]
+*  why the code block 'eats' '}' in case of if/else, but not in case of while
+
 ## Version 0.1.0 (basic blocks) [15/21]
 
 1. Declarations & Assignments:
@@ -66,7 +69,8 @@
 
 1. Code clean up:
    1. reduce duplicate code
-   1. reduce duplicate code
+      1. if-else-while
+   2. reduce duplicate code
 2. Type inference:
    1. local type inference
 3. Expressions folding:

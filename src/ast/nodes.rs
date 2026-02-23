@@ -99,11 +99,15 @@ pub enum Node {
         condition: Option<NodeId>,
         body: Option<NodeId>
     },
+    FOR {
+        index: NodeId,
+        value: NodeId,
+        range: NodeId,
+    },
     WHILE {
         condition: NodeId,
         body: Option<NodeId>
     },
-    LOOP {
-        body: Option<NodeId>
-    }
+    CONTINUE,
+    BREAK,
 }

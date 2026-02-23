@@ -7,7 +7,7 @@ mod ast;
 fn main() {
     println!("Do programming language!");
 
-    println!("______________| LEX |______________");
+    // println!("______________| LEX |______________");
     let mut lexer =
         Lexer::new(&"/Users/scripter/Desktop/Projects/Dolang/examples/simple.do.skip_test".to_string())
             .unwrap();
@@ -17,9 +17,9 @@ fn main() {
         Err(_) => panic!("lexing FAILED!"),
     };
 
-    for (index, token) in tokens.iter().enumerate() {
-        println!(" {index}  ---> {:?}", token)
-    }
+    // for (index, token) in tokens.iter().enumerate() {
+    //     println!(" {index}  ---> {:?}", token)
+    // }
     
     println!("______________| PARSE |______________");
     let mut ast = Ast::new();

@@ -1,5 +1,5 @@
 # functions
-great () : {
+say_hello () : {
     print("Hello!" )
 }
 

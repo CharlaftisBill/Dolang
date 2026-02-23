@@ -117,12 +117,12 @@ impl Token {
             }
         }
 
-        // println!("'{}'", sb); 
-        // println!("{} - {}", self.span.end, self.span.current_line_start -1); 
-        for _ in 0..(self.span.end - self.span.current_line_start -1) {
+        // println!("'{}'", sb);
+        // println!("{} - {}", self.span.end, self.span.current_line_start -1);
+        for _ in 0..(self.span.end - (self.span.current_line_start - 1)) {
             sb.push(' ');
         }
-        
+
         for _ in 0..(self.span.end - self.span.start) {
             sb.push('▔');
         }

@@ -575,8 +575,8 @@
   "spans": [
     {
       "line": 1,
-      "start": 22,
-      "end": 25,
+      "start": 26,
+      "end": 27,
       "current_line_start": 15
     },
     {
@@ -617,8 +617,8 @@
     },
     {
       "line": 2,
-      "start": 41,
-      "end": 44,
+      "start": 45,
+      "end": 46,
       "current_line_start": 34
     },
     {
@@ -659,8 +659,8 @@
     },
     {
       "line": 3,
-      "start": 60,
-      "end": 63,
+      "start": 64,
+      "end": 65,
       "current_line_start": 53
     },
     {
@@ -701,8 +701,8 @@
     },
     {
       "line": 4,
-      "start": 79,
-      "end": 82,
+      "start": 83,
+      "end": 84,
       "current_line_start": 72
     },
     {
@@ -743,8 +743,8 @@
     },
     {
       "line": 5,
-      "start": 98,
-      "end": 101,
+      "start": 102,
+      "end": 103,
       "current_line_start": 91
     },
     {
@@ -785,8 +785,8 @@
     },
     {
       "line": 7,
-      "start": 119,
-      "end": 122,
+      "start": 123,
+      "end": 124,
       "current_line_start": 112
     },
     {
@@ -875,8 +875,8 @@
     },
     {
       "line": 8,
-      "start": 158,
-      "end": 161,
+      "start": 162,
+      "end": 163,
       "current_line_start": 151
     },
     {
@@ -965,8 +965,8 @@
     },
     {
       "line": 9,
-      "start": 222,
-      "end": 225,
+      "start": 226,
+      "end": 227,
       "current_line_start": 215
     },
     {
@@ -1013,8 +1013,8 @@
     },
     {
       "line": 10,
-      "start": 245,
-      "end": 248,
+      "start": 249,
+      "end": 250,
       "current_line_start": 238
     },
     {
