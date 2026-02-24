@@ -103,6 +103,7 @@ pub enum Node {
         index: NodeId,
         value: NodeId,
         range: NodeId,
+        body: Option<NodeId>
     },
     WHILE {
         condition: NodeId,

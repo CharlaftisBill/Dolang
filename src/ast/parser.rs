@@ -467,7 +467,7 @@ impl<'a> Parser<'a> {
                     let returns = self.parse_identifier_list(")", ":");
 
                     // hot fix
-                    if returns.len() >0{
+                    if returns.len() > 0 {
                         self.at -= 1;
                     }
                     self.print_head("- [1] parse_type [1] -");
@@ -563,7 +563,7 @@ impl<'a> Parser<'a> {
             self.print_head("- [3] parse_identifier_list [3] -");
 
             if self.tokens[self.at].kind.as_str() == ends_to_symbol {
-                break
+                break;
             }
 
             self.expect_str(",");
@@ -732,6 +732,7 @@ impl<'a> Parser<'a> {
                     "if" => node_id = self.parse_if(start_token),
                     "else" => node_id = self.parse_else(start_token),
                     "while" => node_id = self.parse_while(start_token),
+                    "for" => node_id = self.parse_for(start_token),
                     "continue" => {
                         node_id = Some(self.ast.add(Node::CONTINUE, self.tokens[self.at].span));
                         self.advance();
@@ -837,6 +838,77 @@ impl<'a> Parser<'a> {
             self.ast
                 .add(Node::WHILE { condition, body }, start_token.span),
         )
+    }
+
+    fn parse_for(&mut self, start_token: &Token) -> Option<NodeId> {
+        self.expect_str("for");
+
+        self.print_head("- [0] parse_for [0] -");
+        if !matches!(self.tokens[self.at].kind, Tag::IDENT(_)) {
+            token_panic!(
+                self.tokens[self.at],
+                self.src,
+                "Expected Index 'identifier' variable name, got '{:?}'",
+                self.tokens[self.at].kind.as_str()
+            );
+        }
+
+        let index = self.ast.add(
+            Node::IDENTIFIER(self.tokens[self.at].kind.as_str().to_string()),
+            self.tokens[self.at].span,
+        );
+        self.advance();
+        self.print_head("- [1] parse_for [1] -");
+
+        self.expect_str(",");
+        self.print_head("- [2] parse_for [2] -");
+
+        let value = self.ast.add(
+            Node::IDENTIFIER(self.tokens[self.at].kind.as_str().to_string()),
+            self.tokens[self.at].span,
+        );
+        self.advance();
+        self.print_head("- [3] parse_for [3] -");
+
+        self.expect_str("in");
+        
+        let range = match &self.tokens[self.at].kind {
+            Tag::SYMBOL(_) => self.parse_array(),
+            Tag::IDENT(s) => {
+                let declaration = match self.declaration_context.get(s) {
+                    Some(decl) => decl.clone(),
+                    _ => token_panic!(
+                        self.tokens[self.at],
+                        self.src,
+                        "Trying to use a variable '{}' as for's range, that is not declared before.",
+                        s
+                    ),
+                };
+                self.advance();
+
+                declaration.node
+            }
+            _ => token_panic!(
+                self.tokens[self.at],
+                self.src,
+                "Expected Index 'identifier' variable name or an array, got '{:?}'",
+                self.tokens[self.at].kind.as_str()
+            ),
+        };
+        self.print_head("- [4] parse_for [4] -");
+
+        let body = self.parse_code_block();
+        self.print_head("- [5] parse_for [5] -");
+
+        Some(self.ast.add(
+            Node::FOR {
+                index,
+                value,
+                range,
+                body,
+            },
+            start_token.span,
+        ))
     }
 
     fn parse_array(&mut self) -> NodeId {

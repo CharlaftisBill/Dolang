@@ -4,8 +4,11 @@
 * Assignment is not curring the operator kind (: =, +=, -=, ...) ✔
 * Functions are not parsing them return values ✔
 
-## Investigations [0/1]
+## Investigations [1/1]
 *  why the code block 'eats' '}' in case of if/else, but not in case of while
+
+## Improvements [0/1]
+* if an IDENT token is playing the role of a variable then use the map in order to mention the declarations node in AST. This way the size of the AST may be reduced and the iteration over it may get faster.
 
 ## Version 0.1.0 (basic blocks) [15/21]
 
