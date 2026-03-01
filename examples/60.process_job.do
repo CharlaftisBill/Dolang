@@ -3,7 +3,7 @@ SystemName str : "BatchProcessor v1.0"
 
 # processJob simulates working on a job.
 # It returns a success message (string) or an error (failure return).
-processJob (jobID int, baseLoad f64) string : {
+processJob (jobID int, baseLoad f64) str : {
 	# Create a simulated load calculation
 	calcLoad f64 : f64(jobID) * baseLoad
 

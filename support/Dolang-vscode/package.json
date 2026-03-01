@@ -1,0 +1,28 @@
+{
+  "name": "dolang-syntax",
+  "displayName": "Do Language (Dolang) Syntax Highlighting",
+  "version": "0.1.0",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories":[
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages":[
+      {
+        "id": "dolang",
+        "aliases": ["Do", "Dolang", "dolang"],
+        "extensions": [".do", ".dolang"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars":[
+      {
+        "language": "dolang",
+        "scopeName": "source.dolang",
+        "path": "./syntaxes/dolang.tmLanguage.json"
+      }
+    ]
+  }
+}
