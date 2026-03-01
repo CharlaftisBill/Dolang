@@ -262,48 +262,6 @@ impl<'a> Parser<'a> {
         self.print_head("- [2] parse_value [2] -");
 
         value
-
-        // let value = match &self.tokens[self.at].kind {
-        //     ast::token::Tag::SYMBOL(_) => {
-        //         self.print_head("- [1] parse_value [1] -");
-        //         // self.advance();
-        //         // self.print_head("- [1] parse_value [1] -");
-
-        //         let x = match type_name.as_str() {
-        //             "type" | "union" => match self.parse_user_type_or_union() {
-        //                 Some(n) => n,
-        //                 _ => token_panic!(
-        //                     self.tokens[self.at],
-        //                     self.src,
-        //                     "Invalid {type_name} syntax",
-        //                 ),
-        //             },
-        //             "enum" => match self.parse_enum() {
-        //                 Some(n) => n,
-        //                 _ => token_panic!(
-        //                     self.tokens[self.at],
-        //                     self.src,
-        //                     "Invalid {type_name} syntax",
-        //                 ),
-        //             },
-        //             "func" => match self.parse_code_block() {
-        //                 Some(n) => n,
-        //                 _ => token_panic!(
-        //                     self.tokens[self.at],
-        //                     self.src,
-        //                     "Invalid {type_name} syntax",
-        //                 ),
-        //             },
-        //             "array" => self.parse_array(),
-        //             "interface" => todo!("interfaces are not yet implemented!"),
-        //             _ => self.parse_expr(0),
-        //         };
-
-        //         self.print_head("- [2] parse_value [2] -");
-        //         Some(x)
-        //     }
-        //     _ => None,
-        // };
     }
 
     fn parse_user_type_or_union(&mut self) -> Option<NodeId> {
@@ -731,6 +689,8 @@ impl<'a> Parser<'a> {
                     "failure" => node_id = self.parse_failure(start_token),
                     "if" => node_id = self.parse_if(start_token),
                     "else" => node_id = self.parse_else(start_token),
+                    "match" => node_id = self.parse_match(start_token),
+                    "catch" => node_id = self.parse_catch(start_token),
                     "while" => node_id = self.parse_while(start_token),
                     "for" => node_id = self.parse_for(start_token),
                     "continue" => {
@@ -871,7 +831,7 @@ impl<'a> Parser<'a> {
         self.print_head("- [3] parse_for [3] -");
 
         self.expect_str("in");
-        
+
         let range = match &self.tokens[self.at].kind {
             Tag::SYMBOL(_) => self.parse_array(),
             Tag::IDENT(s) => {
@@ -909,6 +869,227 @@ impl<'a> Parser<'a> {
             },
             start_token.span,
         ))
+    }
+
+    fn parse_match(&mut self, start_token: &Token) -> Option<NodeId> {
+        self.expect_str("match");
+
+        self.print_head("- [0] parse_match [0] -");
+        let expr = self.parse_expr(0);
+
+        self.expect_str("{");
+        self.print_head("- [1] parse_match [01] -");
+
+        let mut case_nodes = vec![];
+        loop {
+            let mut matching_values_nodes = vec![];
+
+            if matches!(self.tokens[self.at].kind, Tag::NEWLINE(_)) {
+                self.advance();
+            }
+
+            // parse cases values
+            loop {
+                let mut is_default_case_already_meet = false;
+                let matching_value = match &self.tokens[self.at].kind {
+                    Tag::STRING(s) => self
+                        .ast
+                        .add(Node::STR(s.to_string()), self.tokens[self.at].span),
+                    Tag::INTEGER(i) => self.ast.add(
+                        Node::I32(i.parse::<i32>().unwrap()),
+                        self.tokens[self.at].span,
+                    ),
+                    Tag::FLOAT(f) => self.ast.add(
+                        Node::F32(f.parse::<f32>().unwrap()),
+                        self.tokens[self.at].span,
+                    ),
+                    Tag::BOOL(b) => self
+                        .ast
+                        .add(Node::BOOL(b == "true"), self.tokens[self.at].span),
+                    Tag::CHARACTER(c) => self.ast.add(
+                        Node::CHAR(c.chars().nth(0).unwrap()),
+                        self.tokens[self.at].span,
+                    ),
+                    Tag::SYMBOL(s) => {
+                        if s != "*" {
+                            token_panic!(
+                                self.tokens[self.at],
+                                self.src,
+                                "Unexpected identifier '{}'! The only identifier allowed as match case is '*' for marking the default.",
+                                self.tokens[self.at].kind.as_str(),
+                            );
+                        }
+
+                        if is_default_case_already_meet {
+                            token_panic!(
+                                self.tokens[self.at],
+                                self.src,
+                                "Match can only have a single default case."
+                            );
+                        }
+                        is_default_case_already_meet = true;
+
+                        self.ast
+                            .add(Node::IDENTIFIER(s.to_string()), self.tokens[self.at].span)
+                    }
+                    _ => token_panic!(
+                        self.tokens[self.at],
+                        self.src,
+                        "Invalid match case value type '{:?}'.",
+                        self.tokens[self.at].kind
+                    ),
+                };
+                matching_values_nodes.push(matching_value);
+
+                self.print_head("- [2] parse_match [2] -");
+                self.advance();
+                if self.tokens[self.at].kind.as_str() == "{" {
+                    break;
+                }
+                self.print_head("- [3] parse_match [3] -");
+
+                self.expect_str(",");
+            }
+
+            let case_body = self.parse_code_block();
+            case_nodes.push(self.ast.add(
+                Node::CASE {
+                    matching_values: matching_values_nodes,
+                    body: case_body,
+                },
+                self.tokens[self.at].span,
+            ));
+
+            self.print_head("- [4] parse_match [4] -");
+            self.expect_str(",");
+
+            self.print_head("- [5] parse_match [5] -");
+            if self.tokens[self.at].kind.as_str() == "\n" {
+                self.advance();
+            }
+
+            self.print_head("- [6] parse_match [6] -");
+            if self.tokens[self.at].kind.as_str() == "}" {
+                break;
+            }
+        }
+
+        self.expect_str("}");
+
+        self.print_head("- [7] parse_match [7] -");
+
+        Some(self.ast.add(
+            Node::MATCH {
+                expression: expr,
+                body: case_nodes,
+            },
+            start_token.span,
+        ))
+    }
+
+    fn parse_catch(&mut self, start_token: &Token) -> Option<NodeId> {
+
+        if matches!(self.tokens[self.at - 1].kind, Tag::NEWLINE(_)) {
+            token_panic!(
+                self.tokens[self.at],
+                self.src,
+                "Catch must be in same line as the function that traps.",
+            )
+        }
+
+        self.expect_str("catch");
+
+        self.print_head("- [0] parse_catch [0] -");
+        self.expect_str("{");
+        self.print_head("- [1] parse_catch [01] -");
+
+        let mut case_nodes = vec![];
+        loop {
+            let mut matching_values_nodes = vec![];
+
+            if matches!(self.tokens[self.at].kind, Tag::NEWLINE(_)) {
+                self.advance();
+            }
+
+            // parse cases values
+            loop {
+                let mut is_default_case_already_meet = false;
+                let matching_value = match &self.tokens[self.at].kind {
+                    Tag::IDENT(s) => self
+                        .ast
+                        .add(Node::IDENTIFIER(s.to_string()), self.tokens[self.at].span),
+                    Tag::SYMBOL(s) => {
+                        if s != "*" {
+                            token_panic!(
+                                self.tokens[self.at],
+                                self.src,
+                                "Unexpected identifier '{}'! The only identifier allowed as catch case is '*' for marking the default.",
+                                self.tokens[self.at].kind.as_str(),
+                            );
+                        }
+
+                        if is_default_case_already_meet {
+                            token_panic!(
+                                self.tokens[self.at],
+                                self.src,
+                                "Match can only have a single default case."
+                            );
+                        }
+                        is_default_case_already_meet = true;
+
+                        self.ast
+                            .add(Node::IDENTIFIER(s.to_string()), self.tokens[self.at].span)
+                    }
+                    _ => token_panic!(
+                        self.tokens[self.at],
+                        self.src,
+                        "Invalid catch case value type '{:?}'.",
+                        self.tokens[self.at].kind
+                    ),
+                };
+                matching_values_nodes.push(matching_value);
+
+                self.print_head("- [2] parse_catch [2] -");
+                self.advance();
+                if self.tokens[self.at].kind.as_str() == "{" {
+                    break;
+                }
+                self.print_head("- [3] parse_catch [3] -");
+
+                self.expect_str(",");
+            }
+
+            let case_body = self.parse_code_block();
+            case_nodes.push(self.ast.add(
+                Node::CASE {
+                    matching_values: matching_values_nodes,
+                    body: case_body,
+                },
+                self.tokens[self.at].span,
+            ));
+
+            self.print_head("- [4] parse_catch [4] -");
+            self.expect_str(",");
+
+            self.print_head("- [5] parse_catch [5] -");
+            if self.tokens[self.at].kind.as_str() == "\n" {
+                self.advance();
+            }
+
+            self.print_head("- [6] parse_catch [6] -");
+            if self.tokens[self.at].kind.as_str() == "}" {
+                break;
+            }
+        }
+
+        self.expect_str("}");
+
+        self.print_head("- [7] parse_catch [7] -");
+
+        Some(
+            self.ast
+                .add(Node::CATCH { body: case_nodes }, start_token.span),
+        )
     }
 
     fn parse_array(&mut self) -> NodeId {

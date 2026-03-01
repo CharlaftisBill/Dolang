@@ -1,0 +1,2036 @@
+{
+  "nodes": [
+    {
+      "kind": "IDENTIFIER",
+      "data": "i8"
+    },
+    {
+      "kind": "I32",
+      "data": 3
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "MaxRetries",
+        "kind": 0,
+        "public": true,
+        "constant": true
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": ":"
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "operator": 3,
+        "declaration": 2,
+        "value": 1
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "str"
+    },
+    {
+      "kind": "STR",
+      "data": "BatchProcessor v1.0"
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "SystemName",
+        "kind": 5,
+        "public": true,
+        "constant": true
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": ":"
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "operator": 8,
+        "declaration": 7,
+        "value": 6
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "int"
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "jobID",
+        "kind": 10,
+        "public": false,
+        "constant": false
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "f64"
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "baseLoad",
+        "kind": 12,
+        "public": false,
+        "constant": false
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "string"
+    },
+    {
+      "kind": "FUNCSIGNATURE",
+      "data": {
+        "params": [
+          11,
+          13
+        ],
+        "returns": [
+          14
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "f64"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "f64"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "jobID"
+    },
+    {
+      "kind": "CALL",
+      "data": {
+        "func": 17,
+        "args": [
+          18
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "baseLoad"
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "MUL": [
+          19,
+          20
+        ]
+      }
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "calcLoad",
+        "kind": 16,
+        "public": false,
+        "constant": true
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": ":"
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "operator": 23,
+        "declaration": 22,
+        "value": 21
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "jobID"
+    },
+    {
+      "kind": "I32",
+      "data": 0
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "LT": [
+          25,
+          26
+        ]
+      }
+    },
+    {
+      "kind": "STR",
+      "data": "invalid job ID: negative value"
+    },
+    {
+      "kind": "FAILURE",
+      "data": {
+        "reason": "NegativeJobId",
+        "return_values": [
+          28
+        ]
+      }
+    },
+    {
+      "kind": "BLOCK",
+      "data": [
+        29
+      ]
+    },
+    {
+      "kind": "IF",
+      "data": {
+        "condition": 27,
+        "body": 30
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "calcLoad"
+    },
+    {
+      "kind": "F32",
+      "data": 100.0
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "GT": [
+          32,
+          33
+        ]
+      }
+    },
+    {
+      "kind": "STR",
+      "data": "job overload: requires too much memory"
+    },
+    {
+      "kind": "FAILURE",
+      "data": {
+        "reason": "JobOverload",
+        "return_values": [
+          35
+        ]
+      }
+    },
+    {
+      "kind": "BLOCK",
+      "data": [
+        36
+      ]
+    },
+    {
+      "kind": "ELSE",
+      "data": {
+        "condition": 34,
+        "body": 37
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "jobID"
+    },
+    {
+      "kind": "I32",
+      "data": 0
+    },
+    {
+      "kind": "STR",
+      "data": "System Check Job Completed"
+    },
+    {
+      "kind": "SUCCESS",
+      "data": {
+        "return_values": [
+          41
+        ]
+      }
+    },
+    {
+      "kind": "BLOCK",
+      "data": [
+        42
+      ]
+    },
+    {
+      "kind": "CASE",
+      "data": {
+        "matching_values": [
+          40
+        ],
+        "body": 43
+      }
+    },
+    {
+      "kind": "I32",
+      "data": 42
+    },
+    {
+      "kind": "STR",
+      "data": "Priority Job Completed"
+    },
+    {
+      "kind": "SUCCESS",
+      "data": {
+        "return_values": [
+          46
+        ]
+      }
+    },
+    {
+      "kind": "BLOCK",
+      "data": [
+        47
+      ]
+    },
+    {
+      "kind": "CASE",
+      "data": {
+        "matching_values": [
+          45
+        ],
+        "body": 48
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "*"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "Sprint"
+    },
+    {
+      "kind": "STR",
+      "data": "Standard Job %d Completed (Load: %.2f)"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "jobID"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "calcLoad"
+    },
+    {
+      "kind": "CALL",
+      "data": {
+        "func": 51,
+        "args": [
+          52,
+          53,
+          54
+        ]
+      }
+    },
+    {
+      "kind": "SUCCESS",
+      "data": {
+        "return_values": [
+          55
+        ]
+      }
+    },
+    {
+      "kind": "BLOCK",
+      "data": [
+        56
+      ]
+    },
+    {
+      "kind": "CASE",
+      "data": {
+        "matching_values": [
+          50
+        ],
+        "body": 57
+      }
+    },
+    {
+      "kind": "MATCH",
+      "data": {
+        "expression": 39,
+        "body": [
+          44,
+          49,
+          58
+        ]
+      }
+    },
+    {
+      "kind": "BLOCK",
+      "data": [
+        24,
+        31,
+        38,
+        59
+      ]
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "processJob",
+        "kind": 15,
+        "public": false,
+        "constant": true
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": ":"
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "operator": 62,
+        "declaration": 61,
+        "value": 60
+      }
+    },
+    {
+      "kind": "FUNCSIGNATURE",
+      "data": {
+        "params": [],
+        "returns": []
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "print"
+    },
+    {
+      "kind": "STR",
+      "data": "\\n--- Starting %s ---\\n"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "SystemName"
+    },
+    {
+      "kind": "CALL",
+      "data": {
+        "func": 65,
+        "args": [
+          66,
+          67
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "i32"
+    },
+    {
+      "kind": "ARRAYKIND",
+      "data": {
+        "kind": 69,
+        "size": 6
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "i32"
+    },
+    {
+      "kind": "I32",
+      "data": 10
+    },
+    {
+      "kind": "I32",
+      "data": 5
+    },
+    {
+      "kind": "UNARY",
+      "data": {
+        "NEG": 73
+      }
+    },
+    {
+      "kind": "I32",
+      "data": 0
+    },
+    {
+      "kind": "I32",
+      "data": 42
+    },
+    {
+      "kind": "I32",
+      "data": 999
+    },
+    {
+      "kind": "I32",
+      "data": 4
+    },
+    {
+      "kind": "ARRAYVALUE",
+      "data": {
+        "kind": 71,
+        "value": [
+          72,
+          74,
+          75,
+          76,
+          77,
+          78
+        ]
+      }
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "jobBatch",
+        "kind": 70,
+        "public": false,
+        "constant": true
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": ":"
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "operator": 81,
+        "declaration": 80,
+        "value": 79
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "i8"
+    },
+    {
+      "kind": "I32",
+      "data": 0
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "processedCount",
+        "kind": 83,
+        "public": false,
+        "constant": false
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "="
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "operator": 86,
+        "declaration": 85,
+        "value": 84
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "index"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "jobID"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "print"
+    },
+    {
+      "kind": "STR",
+      "data": "Processing Item at index %d with ID %d...\\n"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "index"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "jobID"
+    },
+    {
+      "kind": "CALL",
+      "data": {
+        "func": 90,
+        "args": [
+          91,
+          92,
+          93
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "str"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "processJob"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "jobID"
+    },
+    {
+      "kind": "F32",
+      "data": 2.5
+    },
+    {
+      "kind": "CALL",
+      "data": {
+        "func": 96,
+        "args": [
+          97,
+          98
+        ]
+      }
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "result",
+        "kind": 95,
+        "public": false,
+        "constant": true
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": ":"
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "operator": 101,
+        "declaration": 100,
+        "value": 99
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "NegativeJobId"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "print"
+    },
+    {
+      "kind": "STR",
+      "data": ">> Critical data error, skipping to next item."
+    },
+    {
+      "kind": "CALL",
+      "data": {
+        "func": 104,
+        "args": [
+          105
+        ]
+      }
+    },
+    {
+      "kind": "CONTINUE"
+    },
+    {
+      "kind": "BLOCK",
+      "data": [
+        106,
+        107
+      ]
+    },
+    {
+      "kind": "CASE",
+      "data": {
+        "matching_values": [
+          103
+        ],
+        "body": 108
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "JobOverload"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "print"
+    },
+    {
+      "kind": "STR",
+      "data": ">> System Overload detected! Stopping batch."
+    },
+    {
+      "kind": "CALL",
+      "data": {
+        "func": 111,
+        "args": [
+          112
+        ]
+      }
+    },
+    {
+      "kind": "BREAK"
+    },
+    {
+      "kind": "BLOCK",
+      "data": [
+        113,
+        114
+      ]
+    },
+    {
+      "kind": "CASE",
+      "data": {
+        "matching_values": [
+          110
+        ],
+        "body": 115
+      }
+    },
+    {
+      "kind": "CATCH",
+      "data": {
+        "body": [
+          109,
+          116
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "print"
+    },
+    {
+      "kind": "STR",
+      "data": "Result:"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "result"
+    },
+    {
+      "kind": "CALL",
+      "data": {
+        "func": 118,
+        "args": [
+          119,
+          120
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "+="
+    },
+    {
+      "kind": "I32",
+      "data": 1
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "operator": 122,
+        "declaration": 85,
+        "value": 123
+      }
+    },
+    {
+      "kind": "BLOCK",
+      "data": [
+        94,
+        102,
+        117,
+        121,
+        124
+      ]
+    },
+    {
+      "kind": "FOR",
+      "data": {
+        "index": 88,
+        "value": 89,
+        "range": 80,
+        "body": 125
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "print"
+    },
+    {
+      "kind": "STR",
+      "data": "\\n--- Initiating Shutdown Sequence ---"
+    },
+    {
+      "kind": "CALL",
+      "data": {
+        "func": 127,
+        "args": [
+          128
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "u8"
+    },
+    {
+      "kind": "I32",
+      "data": 0
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "retryAttempts",
+        "kind": 130,
+        "public": false,
+        "constant": false
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "="
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "operator": 133,
+        "declaration": 132,
+        "value": 131
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "retryAttempts"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "MaxRetries"
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "LT": [
+          135,
+          136
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "+="
+    },
+    {
+      "kind": "I32",
+      "data": 1
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "operator": 138,
+        "declaration": 132,
+        "value": 139
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "retryAttempts"
+    },
+    {
+      "kind": "I32",
+      "data": 2
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "REM": [
+          141,
+          142
+        ]
+      }
+    },
+    {
+      "kind": "I32",
+      "data": 0
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "EQ": [
+          143,
+          144
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "print"
+    },
+    {
+      "kind": "STR",
+      "data": "Shutdown retry attempt %d...\\n"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "retryAttempts"
+    },
+    {
+      "kind": "CALL",
+      "data": {
+        "func": 146,
+        "args": [
+          147,
+          148
+        ]
+      }
+    },
+    {
+      "kind": "BLOCK",
+      "data": [
+        149
+      ]
+    },
+    {
+      "kind": "IF",
+      "data": {
+        "condition": 145,
+        "body": 150
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "print"
+    },
+    {
+      "kind": "STR",
+      "data": "Checking background processes (Attempt %d)...\\n"
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "retryAttempts"
+    },
+    {
+      "kind": "CALL",
+      "data": {
+        "func": 152,
+        "args": [
+          153,
+          154
+        ]
+      }
+    },
+    {
+      "kind": "BLOCK",
+      "data": [
+        155
+      ]
+    },
+    {
+      "kind": "ELSE",
+      "data": {
+        "condition": null,
+        "body": 156
+      }
+    },
+    {
+      "kind": "BLOCK",
+      "data": [
+        140,
+        151,
+        157
+      ]
+    },
+    {
+      "kind": "WHILE",
+      "data": {
+        "condition": 137,
+        "body": 158
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "print"
+    },
+    {
+      "kind": "STR",
+      "data": "Program Finished Successfully."
+    },
+    {
+      "kind": "CALL",
+      "data": {
+        "func": 160,
+        "args": [
+          161
+        ]
+      }
+    },
+    {
+      "kind": "BLOCK",
+      "data": [
+        68,
+        82,
+        87,
+        126,
+        129,
+        134,
+        159,
+        162
+      ]
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "main",
+        "kind": 64,
+        "public": false,
+        "constant": true
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": ":"
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "operator": 165,
+        "declaration": 164,
+        "value": 163
+      }
+    },
+    {
+      "kind": "BLOCK",
+      "data": [
+        4,
+        9,
+        63,
+        166
+      ]
+    }
+  ],
+  "spans": [
+    {
+      "line": 0,
+      "start": 14,
+      "end": 15,
+      "current_line_start": 0
+    },
+    {
+      "line": 0,
+      "start": 16,
+      "end": 17,
+      "current_line_start": 0
+    },
+    {
+      "line": 1,
+      "start": 17,
+      "end": 18,
+      "current_line_start": 18
+    },
+    {
+      "line": 1,
+      "start": 17,
+      "end": 18,
+      "current_line_start": 18
+    },
+    {
+      "line": 1,
+      "start": 17,
+      "end": 18,
+      "current_line_start": 18
+    },
+    {
+      "line": 1,
+      "start": 33,
+      "end": 34,
+      "current_line_start": 18
+    },
+    {
+      "line": 1,
+      "start": 37,
+      "end": 56,
+      "current_line_start": 18
+    },
+    {
+      "line": 3,
+      "start": 56,
+      "end": 58,
+      "current_line_start": 58
+    },
+    {
+      "line": 3,
+      "start": 56,
+      "end": 58,
+      "current_line_start": 58
+    },
+    {
+      "line": 3,
+      "start": 56,
+      "end": 58,
+      "current_line_start": 58
+    },
+    {
+      "line": 5,
+      "start": 190,
+      "end": 191,
+      "current_line_start": 169
+    },
+    {
+      "line": 5,
+      "start": 181,
+      "end": 186,
+      "current_line_start": 169
+    },
+    {
+      "line": 5,
+      "start": 204,
+      "end": 205,
+      "current_line_start": 169
+    },
+    {
+      "line": 5,
+      "start": 192,
+      "end": 200,
+      "current_line_start": 169
+    },
+    {
+      "line": 5,
+      "start": 206,
+      "end": 212,
+      "current_line_start": 169
+    },
+    {
+      "line": 5,
+      "start": 206,
+      "end": 212,
+      "current_line_start": 169
+    },
+    {
+      "line": 7,
+      "start": 270,
+      "end": 271,
+      "current_line_start": 256
+    },
+    {
+      "line": 7,
+      "start": 272,
+      "end": 275,
+      "current_line_start": 256
+    },
+    {
+      "line": 7,
+      "start": 276,
+      "end": 281,
+      "current_line_start": 256
+    },
+    {
+      "line": 7,
+      "start": 276,
+      "end": 281,
+      "current_line_start": 256
+    },
+    {
+      "line": 7,
+      "start": 285,
+      "end": 293,
+      "current_line_start": 256
+    },
+    {
+      "line": 7,
+      "start": 283,
+      "end": 284,
+      "current_line_start": 256
+    },
+    {
+      "line": 9,
+      "start": 293,
+      "end": 295,
+      "current_line_start": 295
+    },
+    {
+      "line": 9,
+      "start": 293,
+      "end": 295,
+      "current_line_start": 295
+    },
+    {
+      "line": 9,
+      "start": 293,
+      "end": 295,
+      "current_line_start": 295
+    },
+    {
+      "line": 9,
+      "start": 299,
+      "end": 304,
+      "current_line_start": 295
+    },
+    {
+      "line": 9,
+      "start": 307,
+      "end": 308,
+      "current_line_start": 295
+    },
+    {
+      "line": 9,
+      "start": 305,
+      "end": 306,
+      "current_line_start": 295
+    },
+    {
+      "line": 10,
+      "start": 338,
+      "end": 368,
+      "current_line_start": 311
+    },
+    {
+      "line": 10,
+      "start": 310,
+      "end": 311,
+      "current_line_start": 311
+    },
+    {
+      "line": 10,
+      "start": 310,
+      "end": 311,
+      "current_line_start": 311
+    },
+    {
+      "line": 6,
+      "start": 216,
+      "end": 217,
+      "current_line_start": 217
+    },
+    {
+      "line": 11,
+      "start": 377,
+      "end": 385,
+      "current_line_start": 369
+    },
+    {
+      "line": 11,
+      "start": 388,
+      "end": 393,
+      "current_line_start": 369
+    },
+    {
+      "line": 11,
+      "start": 386,
+      "end": 387,
+      "current_line_start": 369
+    },
+    {
+      "line": 12,
+      "start": 420,
+      "end": 458,
+      "current_line_start": 396
+    },
+    {
+      "line": 12,
+      "start": 395,
+      "end": 396,
+      "current_line_start": 396
+    },
+    {
+      "line": 12,
+      "start": 395,
+      "end": 396,
+      "current_line_start": 396
+    },
+    {
+      "line": 6,
+      "start": 216,
+      "end": 217,
+      "current_line_start": 217
+    },
+    {
+      "line": 15,
+      "start": 470,
+      "end": 475,
+      "current_line_start": 463
+    },
+    {
+      "line": 16,
+      "start": 486,
+      "end": 487,
+      "current_line_start": 478
+    },
+    {
+      "line": 17,
+      "start": 512,
+      "end": 538,
+      "current_line_start": 490
+    },
+    {
+      "line": 17,
+      "start": 489,
+      "end": 490,
+      "current_line_start": 490
+    },
+    {
+      "line": 17,
+      "start": 489,
+      "end": 490,
+      "current_line_start": 490
+    },
+    {
+      "line": 18,
+      "start": 548,
+      "end": 549,
+      "current_line_start": 539
+    },
+    {
+      "line": 19,
+      "start": 558,
+      "end": 560,
+      "current_line_start": 550
+    },
+    {
+      "line": 20,
+      "start": 585,
+      "end": 607,
+      "current_line_start": 563
+    },
+    {
+      "line": 20,
+      "start": 562,
+      "end": 563,
+      "current_line_start": 563
+    },
+    {
+      "line": 20,
+      "start": 562,
+      "end": 563,
+      "current_line_start": 563
+    },
+    {
+      "line": 21,
+      "start": 617,
+      "end": 618,
+      "current_line_start": 608
+    },
+    {
+      "line": 22,
+      "start": 627,
+      "end": 628,
+      "current_line_start": 619
+    },
+    {
+      "line": 23,
+      "start": 652,
+      "end": 658,
+      "current_line_start": 632
+    },
+    {
+      "line": 23,
+      "start": 661,
+      "end": 699,
+      "current_line_start": 632
+    },
+    {
+      "line": 23,
+      "start": 701,
+      "end": 706,
+      "current_line_start": 632
+    },
+    {
+      "line": 23,
+      "start": 708,
+      "end": 716,
+      "current_line_start": 632
+    },
+    {
+      "line": 23,
+      "start": 661,
+      "end": 699,
+      "current_line_start": 632
+    },
+    {
+      "line": 23,
+      "start": 631,
+      "end": 632,
+      "current_line_start": 632
+    },
+    {
+      "line": 23,
+      "start": 631,
+      "end": 632,
+      "current_line_start": 632
+    },
+    {
+      "line": 24,
+      "start": 727,
+      "end": 728,
+      "current_line_start": 718
+    },
+    {
+      "line": 6,
+      "start": 216,
+      "end": 217,
+      "current_line_start": 217
+    },
+    {
+      "line": 6,
+      "start": 216,
+      "end": 217,
+      "current_line_start": 217
+    },
+    {
+      "line": 28,
+      "start": 733,
+      "end": 735,
+      "current_line_start": 735
+    },
+    {
+      "line": 28,
+      "start": 733,
+      "end": 735,
+      "current_line_start": 735
+    },
+    {
+      "line": 28,
+      "start": 733,
+      "end": 735,
+      "current_line_start": 735
+    },
+    {
+      "line": 28,
+      "start": 741,
+      "end": 742,
+      "current_line_start": 735
+    },
+    {
+      "line": 29,
+      "start": 746,
+      "end": 747,
+      "current_line_start": 747
+    },
+    {
+      "line": 29,
+      "start": 756,
+      "end": 779,
+      "current_line_start": 747
+    },
+    {
+      "line": 29,
+      "start": 781,
+      "end": 791,
+      "current_line_start": 747
+    },
+    {
+      "line": 29,
+      "start": 756,
+      "end": 779,
+      "current_line_start": 747
+    },
+    {
+      "line": 31,
+      "start": 810,
+      "end": 813,
+      "current_line_start": 794
+    },
+    {
+      "line": 31,
+      "start": 814,
+      "end": 815,
+      "current_line_start": 794
+    },
+    {
+      "line": 31,
+      "start": 817,
+      "end": 820,
+      "current_line_start": 794
+    },
+    {
+      "line": 31,
+      "start": 822,
+      "end": 824,
+      "current_line_start": 794
+    },
+    {
+      "line": 31,
+      "start": 827,
+      "end": 828,
+      "current_line_start": 794
+    },
+    {
+      "line": 31,
+      "start": 826,
+      "end": 827,
+      "current_line_start": 794
+    },
+    {
+      "line": 31,
+      "start": 830,
+      "end": 831,
+      "current_line_start": 794
+    },
+    {
+      "line": 31,
+      "start": 833,
+      "end": 835,
+      "current_line_start": 794
+    },
+    {
+      "line": 31,
+      "start": 837,
+      "end": 840,
+      "current_line_start": 794
+    },
+    {
+      "line": 31,
+      "start": 842,
+      "end": 843,
+      "current_line_start": 794
+    },
+    {
+      "line": 32,
+      "start": 844,
+      "end": 845,
+      "current_line_start": 845
+    },
+    {
+      "line": 32,
+      "start": 844,
+      "end": 845,
+      "current_line_start": 845
+    },
+    {
+      "line": 32,
+      "start": 844,
+      "end": 845,
+      "current_line_start": 845
+    },
+    {
+      "line": 32,
+      "start": 844,
+      "end": 845,
+      "current_line_start": 845
+    },
+    {
+      "line": 32,
+      "start": 864,
+      "end": 865,
+      "current_line_start": 845
+    },
+    {
+      "line": 32,
+      "start": 866,
+      "end": 867,
+      "current_line_start": 845
+    },
+    {
+      "line": 34,
+      "start": 867,
+      "end": 869,
+      "current_line_start": 869
+    },
+    {
+      "line": 34,
+      "start": 867,
+      "end": 869,
+      "current_line_start": 869
+    },
+    {
+      "line": 34,
+      "start": 867,
+      "end": 869,
+      "current_line_start": 869
+    },
+    {
+      "line": 34,
+      "start": 874,
+      "end": 879,
+      "current_line_start": 869
+    },
+    {
+      "line": 34,
+      "start": 881,
+      "end": 886,
+      "current_line_start": 869
+    },
+    {
+      "line": 35,
+      "start": 900,
+      "end": 901,
+      "current_line_start": 901
+    },
+    {
+      "line": 35,
+      "start": 911,
+      "end": 954,
+      "current_line_start": 901
+    },
+    {
+      "line": 35,
+      "start": 956,
+      "end": 961,
+      "current_line_start": 901
+    },
+    {
+      "line": 35,
+      "start": 963,
+      "end": 968,
+      "current_line_start": 901
+    },
+    {
+      "line": 35,
+      "start": 911,
+      "end": 954,
+      "current_line_start": 901
+    },
+    {
+      "line": 37,
+      "start": 984,
+      "end": 985,
+      "current_line_start": 971
+    },
+    {
+      "line": 37,
+      "start": 986,
+      "end": 996,
+      "current_line_start": 971
+    },
+    {
+      "line": 37,
+      "start": 997,
+      "end": 1002,
+      "current_line_start": 971
+    },
+    {
+      "line": 37,
+      "start": 1004,
+      "end": 1007,
+      "current_line_start": 971
+    },
+    {
+      "line": 37,
+      "start": 997,
+      "end": 1002,
+      "current_line_start": 971
+    },
+    {
+      "line": 37,
+      "start": 1009,
+      "end": 1014,
+      "current_line_start": 971
+    },
+    {
+      "line": 37,
+      "start": 1009,
+      "end": 1014,
+      "current_line_start": 971
+    },
+    {
+      "line": 37,
+      "start": 1009,
+      "end": 1014,
+      "current_line_start": 971
+    },
+    {
+      "line": 38,
+      "start": 1029,
+      "end": 1042,
+      "current_line_start": 1017
+    },
+    {
+      "line": 39,
+      "start": 1044,
+      "end": 1045,
+      "current_line_start": 1045
+    },
+    {
+      "line": 39,
+      "start": 1069,
+      "end": 1115,
+      "current_line_start": 1045
+    },
+    {
+      "line": 39,
+      "start": 1069,
+      "end": 1115,
+      "current_line_start": 1045
+    },
+    {
+      "line": 40,
+      "start": 1121,
+      "end": 1129,
+      "current_line_start": 1117
+    },
+    {
+      "line": 39,
+      "start": 1044,
+      "end": 1045,
+      "current_line_start": 1045
+    },
+    {
+      "line": 41,
+      "start": 1143,
+      "end": 1144,
+      "current_line_start": 1130
+    },
+    {
+      "line": 42,
+      "start": 1157,
+      "end": 1168,
+      "current_line_start": 1145
+    },
+    {
+      "line": 43,
+      "start": 1170,
+      "end": 1171,
+      "current_line_start": 1171
+    },
+    {
+      "line": 43,
+      "start": 1183,
+      "end": 1227,
+      "current_line_start": 1171
+    },
+    {
+      "line": 43,
+      "start": 1183,
+      "end": 1227,
+      "current_line_start": 1171
+    },
+    {
+      "line": 44,
+      "start": 1245,
+      "end": 1250,
+      "current_line_start": 1229
+    },
+    {
+      "line": 43,
+      "start": 1170,
+      "end": 1171,
+      "current_line_start": 1171
+    },
+    {
+      "line": 45,
+      "start": 1264,
+      "end": 1265,
+      "current_line_start": 1251
+    },
+    {
+      "line": 35,
+      "start": 900,
+      "end": 901,
+      "current_line_start": 901
+    },
+    {
+      "line": 35,
+      "start": 900,
+      "end": 901,
+      "current_line_start": 901
+    },
+    {
+      "line": 48,
+      "start": 1287,
+      "end": 1294,
+      "current_line_start": 1277
+    },
+    {
+      "line": 48,
+      "start": 1296,
+      "end": 1302,
+      "current_line_start": 1277
+    },
+    {
+      "line": 48,
+      "start": 1287,
+      "end": 1294,
+      "current_line_start": 1277
+    },
+    {
+      "line": 49,
+      "start": 1321,
+      "end": 1323,
+      "current_line_start": 1304
+    },
+    {
+      "line": 49,
+      "start": 1324,
+      "end": 1325,
+      "current_line_start": 1304
+    },
+    {
+      "line": 50,
+      "start": 1325,
+      "end": 1326,
+      "current_line_start": 1326
+    },
+    {
+      "line": 35,
+      "start": 900,
+      "end": 901,
+      "current_line_start": 901
+    },
+    {
+      "line": 29,
+      "start": 746,
+      "end": 747,
+      "current_line_start": 747
+    },
+    {
+      "line": 29,
+      "start": 746,
+      "end": 747,
+      "current_line_start": 747
+    },
+    {
+      "line": 52,
+      "start": 1339,
+      "end": 1377,
+      "current_line_start": 1330
+    },
+    {
+      "line": 52,
+      "start": 1339,
+      "end": 1377,
+      "current_line_start": 1330
+    },
+    {
+      "line": 53,
+      "start": 1397,
+      "end": 1398,
+      "current_line_start": 1379
+    },
+    {
+      "line": 53,
+      "start": 1399,
+      "end": 1400,
+      "current_line_start": 1379
+    },
+    {
+      "line": 54,
+      "start": 1400,
+      "end": 1401,
+      "current_line_start": 1401
+    },
+    {
+      "line": 54,
+      "start": 1400,
+      "end": 1401,
+      "current_line_start": 1401
+    },
+    {
+      "line": 54,
+      "start": 1400,
+      "end": 1401,
+      "current_line_start": 1401
+    },
+    {
+      "line": 55,
+      "start": 1410,
+      "end": 1423,
+      "current_line_start": 1403
+    },
+    {
+      "line": 55,
+      "start": 1426,
+      "end": 1436,
+      "current_line_start": 1403
+    },
+    {
+      "line": 55,
+      "start": 1424,
+      "end": 1425,
+      "current_line_start": 1403
+    },
+    {
+      "line": 56,
+      "start": 1455,
+      "end": 1457,
+      "current_line_start": 1439
+    },
+    {
+      "line": 56,
+      "start": 1458,
+      "end": 1459,
+      "current_line_start": 1439
+    },
+    {
+      "line": 57,
+      "start": 1459,
+      "end": 1460,
+      "current_line_start": 1460
+    },
+    {
+      "line": 58,
+      "start": 1468,
+      "end": 1481,
+      "current_line_start": 1463
+    },
+    {
+      "line": 58,
+      "start": 1482,
+      "end": 1483,
+      "current_line_start": 1463
+    },
+    {
+      "line": 58,
+      "start": 1481,
+      "end": 1482,
+      "current_line_start": 1463
+    },
+    {
+      "line": 58,
+      "start": 1487,
+      "end": 1488,
+      "current_line_start": 1463
+    },
+    {
+      "line": 58,
+      "start": 1484,
+      "end": 1486,
+      "current_line_start": 1463
+    },
+    {
+      "line": 59,
+      "start": 1490,
+      "end": 1491,
+      "current_line_start": 1491
+    },
+    {
+      "line": 59,
+      "start": 1502,
+      "end": 1532,
+      "current_line_start": 1491
+    },
+    {
+      "line": 59,
+      "start": 1534,
+      "end": 1547,
+      "current_line_start": 1491
+    },
+    {
+      "line": 59,
+      "start": 1502,
+      "end": 1532,
+      "current_line_start": 1491
+    },
+    {
+      "line": 59,
+      "start": 1490,
+      "end": 1491,
+      "current_line_start": 1491
+    },
+    {
+      "line": 56,
+      "start": 1438,
+      "end": 1439,
+      "current_line_start": 1439
+    },
+    {
+      "line": 61,
+      "start": 1559,
+      "end": 1560,
+      "current_line_start": 1560
+    },
+    {
+      "line": 61,
+      "start": 1571,
+      "end": 1618,
+      "current_line_start": 1560
+    },
+    {
+      "line": 61,
+      "start": 1620,
+      "end": 1633,
+      "current_line_start": 1560
+    },
+    {
+      "line": 61,
+      "start": 1571,
+      "end": 1618,
+      "current_line_start": 1560
+    },
+    {
+      "line": 61,
+      "start": 1559,
+      "end": 1560,
+      "current_line_start": 1560
+    },
+    {
+      "line": 56,
+      "start": 1438,
+      "end": 1439,
+      "current_line_start": 1439
+    },
+    {
+      "line": 56,
+      "start": 1438,
+      "end": 1439,
+      "current_line_start": 1439
+    },
+    {
+      "line": 29,
+      "start": 746,
+      "end": 747,
+      "current_line_start": 747
+    },
+    {
+      "line": 29,
+      "start": 746,
+      "end": 747,
+      "current_line_start": 747
+    },
+    {
+      "line": 65,
+      "start": 1652,
+      "end": 1682,
+      "current_line_start": 1643
+    },
+    {
+      "line": 65,
+      "start": 1652,
+      "end": 1682,
+      "current_line_start": 1643
+    },
+    {
+      "line": 29,
+      "start": 746,
+      "end": 747,
+      "current_line_start": 747
+    },
+    {
+      "line": 66,
+      "start": 1685,
+      "end": 1685,
+      "current_line_start": 1684
+    },
+    {
+      "line": 66,
+      "start": 1685,
+      "end": 1685,
+      "current_line_start": 1684
+    },
+    {
+      "line": 66,
+      "start": 1685,
+      "end": 1685,
+      "current_line_start": 1684
+    },
+    {
+      "line": 66,
+      "start": 1685,
+      "end": 1685,
+      "current_line_start": 1684
+    }
+  ]
+}

@@ -99,6 +99,17 @@ pub enum Node {
         condition: Option<NodeId>,
         body: Option<NodeId>
     },
+    MATCH {
+        expression: NodeId,
+        body: Vec<NodeId>
+    },
+    CATCH {
+        body: Vec<NodeId>
+    },
+    CASE{
+        matching_values: Vec<NodeId>,
+        body: Option<NodeId>
+    },
     FOR {
         index: NodeId,
         value: NodeId,

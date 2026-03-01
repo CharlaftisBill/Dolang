@@ -176,11 +176,14 @@
             fill: var(--bg-op);
         }
 
-        /* Updated: Include FOR in Control Flow */
+        /* Control Flow: IF, ELSE, WHILE, FOR, MATCH, CASE, CATCH */
         g.type-IF>rect,
         g.type-ELSE>rect,
         g.type-WHILE>rect,
-        g.type-FOR>rect {
+        g.type-FOR>rect,
+        g.type-MATCH>rect,
+        g.type-CASE>rect,
+        g.type-CATCH>rect {
             stroke: var(--color-flow);
             fill: var(--bg-flow);
         }
@@ -394,20 +397,31 @@
                     title = "SIGNATURE";
                     subtitle = `Params: ${d.params.length}`;
                 }
+                // --- Control Flow ---
                 else if (n.kind === "IF") { title = "IF"; subtitle = "Control Flow"; }
                 else if (n.kind === "ELSE") {
                     title = (d.condition !== null) ? "ELSE IF" : "ELSE";
                     subtitle = "Control Flow";
                 }
                 else if (n.kind === "WHILE") { title = "WHILE"; subtitle = "Loop"; }
-                // --- FOR Loop ---
                 else if (n.kind === "FOR") {
                     title = "FOR";
-                    // Try to resolve the iterator variable name (index)
                     const idxNode = nodes[d.index];
                     const idxName = idxNode ? idxNode.data : "?";
                     subtitle = `Iter: <span style="color:#fff">${idxName}</span>`;
                 }
+                else if (n.kind === "MATCH") { title = "MATCH"; subtitle = "Control Flow"; }
+
+                // --- NEW: CASE and CATCH ---
+                else if (n.kind === "CASE") {
+                    title = "CASE";
+                    subtitle = "Pattern";
+                }
+                else if (n.kind === "CATCH") {
+                    title = "CATCH";
+                    subtitle = "Error Handling";
+                }
+
                 else if (n.kind === "SUCCESS") {
                     title = "SUCCESS";
                     subtitle = "Result";
@@ -499,14 +513,30 @@
                     addEdge(d.condition, "cond");
                     addEdge(d.body, "do");
                 }
-                // --- FOR Loop ---
                 else if (n.kind === "FOR") {
                     addEdge(d.index, "iter");
-                    // NEW: Connect value identifier if exists
                     if (d.value !== undefined && d.value !== null) addEdge(d.value, "val");
                     addEdge(d.range, "range");
                     addEdge(d.body, "do");
                 }
+                else if (n.kind === "MATCH") {
+                    addEdge(d.expression, "on");
+                    if (Array.isArray(d.body)) d.body.forEach(caseId => addEdge(caseId, "case"));
+                }
+                // --- NEW: CASE and CATCH Edges ---
+                else if (n.kind === "CASE") {
+                    if (Array.isArray(d.matching_values)) {
+                        d.matching_values.forEach(val => addEdge(val, "pattern"));
+                    }
+                    addEdge(d.body, "do");
+                }
+                else if (n.kind === "CATCH") {
+                    // Connect to list of cases
+                    if (Array.isArray(d.body)) {
+                        d.body.forEach(caseId => addEdge(caseId, "handle"));
+                    }
+                }
+
                 else if (n.kind === "FUNCSIGNATURE") {
                     d.params.forEach(p => addEdge(p, "param"));
                     if (d.returns) d.returns.forEach(r => addEdge(r, "ret"));

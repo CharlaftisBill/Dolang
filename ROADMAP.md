@@ -7,10 +7,11 @@
 ## Investigations [1/1]
 *  why the code block 'eats' '}' in case of if/else, but not in case of while
 
-## Improvements [0/1]
+## backlog [0/1]
+* Make sure that the names of enums elements between token Tag and ast Node are in par
 * if an IDENT token is playing the role of a variable then use the map in order to mention the declarations node in AST. This way the size of the AST may be reduced and the iteration over it may get faster.
 
-## Version 0.1.0 (basic blocks) [15/21]
+## Version 0.0.1 (basic blocks) [21/21]
 
 1. Declarations & Assignments:
    1. Variable & Constant declarations ✔
@@ -27,20 +28,20 @@
 3. Conditional Blocks
    1. If ✔
    2. Else ✔
-   3. Match
-   4. Catch
-   5. For
-   6. While
+   3. Match ✔
+   4. Catch ✔
+   5. For ✔
+   6. While ✔
 4. Keywords & syntactic sugar:
    1. Success ✔
    2. Failure ✔
    3. Comments ✔
-   4. Break
-   5. Continue
+   4. Break ✔
+   5. Continue ✔
 
-## Version 0.2.0 (first run) [1/4]
+## Version 0.0.2 (first run) [2/7]
 0. Tests:
-   1. make concrete `.do examples` and make sure that the produced `ast.json` is matching the one that is been stored.
+   1. make concrete `.do examples` and make sure that the produced `ast.json` is matching the one that is been stored. ✔
 1. Type checking:
    1. Define the primitive types,
    2. Type checking
@@ -51,7 +52,7 @@
 3. Code generation:
    1. C code generation
 
-## Version 0.3.0 (User defined types refinement) [5/10]
+## Version 0.0.3 (User defined types refinement) [5/10]
 
 1. Custom Types:
    1. Type declaration ✔
@@ -68,7 +69,7 @@
    1. Interface declarations 
    2. Interface assignment
 
-## Version 0.4.0 (optimizing run)
+## Version 0.0.4 (optimizing run)
 
 1. Code clean up:
    1. reduce duplicate code
@@ -79,14 +80,8 @@
 3. Expressions folding:
    1.
 
-## Version 0.5.0 (generics)
+## Version 0.0.5 (generics)
 
 1. Generics:
    1. restricted local type inference
-   2. C code generation for run-time generics  
-
-# Backlog:
-
-Assignment:
-   1. allow custom types to be able to re-assigned after the declaration-assignment,
-   2. syntactic sugar for 'ranges' (ex. 1..=5)
+   2. C code generation for run-time generics
