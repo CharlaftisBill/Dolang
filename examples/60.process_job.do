@@ -29,7 +29,7 @@ processJob (jobID int, baseLoad f64) str : {
 main () : {
 	print("\n--- Starting %s ---\n", SystemName)
 
-    jobBatch [6]i32 : [i32: 10, -5, 0, 42, 999, 4]
+    jobBatch [6 i32] : [i32: 10, -5, 0, 42, 999, 4]
 	processedCount i8 = 0
 
 	for index, jobID in jobBatch {

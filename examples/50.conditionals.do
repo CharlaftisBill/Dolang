@@ -31,7 +31,7 @@ main () : {
     }
 
     # for
-    arr [4]i32 : [i32: 1,4,2,6]
+    arr [4 i32] : [i32: 1,4,2,6]
     for i, elem in arr {
         print(i)
     }

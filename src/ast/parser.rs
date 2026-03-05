@@ -221,11 +221,19 @@ impl<'a> Parser<'a> {
                 "Trying to assign value to variable that is not yet declared."
             ),
         };
+        let mut value_type = declaration.kind;
+        let mut assign_to = declaration.node;
 
         print_head!(self, "- [0] parse_assignment [0] -");
         self.advance();
         print_head!(self, "- [1] parse_assignment [1] -");
 
+        if self.current_str() == "[" {
+            assign_to = self.parse_array_ref_element(&declaration.node);
+            value_type = "array_value".to_string();
+        }
+
+        print_head!(self, "- [2] parse_assignment [2] -");
         if !self.current_str().ends_with("=") {
             token_panic!(
                 self.current_token(),
@@ -241,13 +249,13 @@ impl<'a> Parser<'a> {
         );
         self.advance();
 
-        print_head!(self, "- [2] parse_assignment [2] -");
-        let value = self.parse_value(&declaration.kind);
         print_head!(self, "- [3] parse_assignment [3] -");
+        let value = self.parse_value(&value_type);
+        print_head!(self, "- [4] parse_assignment [4] -");
 
         self.ast.add(
             Node::ASSIGNMENT {
-                declaration: declaration.node,
+                declaration: assign_to,
                 operator: op,
                 value,
             },
@@ -258,12 +266,6 @@ impl<'a> Parser<'a> {
     fn parse_value(&mut self, type_name: &String) -> NodeId {
         print_head!(self, "-[0] parse_value [0] -");
 
-        println!(
-            "          ---------------------------------->>>>>> {:?}",
-            type_name
-        );
-
-        print_head!(self, "- [1] parse_value[1] -");
         let value = match type_name.as_str() {
             "type" | "union" => match self.parse_custom_data_structure(false) {
                 Some(n) => n,
@@ -277,7 +279,7 @@ impl<'a> Parser<'a> {
                 Some(n) => n,
                 _ => token_panic!(self.current_token(), self.src, "Invalid {type_name} syntax",),
             },
-            "array" => self.parse_array(),
+            "array" => self.parse_array_initializer(),
             "interface" => todo!("interfaces are not yet implemented!"),
             _ => self.parse_expr(0),
         };
@@ -340,6 +342,12 @@ impl<'a> Parser<'a> {
                 continue;
             }
 
+            if op_str == "[" {
+                self.at -= 1;
+                lhs = self.parse_array_ref_element(&lhs);
+                continue;
+            }
+
             if self.current_token().is_terminator() {
                 return lhs;
             }
@@ -396,6 +404,10 @@ impl<'a> Parser<'a> {
 
                     self.ast.add(Node::UNARY(op), current_token.span)
                 }
+                // "[" => {
+                //     self.at -= 1;
+                //     self.parse_array_initializer()
+                // }
                 _ => token_panic!(current_token, self.src, "Unexpected token symbol: '{}'", s),
             },
             _ => panic!("Unexpected token in expression: {:?}", current_token),
@@ -434,28 +446,7 @@ impl<'a> Parser<'a> {
                 }
                 "[" => {
                     node_type = "array";
-                    self.advance();
-                    let size = match &self.tokens[self.at].kind {
-                        Tag::INTEGER(i) => i.parse::<usize>().unwrap(),
-                        _ => token_panic!(
-                            &self.tokens[self.at],
-                            self.src,
-                            "Invalid array size: Array size should always be an integer.",
-                        ),
-                    };
-                    self.advance();
-                    self.expect_str("]");
-
-                    let kind = match &self.tokens[self.at].kind {
-                        Tag::IDENT(s) => self
-                            .ast
-                            .add(Node::IDENTIFIER(s.to_string()), self.tokens[self.at].span),
-                        _ => token_panic!(&self.tokens[self.at], self.src, "Invalid array type.",),
-                    };
-                    self.advance();
-
-                    self.ast
-                        .add(Node::ARRAYKIND { kind, size }, self.tokens[self.at].span)
+                    self.parse_array_type()
                 }
                 _ => token_panic!(
                     current_token,
@@ -475,7 +466,7 @@ impl<'a> Parser<'a> {
 
         let mut args = Vec::new();
         if self.current_str() != ")" {
-            args = self.parse_expression_list();
+            args = self.parse_expr_list();
         }
         self.expect_str(")");
 
@@ -491,9 +482,9 @@ impl<'a> Parser<'a> {
 
         print_head!(self, "- [0] parse_identifier_list [0] -");
 
-        let mut idents = Vec::new();
+        let mut return_types = Vec::new();
         if self.current_str() == ends_to_symbol {
-            return idents;
+            return return_types;
         }
 
         loop {
@@ -501,19 +492,25 @@ impl<'a> Parser<'a> {
 
             let current_token = self.current_token();
 
-            if !matches!(current_token.kind, Tag::IDENT(_)) {
-                token_panic!(
+            match &current_token.kind {
+                Tag::IDENT(_) => return_types.push(self.ast.add(
+                    Node::IDENTIFIER(current_token.kind.as_str().to_string()),
+                    current_token.span,
+                )),
+                Tag::SYMBOL(sym) => {
+                    if sym == "[" {
+                        let (_, var_type) = self.parse_type();
+                        return_types.push(var_type);
+                        self.at -= 1;
+                    }
+                }
+                _ => token_panic!(
                     current_token,
                     self.src,
                     "Expected 'identifier', got '{:?}'",
                     current_token.kind.as_str()
-                );
+                ),
             }
-
-            idents.push(self.ast.add(
-                Node::IDENTIFIER(current_token.kind.as_str().to_string()),
-                current_token.span,
-            ));
 
             print_head!(self, "-[2] parse_identifier_list [2] -");
             self.advance();
@@ -529,7 +526,7 @@ impl<'a> Parser<'a> {
 
         self.expect_str(ends_to_symbol);
 
-        idents
+        return_types
     }
 
     fn parse_variable_list(
@@ -600,7 +597,7 @@ impl<'a> Parser<'a> {
         variables
     }
 
-    fn parse_expression_list(&mut self) -> Vec<NodeId> {
+    fn parse_expr_list(&mut self) -> Vec<NodeId> {
         let mut expressions = Vec::new();
         loop {
             expressions.push(self.parse_expr(0));
@@ -656,6 +653,7 @@ impl<'a> Parser<'a> {
                     if s == "}" {
                         break;
                     }
+
                     token_panic!(
                         start_token,
                         self.src,
@@ -689,22 +687,22 @@ impl<'a> Parser<'a> {
                 ),
             }
 
-            print_head!(self, "- [4] parse_code_block[4] -");
+            print_head!(self, "- [5] parse_code_block[ 5] -");
             if matches!(node_id, Some(_)) {
                 block.push(node_id?);
             }
         }
 
-        print_head!(self, "- [5] parse_code_block [5] -");
-        self.expect_str("}");
         print_head!(self, "- [6] parse_code_block [6] -");
+        self.expect_str("}");
+        print_head!(self, "- [7] parse_code_block [7] -");
 
         Some(self.ast.add(Node::BLOCK(block), start_token.span))
     }
 
     fn parse_success(&mut self, start_token: &Token) -> Option<NodeId> {
         self.advance();
-        let return_values = self.parse_expression_list();
+        let return_values = self.parse_expr_list();
         Some(
             self.ast
                 .add(Node::SUCCESS { return_values }, start_token.span),
@@ -726,7 +724,7 @@ impl<'a> Parser<'a> {
         let reason = next_token.kind.as_str();
         self.advance();
 
-        let return_values = self.parse_expression_list();
+        let return_values = self.parse_expr_list();
         Some(self.ast.add(
             Node::FAILURE {
                 reason: reason.to_string(),
@@ -811,7 +809,7 @@ impl<'a> Parser<'a> {
         self.expect_str("in");
 
         let range = match &self.current_token().kind {
-            Tag::SYMBOL(_) => self.parse_array(),
+            Tag::SYMBOL(_) => self.parse_array_initializer(),
             Tag::IDENT(s) => {
                 let declaration = match self.declaration_context.get(s) {
                     Some(decl) => decl.clone(),
@@ -1013,24 +1011,103 @@ impl<'a> Parser<'a> {
         )
     }
 
-    fn parse_array(&mut self) -> NodeId {
+    fn parse_array_type(&mut self) -> NodeId {
         self.expect_str("[");
 
-        let kind = match &self.current_token().kind {
-            Tag::IDENT(i) => self
-                .ast
-                .add(Node::IDENTIFIER(i.to_string()), self.current_token().span),
-            _ => token_panic!(self.current_token(), self.src, "Expected array type."),
-        };
-        self.advance();
+        let mut sizes = vec![];
+        loop {
+            let size = match &self.tokens[self.at].kind {
+                Tag::INTEGER(i) => i.parse::<usize>().unwrap(),
+                _ => token_panic!(
+                    &self.tokens[self.at],
+                    self.src,
+                    "Invalid array size: Array size should always be an integer.",
+                ),
+            };
+
+            sizes.push(size);
+
+            self.advance();
+            print_head!(self, "- [a] parse_array_type [a] -");
+
+            if self.current_str() != "," {
+                break;
+            }
+            self.advance();
+        }
+
+        let (_, kind) = self.parse_type();
+        self.expect_str("]");
+
+        print_head!(self, "- [b] parse_array_type [b] -");
+
+        self.ast
+            .add(Node::ARRAYKIND { kind, sizes }, self.tokens[self.at].span)
+    }
+
+    fn parse_array_initializer(&mut self) -> NodeId {
+        let span = self.current_token().span;
+        self.expect_str("[");
+
+        let (_, kind) = self.parse_type();
 
         self.expect_str(":");
-        let value = self.parse_expression_list();
+
+        let value = self.parse_nested_array_values();
 
         self.expect_str("]");
 
-        self.ast
-            .add(Node::ARRAYVALUE { kind, value }, self.current_token().span)
+        self.ast.add(Node::ARRAYVALUE { kind, value }, span)
+    }
+
+    fn parse_nested_array_values(&mut self) -> NodeId {
+        let span = self.current_token().span;
+        let mut values = Vec::new();
+
+        if self.current_str() != "]" {
+            loop {
+                if self.current_str() == "[" {
+                    self.expect_str("[");
+                    values.push(self.parse_nested_array_values());
+                    self.expect_str("]");
+                } else {
+                    values.push(self.parse_expr(0));
+                }
+
+                if self.current_str() == "," {
+                    self.expect_str(",");
+                } else {
+                    break;
+                }
+            }
+        }
+
+        self.ast.add(Node::EXPRESSIONLIST { values }, span)
+    }
+
+    fn parse_array_ref_element(&mut self, lhs: &NodeId) -> NodeId {
+        let mut indices = vec![];
+
+        print_head!(self, "- [0] parse_array_ref_element [0] -");
+        self.expect_str("[");
+
+        loop {
+            indices.push(self.parse_expr(0));
+
+            if self.current_str() == "]" {
+                break;
+            }
+
+            self.expect_str(",");
+        }
+
+        self.expect_str("]");
+        print_head!(self, "- [1] parse_array_ref_element [1] -");
+
+        self.ast.add(
+            Node::ARRAYREFERENCE { lhs: *lhs, indices },
+            self.current_token().span,
+        )
     }
 
     fn token_to_binary_op(&self, kind: &str, lhs: NodeId, rhs: NodeId) -> BinaryOp {
@@ -1063,7 +1140,7 @@ impl<'a> Parser<'a> {
 
     fn infix_binding_power(&self, symbol: &str) -> (u8, u8) {
         match symbol {
-            "(" => (20, 0),
+            "(" | "[" => (20, 0),
             "*" | "/" | "%" | "<<" | ">>" | "&" | " &^" => (9, 10),
             "+" | "-" | "|" | "^" => (7, 8),
             "==" | "!=" | "<" | "<=" | ">" | ">=" => (5, 6),

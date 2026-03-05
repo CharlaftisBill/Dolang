@@ -396,7 +396,9 @@
       "kind": "ARRAYKIND",
       "data": {
         "kind": 69,
-        "size": 3
+        "sizes": [
+          3
+        ]
       }
     },
     {
@@ -416,14 +418,20 @@
       "data": 2
     },
     {
-      "kind": "ARRAYVALUE",
+      "kind": "EXPRESSIONLIST",
       "data": {
-        "kind": 71,
-        "value": [
+        "values": [
           72,
           73,
           74
         ]
+      }
+    },
+    {
+      "kind": "ARRAYVALUE",
+      "data": {
+        "kind": 71,
+        "value": 75
       }
     },
     {
@@ -442,78 +450,38 @@
     {
       "kind": "ASSIGNMENT",
       "data": {
-        "operator": 77,
-        "declaration": 76,
-        "value": 75
+        "operator": 78,
+        "declaration": 77,
+        "value": 76
       }
-    },
-    {
-      "kind": "IDENTIFIER",
-      "data": "i64"
-    },
-    {
-      "kind": "ARRAYKIND",
-      "data": {
-        "kind": 79,
-        "size": 5
-      }
-    },
-    {
-      "kind": "IDENTIFIER",
-      "data": "i64"
-    },
-    {
-      "kind": "I32",
-      "data": 0
     },
     {
       "kind": "I32",
       "data": 1
     },
     {
-      "kind": "I32",
-      "data": 2
+      "kind": "ARRAYREFERENCE",
+      "data": {
+        "lhs": 77,
+        "indices": [
+          80
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "="
     },
     {
       "kind": "I32",
       "data": 3
     },
     {
-      "kind": "I32",
-      "data": 4
-    },
-    {
-      "kind": "ARRAYVALUE",
-      "data": {
-        "kind": 81,
-        "value": [
-          82,
-          83,
-          84,
-          85,
-          86
-        ]
-      }
-    },
-    {
-      "kind": "DECLARATION",
-      "data": {
-        "name": "arr_int1",
-        "kind": 80,
-        "public": false,
-        "constant": true
-      }
-    },
-    {
-      "kind": "IDENTIFIER",
-      "data": ":"
-    },
-    {
       "kind": "ASSIGNMENT",
       "data": {
-        "operator": 89,
-        "declaration": 88,
-        "value": 87
+        "operator": 82,
+        "declaration": 81,
+        "value": 83
       }
     },
     {
@@ -523,8 +491,10 @@
     {
       "kind": "ARRAYKIND",
       "data": {
-        "kind": 91,
-        "size": 2
+        "kind": 85,
+        "sizes": [
+          2
+        ]
       }
     },
     {
@@ -540,20 +510,26 @@
       "data": "0.2"
     },
     {
+      "kind": "EXPRESSIONLIST",
+      "data": {
+        "values": [
+          88,
+          89
+        ]
+      }
+    },
+    {
       "kind": "ARRAYVALUE",
       "data": {
-        "kind": 93,
-        "value": [
-          94,
-          95
-        ]
+        "kind": 87,
+        "value": 90
       }
     },
     {
       "kind": "DECLARATION",
       "data": {
         "name": "arr_str0",
-        "kind": 92,
+        "kind": 86,
         "public": false,
         "constant": false
       }
@@ -565,9 +541,284 @@
     {
       "kind": "ASSIGNMENT",
       "data": {
-        "operator": 98,
-        "declaration": 97,
-        "value": 96
+        "operator": 93,
+        "declaration": 92,
+        "value": 91
+      }
+    },
+    {
+      "kind": "I32",
+      "data": 3
+    },
+    {
+      "kind": "I32",
+      "data": 2
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "SUB": [
+          95,
+          96
+        ]
+      }
+    },
+    {
+      "kind": "ARRAYREFERENCE",
+      "data": {
+        "lhs": 92,
+        "indices": [
+          97
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "="
+    },
+    {
+      "kind": "STR",
+      "data": "3"
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "operator": 99,
+        "declaration": 98,
+        "value": 100
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "i32"
+    },
+    {
+      "kind": "ARRAYKIND",
+      "data": {
+        "kind": 102,
+        "sizes": [
+          2,
+          2,
+          2
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "i32"
+    },
+    {
+      "kind": "I32",
+      "data": 0
+    },
+    {
+      "kind": "I32",
+      "data": 1
+    },
+    {
+      "kind": "EXPRESSIONLIST",
+      "data": {
+        "values": [
+          105,
+          106
+        ]
+      }
+    },
+    {
+      "kind": "I32",
+      "data": 2
+    },
+    {
+      "kind": "I32",
+      "data": 3
+    },
+    {
+      "kind": "EXPRESSIONLIST",
+      "data": {
+        "values": [
+          108,
+          109
+        ]
+      }
+    },
+    {
+      "kind": "EXPRESSIONLIST",
+      "data": {
+        "values": [
+          107,
+          110
+        ]
+      }
+    },
+    {
+      "kind": "I32",
+      "data": 4
+    },
+    {
+      "kind": "I32",
+      "data": 5
+    },
+    {
+      "kind": "EXPRESSIONLIST",
+      "data": {
+        "values": [
+          112,
+          113
+        ]
+      }
+    },
+    {
+      "kind": "I32",
+      "data": 6
+    },
+    {
+      "kind": "I32",
+      "data": 7
+    },
+    {
+      "kind": "EXPRESSIONLIST",
+      "data": {
+        "values": [
+          115,
+          116
+        ]
+      }
+    },
+    {
+      "kind": "EXPRESSIONLIST",
+      "data": {
+        "values": [
+          114,
+          117
+        ]
+      }
+    },
+    {
+      "kind": "EXPRESSIONLIST",
+      "data": {
+        "values": [
+          111,
+          118
+        ]
+      }
+    },
+    {
+      "kind": "ARRAYVALUE",
+      "data": {
+        "kind": 104,
+        "value": 119
+      }
+    },
+    {
+      "kind": "DECLARATION",
+      "data": {
+        "name": "arr_3d",
+        "kind": 103,
+        "public": false,
+        "constant": false
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "="
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "operator": 122,
+        "declaration": 121,
+        "value": 120
+      }
+    },
+    {
+      "kind": "I32",
+      "data": 0
+    },
+    {
+      "kind": "I32",
+      "data": 2
+    },
+    {
+      "kind": "I32",
+      "data": 2
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "DIV": [
+          125,
+          126
+        ]
+      }
+    },
+    {
+      "kind": "I32",
+      "data": 0
+    },
+    {
+      "kind": "ARRAYREFERENCE",
+      "data": {
+        "lhs": 121,
+        "indices": [
+          124,
+          127,
+          128
+        ]
+      }
+    },
+    {
+      "kind": "IDENTIFIER",
+      "data": "="
+    },
+    {
+      "kind": "I32",
+      "data": 3
+    },
+    {
+      "kind": "I32",
+      "data": 2
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "SUB": [
+          131,
+          132
+        ]
+      }
+    },
+    {
+      "kind": "I32",
+      "data": 4
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "MUL": [
+          133,
+          134
+        ]
+      }
+    },
+    {
+      "kind": "I32",
+      "data": 4
+    },
+    {
+      "kind": "BINARY",
+      "data": {
+        "DIV": [
+          135,
+          136
+        ]
+      }
+    },
+    {
+      "kind": "ASSIGNMENT",
+      "data": {
+        "operator": 130,
+        "declaration": 129,
+        "value": 137
       }
     },
     {
@@ -590,9 +841,12 @@
         60,
         65,
         68,
-        78,
-        90,
-        99
+        79,
+        84,
+        94,
+        101,
+        123,
+        138
       ]
     }
   ],
@@ -1013,195 +1267,429 @@
     },
     {
       "line": 29,
-      "start": 374,
-      "end": 377,
+      "start": 377,
+      "end": 378,
       "current_line_start": 362
     },
     {
       "line": 29,
-      "start": 378,
-      "end": 379,
+      "start": 379,
+      "end": 380,
+      "current_line_start": 362
+    },
+    {
+      "line": 29,
+      "start": 385,
+      "end": 386,
+      "current_line_start": 362
+    },
+    {
+      "line": 29,
+      "start": 387,
+      "end": 388,
+      "current_line_start": 362
+    },
+    {
+      "line": 29,
+      "start": 389,
+      "end": 390,
+      "current_line_start": 362
+    },
+    {
+      "line": 29,
+      "start": 391,
+      "end": 392,
+      "current_line_start": 362
+    },
+    {
+      "line": 29,
+      "start": 387,
+      "end": 388,
       "current_line_start": 362
     },
     {
       "line": 29,
       "start": 381,
-      "end": 384,
-      "current_line_start": 362
-    },
-    {
-      "line": 29,
-      "start": 386,
-      "end": 387,
-      "current_line_start": 362
-    },
-    {
-      "line": 29,
-      "start": 388,
-      "end": 389,
-      "current_line_start": 362
-    },
-    {
-      "line": 29,
-      "start": 390,
-      "end": 391,
+      "end": 382,
       "current_line_start": 362
     },
     {
       "line": 30,
-      "start": 392,
-      "end": 393,
-      "current_line_start": 393
+      "start": 393,
+      "end": 394,
+      "current_line_start": 394
     },
     {
       "line": 30,
-      "start": 392,
-      "end": 393,
-      "current_line_start": 393
+      "start": 393,
+      "end": 394,
+      "current_line_start": 394
     },
     {
       "line": 30,
-      "start": 392,
-      "end": 393,
-      "current_line_start": 393
+      "start": 393,
+      "end": 394,
+      "current_line_start": 394
     },
     {
       "line": 30,
-      "start": 392,
-      "end": 393,
-      "current_line_start": 393
+      "start": 403,
+      "end": 404,
+      "current_line_start": 394
     },
     {
       "line": 30,
-      "start": 405,
-      "end": 408,
-      "current_line_start": 393
+      "start": 406,
+      "end": 407,
+      "current_line_start": 394
     },
     {
       "line": 30,
+      "start": 406,
+      "end": 407,
+      "current_line_start": 394
+    },
+    {
+      "line": 30,
+      "start": 408,
+      "end": 409,
+      "current_line_start": 394
+    },
+    {
+      "line": 32,
       "start": 409,
-      "end": 410,
-      "current_line_start": 393
+      "end": 411,
+      "current_line_start": 411
     },
     {
-      "line": 30,
-      "start": 412,
-      "end": 415,
-      "current_line_start": 393
+      "line": 32,
+      "start": 426,
+      "end": 427,
+      "current_line_start": 411
     },
     {
-      "line": 30,
-      "start": 417,
-      "end": 418,
-      "current_line_start": 393
+      "line": 32,
+      "start": 428,
+      "end": 429,
+      "current_line_start": 411
     },
     {
-      "line": 30,
-      "start": 419,
-      "end": 420,
-      "current_line_start": 393
+      "line": 32,
+      "start": 434,
+      "end": 435,
+      "current_line_start": 411
     },
     {
-      "line": 30,
-      "start": 421,
-      "end": 422,
-      "current_line_start": 393
+      "line": 32,
+      "start": 438,
+      "end": 441,
+      "current_line_start": 411
     },
     {
-      "line": 30,
-      "start": 423,
-      "end": 424,
-      "current_line_start": 393
+      "line": 32,
+      "start": 445,
+      "end": 448,
+      "current_line_start": 411
     },
     {
-      "line": 30,
-      "start": 425,
-      "end": 426,
-      "current_line_start": 393
+      "line": 32,
+      "start": 438,
+      "end": 441,
+      "current_line_start": 411
     },
     {
-      "line": 31,
-      "start": 427,
-      "end": 428,
-      "current_line_start": 428
+      "line": 32,
+      "start": 430,
+      "end": 431,
+      "current_line_start": 411
     },
     {
-      "line": 31,
-      "start": 427,
-      "end": 428,
-      "current_line_start": 428
-    },
-    {
-      "line": 31,
-      "start": 427,
-      "end": 428,
-      "current_line_start": 428
-    },
-    {
-      "line": 31,
-      "start": 427,
-      "end": 428,
-      "current_line_start": 428
-    },
-    {
-      "line": 31,
-      "start": 440,
-      "end": 443,
-      "current_line_start": 428
-    },
-    {
-      "line": 31,
-      "start": 444,
-      "end": 445,
-      "current_line_start": 428
-    },
-    {
-      "line": 31,
-      "start": 447,
+      "line": 33,
+      "start": 449,
       "end": 450,
-      "current_line_start": 428
+      "current_line_start": 450
     },
     {
-      "line": 31,
-      "start": 454,
-      "end": 457,
-      "current_line_start": 428
+      "line": 33,
+      "start": 449,
+      "end": 450,
+      "current_line_start": 450
     },
     {
-      "line": 31,
-      "start": 461,
+      "line": 33,
+      "start": 449,
+      "end": 450,
+      "current_line_start": 450
+    },
+    {
+      "line": 33,
+      "start": 459,
+      "end": 460,
+      "current_line_start": 450
+    },
+    {
+      "line": 33,
+      "start": 463,
       "end": 464,
-      "current_line_start": 428
+      "current_line_start": 450
     },
     {
-      "line": 31,
-      "start": 465,
-      "end": 465,
-      "current_line_start": 428
+      "line": 33,
+      "start": 461,
+      "end": 462,
+      "current_line_start": 450
     },
     {
-      "line": 31,
-      "start": 465,
-      "end": 465,
-      "current_line_start": 428
+      "line": 33,
+      "start": 466,
+      "end": 467,
+      "current_line_start": 450
     },
     {
-      "line": 31,
-      "start": 465,
-      "end": 465,
-      "current_line_start": 428
+      "line": 33,
+      "start": 466,
+      "end": 467,
+      "current_line_start": 450
     },
     {
-      "line": 31,
-      "start": 465,
-      "end": 465,
-      "current_line_start": 428
+      "line": 33,
+      "start": 470,
+      "end": 471,
+      "current_line_start": 450
     },
     {
-      "line": 31,
-      "start": 465,
-      "end": 465,
-      "current_line_start": 428
+      "line": 35,
+      "start": 471,
+      "end": 473,
+      "current_line_start": 473
+    },
+    {
+      "line": 35,
+      "start": 492,
+      "end": 493,
+      "current_line_start": 473
+    },
+    {
+      "line": 35,
+      "start": 494,
+      "end": 495,
+      "current_line_start": 473
+    },
+    {
+      "line": 35,
+      "start": 500,
+      "end": 501,
+      "current_line_start": 473
+    },
+    {
+      "line": 35,
+      "start": 504,
+      "end": 505,
+      "current_line_start": 473
+    },
+    {
+      "line": 35,
+      "start": 507,
+      "end": 508,
+      "current_line_start": 473
+    },
+    {
+      "line": 35,
+      "start": 504,
+      "end": 505,
+      "current_line_start": 473
+    },
+    {
+      "line": 35,
+      "start": 512,
+      "end": 513,
+      "current_line_start": 473
+    },
+    {
+      "line": 35,
+      "start": 515,
+      "end": 516,
+      "current_line_start": 473
+    },
+    {
+      "line": 35,
+      "start": 512,
+      "end": 513,
+      "current_line_start": 473
+    },
+    {
+      "line": 35,
+      "start": 503,
+      "end": 504,
+      "current_line_start": 473
+    },
+    {
+      "line": 35,
+      "start": 522,
+      "end": 523,
+      "current_line_start": 473
+    },
+    {
+      "line": 35,
+      "start": 525,
+      "end": 526,
+      "current_line_start": 473
+    },
+    {
+      "line": 35,
+      "start": 522,
+      "end": 523,
+      "current_line_start": 473
+    },
+    {
+      "line": 35,
+      "start": 530,
+      "end": 531,
+      "current_line_start": 473
+    },
+    {
+      "line": 35,
+      "start": 533,
+      "end": 534,
+      "current_line_start": 473
+    },
+    {
+      "line": 35,
+      "start": 530,
+      "end": 531,
+      "current_line_start": 473
+    },
+    {
+      "line": 35,
+      "start": 521,
+      "end": 522,
+      "current_line_start": 473
+    },
+    {
+      "line": 35,
+      "start": 502,
+      "end": 503,
+      "current_line_start": 473
+    },
+    {
+      "line": 35,
+      "start": 496,
+      "end": 497,
+      "current_line_start": 473
+    },
+    {
+      "line": 36,
+      "start": 537,
+      "end": 538,
+      "current_line_start": 538
+    },
+    {
+      "line": 36,
+      "start": 537,
+      "end": 538,
+      "current_line_start": 538
+    },
+    {
+      "line": 36,
+      "start": 537,
+      "end": 538,
+      "current_line_start": 538
+    },
+    {
+      "line": 36,
+      "start": 545,
+      "end": 546,
+      "current_line_start": 538
+    },
+    {
+      "line": 36,
+      "start": 548,
+      "end": 549,
+      "current_line_start": 538
+    },
+    {
+      "line": 36,
+      "start": 552,
+      "end": 553,
+      "current_line_start": 538
+    },
+    {
+      "line": 36,
+      "start": 550,
+      "end": 551,
+      "current_line_start": 538
+    },
+    {
+      "line": 36,
+      "start": 555,
+      "end": 556,
+      "current_line_start": 538
+    },
+    {
+      "line": 36,
+      "start": 558,
+      "end": 559,
+      "current_line_start": 538
+    },
+    {
+      "line": 36,
+      "start": 558,
+      "end": 559,
+      "current_line_start": 538
+    },
+    {
+      "line": 36,
+      "start": 561,
+      "end": 562,
+      "current_line_start": 538
+    },
+    {
+      "line": 36,
+      "start": 565,
+      "end": 566,
+      "current_line_start": 538
+    },
+    {
+      "line": 36,
+      "start": 563,
+      "end": 564,
+      "current_line_start": 538
+    },
+    {
+      "line": 36,
+      "start": 570,
+      "end": 571,
+      "current_line_start": 538
+    },
+    {
+      "line": 36,
+      "start": 568,
+      "end": 569,
+      "current_line_start": 538
+    },
+    {
+      "line": 36,
+      "start": 574,
+      "end": 575,
+      "current_line_start": 538
+    },
+    {
+      "line": 36,
+      "start": 572,
+      "end": 573,
+      "current_line_start": 538
+    },
+    {
+      "line": 38,
+      "start": 575,
+      "end": 577,
+      "current_line_start": 577
+    },
+    {
+      "line": 38,
+      "start": 577,
+      "end": 577,
+      "current_line_start": 577
     }
   ]
 }

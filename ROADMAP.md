@@ -1,13 +1,14 @@
 # Dolang roadmap
 
-## Bugs: [2/2]
+## Bugs: [4/5]
+* Make it possible to assign values to specific array indexes ✔
+* Make it possible to use expressions to arrays indexes ✔
+* Make it possible to use specific array elements in expressions
 * Assignment is not curring the operator kind (: =, +=, -=, ...) ✔
 * Functions are not parsing them return values ✔
 
-## Investigations [1/1]
-*  why the code block 'eats' '}' in case of if/else, but not in case of while
-
 ## backlog [0/1]
+* Make possible to be able to make closures as values.
 * Make sure that the names of enums elements between token Tag and ast Node are in par
 * if an IDENT token is playing the role of a variable then use the map in order to mention the declarations node in AST. This way the size of the AST may be reduced and the iteration over it may get faster.
 

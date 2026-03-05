@@ -27,6 +27,12 @@ str0 str = "The quick \"brown fox\" jumps over the lazy dog.\n"
 str0 = "An other \"string\""
 
 # Arrays
-arr_int0 [3]i32 = [i32: 0,1,2]
-arr_int1 [5]i64 : [i64: 0,1,2,3,4]
-arr_str0 [2]str = [str: "0.1", "0.2"]
+arr_int0 [3 i32] = [i32: 0,1,2]
+arr_int0[1] = 3
+
+arr_str0 [2 str] = [str: "0.1", "0.2"]
+arr_str0[3 - 2] = "3"
+
+arr_3d [2, 2, 2 i32] = [i32: [[0, 1], [2, 3]], [[4, 5], [6, 7]]]
+arr_3d[0, 2 / 2, 0] = (3 - 2) * 4 / 4
+

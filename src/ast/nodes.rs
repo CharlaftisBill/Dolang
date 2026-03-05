@@ -1,5 +1,5 @@
-use serde::Serialize;
 use super::id::NodeId;
+use serde::Serialize;
 
 #[derive(Serialize, Debug, Clone, Copy, PartialEq)]
 pub enum UnaryOp {
@@ -49,11 +49,18 @@ pub enum Node {
 
     ARRAYKIND {
         kind: NodeId,
-        size: usize
+        sizes: Vec<usize>,
     },
-    ARRAYVALUE{
+    ARRAYVALUE {
         kind: NodeId,
-        value: Vec<NodeId>
+        value: NodeId,
+    },
+    ARRAYREFERENCE {
+        lhs: NodeId,
+        indices: Vec<NodeId>,
+    },
+    EXPRESSIONLIST {
+        values: Vec<NodeId>,
     },
 
     IDENTIFIER(String),
@@ -64,10 +71,10 @@ pub enum Node {
         public: bool,
         constant: bool,
     },
-    ASSIGNMENT{
+    ASSIGNMENT {
         operator: NodeId,
         declaration: NodeId,
-        value: NodeId
+        value: NodeId,
     },
     BLOCK(Vec<NodeId>),
 
@@ -84,41 +91,41 @@ pub enum Node {
     },
 
     SUCCESS {
-        return_values:  Vec<NodeId>,
+        return_values: Vec<NodeId>,
     },
     FAILURE {
         reason: String,
-        return_values:  Vec<NodeId>,
+        return_values: Vec<NodeId>,
     },
 
     IF {
         condition: NodeId,
-        body: Option<NodeId>
+        body: Option<NodeId>,
     },
     ELSE {
         condition: Option<NodeId>,
-        body: Option<NodeId>
+        body: Option<NodeId>,
     },
     MATCH {
         expression: NodeId,
-        body: Vec<NodeId>
+        body: Vec<NodeId>,
     },
     CATCH {
-        body: Vec<NodeId>
+        body: Vec<NodeId>,
     },
-    CASE{
+    CASE {
         matching_values: Vec<NodeId>,
-        body: Option<NodeId>
+        body: Option<NodeId>,
     },
     FOR {
         index: NodeId,
         value: NodeId,
         range: NodeId,
-        body: Option<NodeId>
+        body: Option<NodeId>,
     },
     WHILE {
         condition: NodeId,
-        body: Option<NodeId>
+        body: Option<NodeId>,
     },
     CONTINUE,
     BREAK,

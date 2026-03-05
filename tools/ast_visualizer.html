@@ -158,8 +158,11 @@
             fill: var(--bg-val);
         }
 
+        /* Arrays, Lists, References */
         g.type-ARRAYKIND>rect,
-        g.type-ARRAYVALUE>rect {
+        g.type-ARRAYVALUE>rect,
+        g.type-ARRAYREFERENCE>rect,
+        g.type-EXPRESSIONLIST>rect {
             stroke: var(--color-array);
             fill: var(--bg-array);
         }
@@ -176,7 +179,7 @@
             fill: var(--bg-op);
         }
 
-        /* Control Flow: IF, ELSE, WHILE, FOR, MATCH, CASE, CATCH */
+        /* Control Flow */
         g.type-IF>rect,
         g.type-ELSE>rect,
         g.type-WHILE>rect,
@@ -253,7 +256,8 @@
             <div class="swatch" style="border-color: var(--color-flow); background: var(--bg-flow);"></div> Control Flow
         </div>
         <div class="legend-item">
-            <div class="swatch" style="border-color: var(--color-array); background: var(--bg-array);"></div> Arrays
+            <div class="swatch" style="border-color: var(--color-array); background: var(--bg-array);"></div> Arrays /
+            Lists
         </div>
         <div class="legend-item">
             <div class="swatch" style="border-color: var(--color-val); background: var(--bg-val);"></div> Values /
@@ -356,7 +360,9 @@
                     if (typeNode && typeNode.kind === "ARRAYKIND") {
                         const innerType = nodes[typeNode.data.kind];
                         const innerName = innerType ? innerType.data : "?";
-                        subtitle += `<br/><span style="font-size:0.8em; color:#aaa">[${innerName}; ${typeNode.data.size}]</span>`;
+                        // Handle "sizes" array or fallback to "size"
+                        const dims = Array.isArray(typeNode.data.sizes) ? typeNode.data.sizes.join("x") : typeNode.data.size;
+                        subtitle += `<br/><span style="font-size:0.8em; color:#aaa">[${innerName}; ${dims}]</span>`;
                     }
                     if (d.constant) meta += "CONST ";
                     if (d.public) meta += "PUB ";
@@ -371,11 +377,24 @@
                 }
                 else if (n.kind === "ARRAYKIND") {
                     title = "ARRAY TYPE";
-                    subtitle = `Size: ${d.size}`;
+                    const dims = Array.isArray(d.sizes) ? d.sizes.join("x") : d.size;
+                    subtitle = `Dims: ${dims}`;
                 }
                 else if (n.kind === "ARRAYVALUE") {
                     title = "ARRAY LITERAL";
-                    subtitle = `Len: ${Array.isArray(d.value) ? d.value.length : 0}`;
+                    if (Array.isArray(d.value)) {
+                        subtitle = `Len: ${d.value.length}`;
+                    } else {
+                        subtitle = "Initialization";
+                    }
+                }
+                else if (n.kind === "EXPRESSIONLIST") {
+                    title = "EXPR LIST";
+                    subtitle = `Count: ${Array.isArray(d.values) ? d.values.length : 0}`;
+                }
+                else if (n.kind === "ARRAYREFERENCE") {
+                    title = "ARRAY REF";
+                    subtitle = "Access";
                 }
                 else if (n.kind === "VAR") {
                     title = d.name;
@@ -397,7 +416,6 @@
                     title = "SIGNATURE";
                     subtitle = `Params: ${d.params.length}`;
                 }
-                // --- Control Flow ---
                 else if (n.kind === "IF") { title = "IF"; subtitle = "Control Flow"; }
                 else if (n.kind === "ELSE") {
                     title = (d.condition !== null) ? "ELSE IF" : "ELSE";
@@ -411,16 +429,8 @@
                     subtitle = `Iter: <span style="color:#fff">${idxName}</span>`;
                 }
                 else if (n.kind === "MATCH") { title = "MATCH"; subtitle = "Control Flow"; }
-
-                // --- NEW: CASE and CATCH ---
-                else if (n.kind === "CASE") {
-                    title = "CASE";
-                    subtitle = "Pattern";
-                }
-                else if (n.kind === "CATCH") {
-                    title = "CATCH";
-                    subtitle = "Error Handling";
-                }
+                else if (n.kind === "CASE") { title = "CASE"; subtitle = "Pattern"; }
+                else if (n.kind === "CATCH") { title = "CATCH"; subtitle = "Error Handling"; }
 
                 else if (n.kind === "SUCCESS") {
                     title = "SUCCESS";
@@ -480,7 +490,28 @@
                 }
                 else if (n.kind === "ARRAYVALUE") {
                     addEdge(d.kind, "type");
-                    if (Array.isArray(d.value)) d.value.forEach((val, i) => addEdge(val, `[${i}]`));
+                    // Support both flat arrays (old) and nested references (new)
+                    if (Array.isArray(d.value)) {
+                        d.value.forEach((val, i) => addEdge(val, `[${i}]`));
+                    } else if (d.value !== undefined) {
+                        addEdge(d.value, "val");
+                    }
+                }
+                else if (n.kind === "EXPRESSIONLIST") {
+                    if (Array.isArray(d.values)) {
+                        d.values.forEach((val, i) => addEdge(val, `[${i}]`));
+                    }
+                }
+                else if (n.kind === "ARRAYREFERENCE") {
+                    // Support new 'lhs' and 'indices' array structure
+                    if (d.lhs !== undefined) addEdge(d.lhs, "ref");
+                    else if (d.declaration !== undefined) addEdge(d.declaration, "ref"); // Fallback
+
+                    if (Array.isArray(d.indices)) {
+                        d.indices.forEach((idx, i) => addEdge(idx, `idx[${i}]`));
+                    } else if (d.index !== undefined) {
+                        addEdge(d.index, "index");
+                    }
                 }
                 else if (n.kind === "VAR") {
                     addEdge(d.kind, "type");
@@ -523,7 +554,6 @@
                     addEdge(d.expression, "on");
                     if (Array.isArray(d.body)) d.body.forEach(caseId => addEdge(caseId, "case"));
                 }
-                // --- NEW: CASE and CATCH Edges ---
                 else if (n.kind === "CASE") {
                     if (Array.isArray(d.matching_values)) {
                         d.matching_values.forEach(val => addEdge(val, "pattern"));
@@ -531,12 +561,10 @@
                     addEdge(d.body, "do");
                 }
                 else if (n.kind === "CATCH") {
-                    // Connect to list of cases
                     if (Array.isArray(d.body)) {
                         d.body.forEach(caseId => addEdge(caseId, "handle"));
                     }
                 }
-
                 else if (n.kind === "FUNCSIGNATURE") {
                     d.params.forEach(p => addEdge(p, "param"));
                     if (d.returns) d.returns.forEach(r => addEdge(r, "ret"));

@@ -100,8 +100,8 @@ impl Token {
             &mut sb,
             "\nLn:'{}:{}-{}': ",
             self.span.line + 1,
-            self.span.start,
-            self.span.end,
+            self.span.start - self.span.current_line_start + 1,
+            self.span.end - self.span.current_line_start + 1,
         )
         .unwrap();
         sb.write_fmt(args).unwrap();
@@ -136,17 +136,6 @@ impl Token {
             || matches!(self.kind, Tag::EOF);
     }
 
-    // pub fn to_string(&self) -> String {
-    //     format!(
-    //         "Tag: {:?} Value: {:?}, L{}:{}-{} ({})",
-    //         self.kind,
-    //         self.kind.as_str(),
-    //         self.span.line + 1,
-    //         self.span.start,
-    //         self.span.end,
-    //         self.span.current_line_start,
-    //     )
-    // }
 }
 
 #[macro_export]
