@@ -27,14 +27,11 @@ macro_rules! print_head {
         }
         println!(
             "  =>  Now     : '{:?}'",
-            $parser.tokens[$parser.at].kind.as_str()
+            $parser.current_token().kind.as_str()
         );
 
         if $parser.at + 1 < $parser.tokens.len() {
-            println!(
-                "  =>  Next    : '{:?}'",
-                $parser.tokens[$parser.at + 1].kind.as_str()
-            );
+            println!("  =>  Next    : '{:?}'", $parser.peek_next().kind.as_str());
         }
         println!(
             "=================================================================================="
@@ -67,12 +64,25 @@ impl<'a> Parser<'a> {
         }
     }
 
+    fn peek(&self, distance: usize) -> &'a Token {
+        let target_idx = self.at + distance;
+        if target_idx < self.tokens.len() {
+            &self.tokens[target_idx]
+        } else {
+            &self.tokens[self.tokens.len() - 1]
+        }
+    }
+
+    fn peek_next(&self) -> &'a Token {
+        self.peek(1)
+    }
+
     fn current_token(&self) -> &'a Token {
         &self.tokens[self.at]
     }
 
     fn current_str(&self) -> &'a str {
-        self.tokens[self.at].kind.as_str()
+        self.current_token().kind.as_str()
     }
 
     fn advance(&mut self) {
@@ -83,8 +93,8 @@ impl<'a> Parser<'a> {
 
     fn skip_newlines_and_comments(&mut self) {
         while self.at < self.tokens.len()
-            && (matches!(self.tokens[self.at].kind, Tag::NEWLINE(_))
-                || matches!(self.tokens[self.at].kind, Tag::COMMENT(_)))
+            && (matches!(self.current_token().kind, Tag::NEWLINE(_))
+                || matches!(self.current_token().kind, Tag::COMMENT(_)))
         {
             self.advance();
         }
@@ -364,7 +374,7 @@ impl<'a> Parser<'a> {
     }
 
     fn parse_prefix(&mut self) -> NodeId {
-        let current_token: &Token = &self.tokens[self.at];
+        let current_token: &Token = self.current_token();
         self.advance();
 
         match &current_token.kind {
@@ -416,7 +426,7 @@ impl<'a> Parser<'a> {
 
     fn parse_type(&mut self) -> (String, NodeId) {
         print_head!(self, "- [0] parse_type [0] -");
-        let current_token = &self.tokens[self.at];
+        let current_token = self.current_token();
 
         let mut node_type = "";
         let node_id = match &current_token.kind {
@@ -424,7 +434,7 @@ impl<'a> Parser<'a> {
                 node_type = s;
                 self.advance();
                 self.ast
-                    .add(Node::IDENTIFIER(s.to_string()), self.tokens[self.at].span)
+                    .add(Node::IDENTIFIER(s.to_string()), self.current_token().span)
             }
             Tag::SYMBOL(s) => match s.as_str() {
                 "(" => {
@@ -462,7 +472,7 @@ impl<'a> Parser<'a> {
     }
 
     fn parse_call(&mut self, func: NodeId) -> NodeId {
-        let starting_token = &self.tokens[self.at];
+        let starting_token = self.current_token();
 
         let mut args = Vec::new();
         if self.current_str() != ")" {
@@ -480,7 +490,7 @@ impl<'a> Parser<'a> {
     ) -> Vec<NodeId> {
         self.expect_str(starts_with_symbol);
 
-        print_head!(self, "- [0] parse_identifier_list [0] -");
+        print_head!(self, "- [0] parse_identifier_list[0] -");
 
         let mut return_types = Vec::new();
         if self.current_str() == ends_to_symbol {
@@ -615,7 +625,7 @@ impl<'a> Parser<'a> {
         print_head!(self, "- [0] parse_code_block [0] -");
 
         self.expect_str("{");
-        let start_token = &self.tokens[self.at];
+        let start_token = self.current_token();
 
         let mut block = vec![];
         loop {
@@ -626,7 +636,7 @@ impl<'a> Parser<'a> {
             match &self.current_token().kind {
                 Tag::NEWLINE(_) | Tag::COMMENT(_) => self.advance(),
                 Tag::IDENT(s) => {
-                    node_id = match &self.tokens[self.at + 1].kind {
+                    node_id = match &self.peek_next().kind {
                         Tag::IDENT(_) => Some(self.parse_declaration_or_assignment()),
                         Tag::SYMBOL(sym) => {
                             if sym.ends_with("=") {
@@ -637,7 +647,7 @@ impl<'a> Parser<'a> {
                                 print_head!(self, "-[2] parse_code_block [2] -");
                                 self.advance();
                                 self.expect_str("(");
-                                print_head!(self, "- [3] parse_code_block [3] -");
+                                print_head!(self, "- [3] parse_code_block[3] -");
 
                                 let func_node_id = self
                                     .ast
@@ -710,7 +720,7 @@ impl<'a> Parser<'a> {
     }
 
     fn parse_failure(&mut self, start_token: &Token) -> Option<NodeId> {
-        let next_token = &self.tokens[self.at + 1];
+        let next_token = self.peek_next();
         if !matches!(next_token.kind, Tag::IDENT(_)) {
             token_panic!(
                 next_token,
@@ -721,7 +731,7 @@ impl<'a> Parser<'a> {
         }
 
         self.advance();
-        let reason = next_token.kind.as_str();
+        let reason = self.current_str();
         self.advance();
 
         let return_values = self.parse_expr_list();
@@ -768,7 +778,7 @@ impl<'a> Parser<'a> {
         print_head!(self, "- [0] parse_while [0] -");
         let condition = self.parse_expr(0);
         let body = self.parse_code_block();
-        print_head!(self, "-[1] parse_while [1] -");
+        print_head!(self, "-[1] parse_while[1] -");
 
         Some(
             self.ast
@@ -849,7 +859,7 @@ impl<'a> Parser<'a> {
 
     fn parse_case_blocks(&mut self, is_catch: bool) -> Vec<NodeId> {
         self.expect_str("{");
-        print_head!(self, "- [1] parse_case_blocks [01] -");
+        print_head!(self, "-[1] parse_case_blocks [01] -");
 
         let mut case_nodes = vec![];
         loop {
@@ -1016,10 +1026,10 @@ impl<'a> Parser<'a> {
 
         let mut sizes = vec![];
         loop {
-            let size = match &self.tokens[self.at].kind {
+            let size = match &self.current_token().kind {
                 Tag::INTEGER(i) => i.parse::<usize>().unwrap(),
                 _ => token_panic!(
-                    &self.tokens[self.at],
+                    self.current_token(),
                     self.src,
                     "Invalid array size: Array size should always be an integer.",
                 ),
@@ -1028,7 +1038,7 @@ impl<'a> Parser<'a> {
             sizes.push(size);
 
             self.advance();
-            print_head!(self, "- [a] parse_array_type [a] -");
+            print_head!(self, "-[a] parse_array_type [a] -");
 
             if self.current_str() != "," {
                 break;
@@ -1042,7 +1052,7 @@ impl<'a> Parser<'a> {
         print_head!(self, "- [b] parse_array_type [b] -");
 
         self.ast
-            .add(Node::ARRAYKIND { kind, sizes }, self.tokens[self.at].span)
+            .add(Node::ARRAYKIND { kind, sizes }, self.current_token().span)
     }
 
     fn parse_array_initializer(&mut self) -> NodeId {

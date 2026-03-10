@@ -1,0 +1,124 @@
+import {
+    maps: std/collections/hash_maps
+}
+
+map type : maps.Shape
+
+Direction enum : {
+    Left,
+    Right,
+    Stay,
+}
+
+Transition type : {
+    WriteSymbol char,
+    Move        Direction,
+    NextState   str,
+}
+
+TuringMachine type : {
+	Tape        map<i32, char>
+	Head        size
+	State       str
+	HaltStates  map<str, bool>
+	Transitions map<str, map<char, Transition>>
+	Blank       char
+}
+
+New (initialState string, blank char) unique<TuringMachine> : {
+    self _ : TuringMachine {
+        Tape: maps.New<int, char>(),
+        Head: 0,
+        State: initialState,
+        HaltStates:  maps.New<str, bool>(),
+		Transitions: maps.New<str, map<char, Transition>>(),
+		Blank:       blank,
+    }
+
+    success self.move()
+}
+
+unique<TuringMachine>.Read () char : {
+    val : self.Tape.Get(self.Head) catch {
+        keyNotFound {pass Blank}
+    }
+    success val
+}
+
+unique<TuringMachine>.Write (symbol char) : {
+    self.Tape.Set(self.Head, symbol)
+}
+
+unique<TuringMachine>.Step () {
+    if self.HaltStates.Exists(self.State) {
+        failure TuringMachineHalted
+    }
+
+    symbol _ : self.Read()
+
+    trans = self.Transitions.Get(self.State).Get(symbol) catch {
+        keyNotFound {
+            print("No transition found. Halting.")
+            failure TuringMachineHalted
+        }
+    }
+
+    self.Write(trans.WriteSymbol)
+
+    match trans.Move {
+        Direction.Left {
+            self.Head -= 1
+        },
+        Direction.Right {
+            self.Head += 1
+        }
+    }
+
+    self.State = trans.NextState
+}
+
+unique<TuringMachine>.Run (maxSteps int) : {
+    for i, _ in range<i32>(0, maxSteps, 1) {
+        self.Step() catch {
+            TuringMachineHalted {break}
+        }
+    }
+}
+
+unique<TuringMachine>.PrintTape (start size, end size) {
+    for i, _ in range<i32>(start, end, 1) {
+        if i == self.Head {
+            print("[%c]", self.Read())
+        } else {
+            print_char char = self.Tape.Get(i) catch {
+                keyNotFound {pass self.Blank}
+            }
+            print(" %c ", print_char)
+        }
+    }
+    print()
+}
+
+main () : {
+    tm _ : NewTuringMachine("q0", '_')
+    
+    tm.HaltStates.Set("Halt", true)
+
+    input _ : "111"
+    for i, r in input.to_chars(){
+        self.Tape.Set(i, r)
+    }
+
+    transition_table _ = maps.New<char, Transition>()
+    transition_table.Set('1', Transition{'1', Direction.Right, "q0"})
+    transition_table.Set('_', Transition{'1', Direction.Stay, "halt"})
+    self.Transition.Set("q0", transition_table)
+
+    print("Initial Tape:")
+    self.PrintTape(-2, 6)
+
+    self.Run(100)
+
+    println("Final Tape:")
+	self.PrintTape(-2, 6)
+}

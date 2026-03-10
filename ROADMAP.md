@@ -1,16 +1,25 @@
 # Dolang roadmap
 
-## Bugs: [4/5]
+## Bugs: [5/5]
 * Make it possible to assign values to specific array indexes ✔
 * Make it possible to use expressions to arrays indexes ✔
-* Make it possible to use specific array elements in expressions
+* Make it possible to use specific array elements in expressions ✔
 * Assignment is not curring the operator kind (: =, +=, -=, ...) ✔
 * Functions are not parsing them return values ✔
 
-## backlog [0/1]
-* Make possible to be able to make closures as values.
+## backlog [0/5]
 * Make sure that the names of enums elements between token Tag and ast Node are in par
-* if an IDENT token is playing the role of a variable then use the map in order to mention the declarations node in AST. This way the size of the AST may be reduced and the iteration over it may get faster.
+* Make a new keyword `pass` that can be used only in `catch` case blocks. The pass keyword would be used to pass values as result of the function raise the failure when this had been handled:
+```do
+print_char char = self.Tape.Get(i) catch {
+      keyNotFound { pass self.Blank}
+}
+print(" %c ", print_char)
+```
+* auto destructure of tuple functions result in both assignment and declaration
+* Make possible to be able to make closures as values.
+* If an IDENT token is playing the role of a variable then use the map in order to mention the declarations node in AST. This way the size of the AST may be reduced and the iteration over it may get faster.
+
 
 ## Version 0.0.1 (basic blocks) [21/21]
 
@@ -66,9 +75,9 @@
    1. Union declarations ✔
    2. Union assignment
    3. Union type in Match block
-4. Interfaces:
-   1. Interface declarations 
-   2. Interface assignment
+4. Specs (Interface):
+   1. Spec declarations 
+   2. Spec assignment
 
 ## Version 0.0.4 (optimizing run)
 
@@ -86,3 +95,5 @@
 1. Generics:
    1. restricted local type inference
    2. C code generation for run-time generics
+2. Memory Semantics and RC
+   1. Study Nims ORC memory model and [ORC algorithm](https://pages.cs.wisc.edu/~cymen/misc/interests/Bacon01Concurrent.pdf)
