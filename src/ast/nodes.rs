@@ -41,92 +41,92 @@ pub enum BinaryOp {
 #[derive(Serialize, Debug, Clone)]
 #[serde(tag = "kind", content = "data")]
 pub enum Node {
-    I32(i32),
-    F32(f32),
-    STR(String),
-    CHAR(char),
-    BOOL(bool),
+    ValueBool(bool),
+    ValueChar(char),
+    ValueInt(i32),
+    ValueFlt(f32),
+    ValueStr(String),
 
-    ARRAYKIND {
+    ArrayKind {
         kind: NodeId,
         sizes: Vec<usize>,
     },
-    ARRAYVALUE {
+    ArrayValue {
         kind: NodeId,
         value: NodeId,
     },
-    ARRAYREFERENCE {
+    ArrayReference {
         lhs: NodeId,
         indices: Vec<NodeId>,
     },
-    EXPRESSIONLIST {
+    ExpressionList {
         values: Vec<NodeId>,
     },
 
-    IDENTIFIER(String),
+    Identifier(String),
 
-    DECLARATION {
+    Declaration {
         name: String,
         kind: NodeId,
         public: bool,
         constant: bool,
     },
-    ASSIGNMENT {
+    Assignment {
         operator: NodeId,
         declaration: NodeId,
         value: NodeId,
     },
-    BLOCK(Vec<NodeId>),
+    Block(Vec<NodeId>),
 
-    BINARY(BinaryOp),
-    UNARY(UnaryOp),
+    BinaryOp(BinaryOp),
+    UnaryOp(UnaryOp),
 
-    CALL {
+    FuncCall {
         func: NodeId,
         args: Vec<NodeId>,
     },
-    FUNCSIGNATURE {
+    FuncSignature {
         params: Vec<NodeId>,
         returns: Vec<NodeId>,
     },
 
-    SUCCESS {
+    Success {
         return_values: Vec<NodeId>,
     },
-    FAILURE {
+    Failure {
         reason: String,
         return_values: Vec<NodeId>,
     },
 
-    IF {
+    If {
         condition: NodeId,
         body: Option<NodeId>,
     },
-    ELSE {
+    Else {
         condition: Option<NodeId>,
         body: Option<NodeId>,
     },
-    MATCH {
+    Match {
         expression: NodeId,
         body: Vec<NodeId>,
     },
-    CATCH {
+    Catch {
         body: Vec<NodeId>,
     },
-    CASE {
+    Case {
         matching_values: Vec<NodeId>,
         body: Option<NodeId>,
     },
-    FOR {
+    For {
         index: NodeId,
         value: NodeId,
         range: NodeId,
         body: Option<NodeId>,
     },
-    WHILE {
+    While {
         condition: NodeId,
         body: Option<NodeId>,
     },
-    CONTINUE,
-    BREAK,
+    Continue,
+    Break,
 }

@@ -6,38 +6,9 @@ use crate::{
         nodes::{BinaryOp, UnaryOp},
         token::{Tag, Token},
     },
-    token_panic,
+    print_head, token_panic,
 };
 use std::collections::HashMap;
-
-macro_rules! print_head {
-    ($parser:expr, $caller:expr) => {
-        println!(
-            "=================================================================================="
-        );
-        println!("========== {} ==========", $caller);
-        println!(
-            "=================================================================================="
-        );
-        if $parser.at > 0 {
-            println!(
-                "  =>  Before  : '{:?}'",
-                $parser.tokens[$parser.at - 1].kind.as_str()
-            );
-        }
-        println!(
-            "  =>  Now     : '{:?}'",
-            $parser.current_token().kind.as_str()
-        );
-
-        if $parser.at + 1 < $parser.tokens.len() {
-            println!("  =>  Next    : '{:?}'", $parser.peek_next().kind.as_str());
-        }
-        println!(
-            "=================================================================================="
-        );
-    };
-}
 
 #[derive(Serialize, Debug, Clone)]
 struct DeclarationDetails {
@@ -146,7 +117,7 @@ impl<'a> Parser<'a> {
         }
 
         self.ast
-            .add(Node::BLOCK(statements), self.current_token().span)
+            .add(Node::Block(statements), self.current_token().span)
     }
 
     fn parse_declaration_or_assignment(&mut self) -> NodeId {
@@ -190,7 +161,7 @@ impl<'a> Parser<'a> {
 
         let value = self.parse_value(&type_name);
         let declaration = self.ast.add(
-            Node::DECLARATION {
+            Node::Declaration {
                 name: name.to_string(),
                 kind: type_node,
                 public: is_public,
@@ -208,12 +179,12 @@ impl<'a> Parser<'a> {
         );
 
         let op = self.ast.add(
-            Node::IDENTIFIER((if is_const { ":" } else { "=" }).to_string()),
+            Node::Identifier((if is_const { ":" } else { "=" }).to_string()),
             self.current_token().span,
         );
 
         self.ast.add(
-            Node::ASSIGNMENT {
+            Node::Assignment {
                 declaration,
                 operator: op,
                 value,
@@ -254,7 +225,7 @@ impl<'a> Parser<'a> {
         }
 
         let op = self.ast.add(
-            Node::IDENTIFIER(self.current_str().to_string()),
+            Node::Identifier(self.current_str().to_string()),
             self.current_token().span,
         );
         self.advance();
@@ -264,7 +235,7 @@ impl<'a> Parser<'a> {
         print_head!(self, "- [4] parse_assignment [4] -");
 
         self.ast.add(
-            Node::ASSIGNMENT {
+            Node::Assignment {
                 declaration: assign_to,
                 operator: op,
                 value,
@@ -306,7 +277,7 @@ impl<'a> Parser<'a> {
 
         match &self.current_token().kind {
             Tag::IDENT(s) => {
-                node_id = Some(self.ast.add(Node::IDENTIFIER(s.to_string()), start_span))
+                node_id = Some(self.ast.add(Node::Identifier(s.to_string()), start_span))
             }
             Tag::SYMBOL(_) => {
                 let block_nodes = if is_enum {
@@ -314,7 +285,7 @@ impl<'a> Parser<'a> {
                 } else {
                     self.parse_variable_list("{", "}")
                 };
-                node_id = Some(self.ast.add(Node::BLOCK(block_nodes), start_span));
+                node_id = Some(self.ast.add(Node::Block(block_nodes), start_span));
             }
             _ => node_id = None,
         }
@@ -365,7 +336,7 @@ impl<'a> Parser<'a> {
             let rhs = self.parse_expr(r_bp);
 
             lhs = self.ast.add(
-                Node::BINARY(self.token_to_binary_op(op_str, lhs, rhs)),
+                Node::BinaryOp(self.token_to_binary_op(op_str, lhs, rhs)),
                 start_token.span,
             );
         }
@@ -380,19 +351,24 @@ impl<'a> Parser<'a> {
         match &current_token.kind {
             Tag::INTEGER(i) => self
                 .ast
-                .add(Node::I32(i.parse().unwrap()), current_token.span),
+                .add(Node::ValueInt(i.parse().unwrap()), current_token.span),
             Tag::FLOAT(f) => self
                 .ast
-                .add(Node::F32(f.parse().unwrap()), current_token.span),
-            Tag::STRING(s) => self.ast.add(Node::STR(s.to_string()), current_token.span),
-            Tag::CHARACTER(c) => self
+                .add(Node::ValueFlt(f.parse().unwrap()), current_token.span),
+            Tag::STRING(s) => self
                 .ast
-                .add(Node::CHAR(c.chars().next().unwrap()), current_token.span),
-            Tag::BOOL(b) => self.ast.add(Node::BOOL(b == "true"), current_token.span),
+                .add(Node::ValueStr(s.to_string()), current_token.span),
+            Tag::CHARACTER(c) => self.ast.add(
+                Node::ValueChar(c.chars().next().unwrap()),
+                current_token.span,
+            ),
+            Tag::BOOL(b) => self
+                .ast
+                .add(Node::ValueBool(b == "true"), current_token.span),
 
             Tag::IDENT(s) => self
                 .ast
-                .add(Node::IDENTIFIER(s.to_string()), current_token.span),
+                .add(Node::Identifier(s.to_string()), current_token.span),
 
             Tag::SYMBOL(s) => match s.as_str() {
                 "(" => {
@@ -412,7 +388,7 @@ impl<'a> Parser<'a> {
                         _ => unreachable!(),
                     };
 
-                    self.ast.add(Node::UNARY(op), current_token.span)
+                    self.ast.add(Node::UnaryOp(op), current_token.span)
                 }
                 // "[" => {
                 //     self.at -= 1;
@@ -434,7 +410,7 @@ impl<'a> Parser<'a> {
                 node_type = s;
                 self.advance();
                 self.ast
-                    .add(Node::IDENTIFIER(s.to_string()), self.current_token().span)
+                    .add(Node::Identifier(s.to_string()), self.current_token().span)
             }
             Tag::SYMBOL(s) => match s.as_str() {
                 "(" => {
@@ -451,7 +427,7 @@ impl<'a> Parser<'a> {
                     }
                     print_head!(self, "- [1] parse_type [1] -");
 
-                    let signature = Node::FUNCSIGNATURE { params, returns };
+                    let signature = Node::FuncSignature { params, returns };
                     self.ast.add(signature, self.tokens[self.at - 1].span)
                 }
                 "[" => {
@@ -480,7 +456,8 @@ impl<'a> Parser<'a> {
         }
         self.expect_str(")");
 
-        self.ast.add(Node::CALL { func, args }, starting_token.span)
+        self.ast
+            .add(Node::FuncCall { func, args }, starting_token.span)
     }
 
     fn parse_identifier_list(
@@ -504,7 +481,7 @@ impl<'a> Parser<'a> {
 
             match &current_token.kind {
                 Tag::IDENT(_) => return_types.push(self.ast.add(
-                    Node::IDENTIFIER(current_token.kind.as_str().to_string()),
+                    Node::Identifier(current_token.kind.as_str().to_string()),
                     current_token.span,
                 )),
                 Tag::SYMBOL(sym) => {
@@ -517,7 +494,7 @@ impl<'a> Parser<'a> {
                 _ => token_panic!(
                     current_token,
                     self.src,
-                    "Expected 'identifier', got '{:?}'",
+                    "Expected 'Identifier', got '{:?}'",
                     current_token.kind.as_str()
                 ),
             }
@@ -581,7 +558,7 @@ impl<'a> Parser<'a> {
             let (_, var_type) = self.parse_type();
 
             let node_id = self.ast.add(
-                Node::DECLARATION {
+                Node::Declaration {
                     name: var_name,
                     kind: var_type,
                     public: false,
@@ -651,7 +628,7 @@ impl<'a> Parser<'a> {
 
                                 let func_node_id = self
                                     .ast
-                                    .add(Node::IDENTIFIER(s.to_string()), start_token.span);
+                                    .add(Node::Identifier(s.to_string()), start_token.span);
 
                                 Some(self.parse_call(func_node_id))
                             }
@@ -680,11 +657,11 @@ impl<'a> Parser<'a> {
                     "while" => node_id = self.parse_while(start_token),
                     "for" => node_id = self.parse_for(start_token),
                     "continue" => {
-                        node_id = Some(self.ast.add(Node::CONTINUE, self.current_token().span));
+                        node_id = Some(self.ast.add(Node::Continue, self.current_token().span));
                         self.advance();
                     }
                     "break" => {
-                        node_id = Some(self.ast.add(Node::BREAK, self.current_token().span));
+                        node_id = Some(self.ast.add(Node::Break, self.current_token().span));
                         self.advance();
                     }
                     _ => unreachable!("No Keyword '{:?}', is recognizable", s),
@@ -707,7 +684,7 @@ impl<'a> Parser<'a> {
         self.expect_str("}");
         print_head!(self, "- [7] parse_code_block [7] -");
 
-        Some(self.ast.add(Node::BLOCK(block), start_token.span))
+        Some(self.ast.add(Node::Block(block), start_token.span))
     }
 
     fn parse_success(&mut self, start_token: &Token) -> Option<NodeId> {
@@ -715,7 +692,7 @@ impl<'a> Parser<'a> {
         let return_values = self.parse_expr_list();
         Some(
             self.ast
-                .add(Node::SUCCESS { return_values }, start_token.span),
+                .add(Node::Success { return_values }, start_token.span),
         )
     }
 
@@ -736,7 +713,7 @@ impl<'a> Parser<'a> {
 
         let return_values = self.parse_expr_list();
         Some(self.ast.add(
-            Node::FAILURE {
+            Node::Failure {
                 reason: reason.to_string(),
                 return_values,
             },
@@ -752,7 +729,7 @@ impl<'a> Parser<'a> {
         let body = self.parse_code_block();
         print_head!(self, "- [1] parse_if [1] -");
 
-        Some(self.ast.add(Node::IF { condition, body }, start_token.span))
+        Some(self.ast.add(Node::If { condition, body }, start_token.span))
     }
 
     fn parse_else(&mut self, start_token: &Token) -> Option<NodeId> {
@@ -768,7 +745,7 @@ impl<'a> Parser<'a> {
 
         Some(
             self.ast
-                .add(Node::ELSE { condition, body }, start_token.span),
+                .add(Node::Else { condition, body }, start_token.span),
         )
     }
 
@@ -782,7 +759,7 @@ impl<'a> Parser<'a> {
 
         Some(
             self.ast
-                .add(Node::WHILE { condition, body }, start_token.span),
+                .add(Node::While { condition, body }, start_token.span),
         )
     }
 
@@ -794,13 +771,13 @@ impl<'a> Parser<'a> {
             token_panic!(
                 self.current_token(),
                 self.src,
-                "Expected Index 'identifier' variable name, got '{:?}'",
+                "Expected Index 'Identifier' variable name, got '{:?}'",
                 self.current_str()
             );
         }
 
         let index = self.ast.add(
-            Node::IDENTIFIER(self.current_str().to_string()),
+            Node::Identifier(self.current_str().to_string()),
             self.current_token().span,
         );
         self.advance();
@@ -810,7 +787,7 @@ impl<'a> Parser<'a> {
         print_head!(self, "- [2] parse_for [2] -");
 
         let value = self.ast.add(
-            Node::IDENTIFIER(self.current_str().to_string()),
+            Node::Identifier(self.current_str().to_string()),
             self.current_token().span,
         );
         self.advance();
@@ -837,7 +814,7 @@ impl<'a> Parser<'a> {
             _ => token_panic!(
                 self.current_token(),
                 self.src,
-                "Expected Index 'identifier' variable name or an array, got '{:?}'",
+                "Expected Index 'Identifier' variable name or an array, got '{:?}'",
                 self.current_str()
             ),
         };
@@ -847,7 +824,7 @@ impl<'a> Parser<'a> {
         print_head!(self, "- [5] parse_for [5] -");
 
         Some(self.ast.add(
-            Node::FOR {
+            Node::For {
                 index,
                 value,
                 range,
@@ -874,13 +851,13 @@ impl<'a> Parser<'a> {
 
                 let matching_value = if is_catch {
                     match &self.current_token().kind {
-                        Tag::IDENT(s) => self.ast.add(Node::IDENTIFIER(s.to_string()), start_span),
+                        Tag::IDENT(s) => self.ast.add(Node::Identifier(s.to_string()), start_span),
                         Tag::SYMBOL(s) => {
                             if s != "*" {
                                 token_panic!(
                                     self.current_token(),
                                     self.src,
-                                    "Unexpected identifier '{}'! The only identifier allowed as catch case is '*' for marking the default.",
+                                    "Unexpected Identifier '{}'! The only Identifier allowed as catch case is '*' for marking the default.",
                                     self.current_str(),
                                 );
                             }
@@ -894,7 +871,7 @@ impl<'a> Parser<'a> {
                             }
                             is_default_case_already_meet = true;
 
-                            self.ast.add(Node::IDENTIFIER(s.to_string()), start_span)
+                            self.ast.add(Node::Identifier(s.to_string()), start_span)
                         }
                         _ => token_panic!(
                             self.current_token(),
@@ -905,23 +882,23 @@ impl<'a> Parser<'a> {
                     }
                 } else {
                     match &self.current_token().kind {
-                        Tag::STRING(s) => self.ast.add(Node::STR(s.to_string()), start_span),
+                        Tag::STRING(s) => self.ast.add(Node::ValueStr(s.to_string()), start_span),
                         Tag::INTEGER(i) => self
                             .ast
-                            .add(Node::I32(i.parse::<i32>().unwrap()), start_span),
+                            .add(Node::ValueInt(i.parse::<i32>().unwrap()), start_span),
                         Tag::FLOAT(f) => self
                             .ast
-                            .add(Node::F32(f.parse::<f32>().unwrap()), start_span),
-                        Tag::BOOL(b) => self.ast.add(Node::BOOL(b == &"true"), start_span),
+                            .add(Node::ValueFlt(f.parse::<f32>().unwrap()), start_span),
+                        Tag::BOOL(b) => self.ast.add(Node::ValueBool(b == &"true"), start_span),
                         Tag::CHARACTER(c) => self
                             .ast
-                            .add(Node::CHAR(c.chars().nth(0).unwrap()), start_span),
+                            .add(Node::ValueChar(c.chars().nth(0).unwrap()), start_span),
                         Tag::SYMBOL(s) => {
                             if s != "*" {
                                 token_panic!(
                                     self.current_token(),
                                     self.src,
-                                    "Unexpected identifier '{}'! The only identifier allowed as match case is '*' for marking the default.",
+                                    "Unexpected Identifier '{}'! The only Identifier allowed as match case is '*' for marking the default.",
                                     self.current_str(),
                                 );
                             }
@@ -935,7 +912,7 @@ impl<'a> Parser<'a> {
                             }
                             is_default_case_already_meet = true;
 
-                            self.ast.add(Node::IDENTIFIER(s.to_string()), start_span)
+                            self.ast.add(Node::Identifier(s.to_string()), start_span)
                         }
                         _ => token_panic!(
                             self.current_token(),
@@ -959,7 +936,7 @@ impl<'a> Parser<'a> {
 
             let case_body = self.parse_code_block();
             case_nodes.push(self.ast.add(
-                Node::CASE {
+                Node::Case {
                     matching_values: matching_values_nodes,
                     body: case_body,
                 },
@@ -993,7 +970,7 @@ impl<'a> Parser<'a> {
         let case_nodes = self.parse_case_blocks(false);
 
         Some(self.ast.add(
-            Node::MATCH {
+            Node::Match {
                 expression: expr,
                 body: case_nodes,
             },
@@ -1017,7 +994,7 @@ impl<'a> Parser<'a> {
 
         Some(
             self.ast
-                .add(Node::CATCH { body: case_nodes }, start_token.span),
+                .add(Node::Catch { body: case_nodes }, start_token.span),
         )
     }
 
@@ -1052,7 +1029,7 @@ impl<'a> Parser<'a> {
         print_head!(self, "- [b] parse_array_type [b] -");
 
         self.ast
-            .add(Node::ARRAYKIND { kind, sizes }, self.current_token().span)
+            .add(Node::ArrayKind { kind, sizes }, self.current_token().span)
     }
 
     fn parse_array_initializer(&mut self) -> NodeId {
@@ -1067,7 +1044,7 @@ impl<'a> Parser<'a> {
 
         self.expect_str("]");
 
-        self.ast.add(Node::ARRAYVALUE { kind, value }, span)
+        self.ast.add(Node::ArrayValue { kind, value }, span)
     }
 
     fn parse_nested_array_values(&mut self) -> NodeId {
@@ -1092,7 +1069,7 @@ impl<'a> Parser<'a> {
             }
         }
 
-        self.ast.add(Node::EXPRESSIONLIST { values }, span)
+        self.ast.add(Node::ExpressionList { values }, span)
     }
 
     fn parse_array_ref_element(&mut self, lhs: &NodeId) -> NodeId {
@@ -1115,7 +1092,7 @@ impl<'a> Parser<'a> {
         print_head!(self, "- [1] parse_array_ref_element [1] -");
 
         self.ast.add(
-            Node::ARRAYREFERENCE { lhs: *lhs, indices },
+            Node::ArrayReference { lhs: *lhs, indices },
             self.current_token().span,
         )
     }

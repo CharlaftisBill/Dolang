@@ -17,8 +17,4 @@ impl Span {
             current_line_start,
         }
     }
-
-    // pub fn as_str<'a>(&self, source: &'a str) -> &'a str {
-    //     &source[self.start..self.end]
-    // }
 }

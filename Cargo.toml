@@ -3,6 +3,8 @@ name = "Dolang"
 version = "0.0.1"
 edition = "2024"
 
+[features]
+parser-debug = []
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }

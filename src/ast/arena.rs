@@ -24,16 +24,4 @@ impl Ast {
         self.spans.push(span);
         id
     }
-    
-    // pub fn span(&self, id: NodeId) -> Span {
-    //     self.spans[id.index()]
-    // }
-
-    // pub fn get(&self, id: NodeId) -> &Node {
-    //     &self.nodes[id.index()]
-    // }
-
-    // pub fn get_mut(&mut self, id: NodeId) -> &mut Node {
-    //     &mut self.nodes[id.index()]
-    // }
 }

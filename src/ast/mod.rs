@@ -5,6 +5,7 @@ mod arena;
 mod token;
 pub mod lexer;
 pub mod parser;
+mod parser_helpers;
 
 pub use id::NodeId;
 pub use arena::Ast;
