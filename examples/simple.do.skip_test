@@ -1,3 +1,10 @@
+is_one (num i32) : {
+    if num == 1 {
+        success
+    }
+    failure NumIsNotOne
+}
+
 # sum (lhs i32, rhs i32) i32 : {
 #     success lhs + rhs
 # }
@@ -10,12 +17,12 @@
 #     success given_num -1, given_num + 1
 # }
 
-main () : {
-    # number_of_wonders i8 : 7
-    # pi f32 : 3.14
+# main (): {
+#     number_of_wonders i8 : 7
+#     pi f32 : 3.14
 
-    # arr_3d [2, 2, 2 i32] = [i32: [[0, 1], [2, 3]], [[4, 5], [6, 7]]]
-    lucky_nums [3 i8] : [i8: 42, 66, 1335]
+#     arr_3d [2, 2, 2 i32] = [i32: [[0, 1], [2, 3]], [[4, 5], [6, 7]]]
+#     lucky_nums [3 i8] : [i8: 42, 66, 1335]
 
-    # invalid_declaration0 str = 1                    # cannot assign 'i32' value to 'str' variable
-}
+#     invalid_declaration0 str = 1                    # cannot assign 'i32' value to 'str' variable
+# }

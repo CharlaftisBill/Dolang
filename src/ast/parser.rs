@@ -689,7 +689,13 @@ impl<'a> Parser<'a> {
 
     fn parse_success(&mut self, start_token: &Token) -> Option<NodeId> {
         self.advance();
-        let return_values = self.parse_expr_list();
+
+        let return_values = if matches!(self.current_token().kind, Tag::NEWLINE(_)) {
+            Vec::<NodeId>::new()
+        } else {
+            self.parse_expr_list()
+        };
+
         Some(
             self.ast
                 .add(Node::Success { return_values }, start_token.span),
@@ -711,7 +717,12 @@ impl<'a> Parser<'a> {
         let reason = self.current_str();
         self.advance();
 
-        let return_values = self.parse_expr_list();
+        let return_values = if matches!(self.current_token().kind, Tag::NEWLINE(_)) {
+            Vec::<NodeId>::new()
+        } else {
+            self.parse_expr_list()
+        };
+
         Some(self.ast.add(
             Node::Failure {
                 reason: reason.to_string(),

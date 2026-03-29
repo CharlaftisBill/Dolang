@@ -1,6 +1,8 @@
+use std::fmt::Write;
+
 use crate::ast::{Node, NodeId};
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum DoTypes {
     Bool,
     Char,
@@ -20,6 +22,12 @@ pub enum DoTypes {
     F64,
 
     Str,
+
+    Closure {
+        params: Vec<DoTypes>,
+        returns: Vec<DoTypes>,
+        errors: Vec<String>,
+    },
 
     UserDefinedType,
 }
@@ -46,12 +54,47 @@ impl DoTypes {
 
             DoTypes::Str => "str".to_string(),
 
+            DoTypes::Closure {
+                params,
+                returns,
+                errors,
+            } => {
+                let mut signature = String::with_capacity(100);
+
+                signature.push_str("[FUNCTION params: (");
+                for (index, param) in params.iter().enumerate() {
+                    if index != 0 {
+                        signature.push_str(" ,");
+                    }
+                    write!(&mut signature, "{}", param.as_string()).unwrap();
+                }
+
+                signature.push_str("), returns: (");
+                for (index, ret) in returns.iter().enumerate() {
+                    if index != 0 {
+                        signature.push_str(" ,");
+                    }
+                    write!(&mut signature, "{}", ret.as_string()).unwrap();
+                }
+
+                signature.push_str("), causes: (");
+                for (index, err) in errors.iter().enumerate() {
+                    if index != 0 {
+                        signature.push_str(" ,");
+                    }
+                    signature.push_str(err);
+                }
+                signature.push_str(")]");
+
+                signature
+            }
+
             DoTypes::UserDefinedType => "udt".to_string(),
         }
     }
 
     pub fn match_from_string(kind_str: &String) -> DoTypes {
-        println!("\n match_from_string {:?}", kind_str);
+        // println!("\n match_from_string {:?}", kind_str);
 
         match kind_str.as_str() {
             "bool" => DoTypes::Bool,
@@ -74,34 +117,6 @@ impl DoTypes {
             "str" => DoTypes::Str,
 
             _ => DoTypes::UserDefinedType,
-        }
-    }
-
-    pub fn match_from_node(kind_node: &Node) -> DoTypes {
-        println!("\n match_from_node {:?}", kind_node);
-
-        match kind_node {
-            Node::Identifier(kind_str) => self::DoTypes::match_from_string(kind_str),
-            _ => panic!(
-                "'match_from_node' expects a 'Node::Identifier', but got '{:?}'.",
-                kind_node
-            ),
-        }
-    }
-
-    pub fn compare_with(self, compare_to: &Node) -> bool {
-        println!("\nComparing {:?} to {:?}", compare_to, self);
-
-        match self {
-            Self::Bool => matches!(compare_to, Node::ValueBool(_)),
-            Self::Char => matches!(compare_to, Node::ValueChar(_)),
-            Self::I8 | Self::I16 | Self::I32 | Self::I64 => matches!(compare_to, Node::ValueInt(_)),
-            Self::Size | Self::U8 | Self::U16 | Self::U32 | Self::U64 => {
-                matches!(compare_to, Node::ValueInt(_))
-            }
-            Self::F32 | Self::F64 => matches!(compare_to, Node::ValueFlt(_)),
-            Self::Str => matches!(compare_to, Node::ValueStr(_)),
-            Self::UserDefinedType => todo!("Assignment of Structs not yet implemented!"),
         }
     }
 }
