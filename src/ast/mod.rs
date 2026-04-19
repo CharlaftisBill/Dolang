@@ -10,4 +10,4 @@ mod parser_helpers;
 pub use id::NodeId;
 pub use arena::Ast;
 pub use span::Span;
-pub use nodes::{Node};
+pub use nodes::{Node, BinaryOp};

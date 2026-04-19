@@ -1,8 +1,8 @@
 use std::fmt::Write;
 
-use crate::ast::{Node, NodeId};
+use serde::Serialize;
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Serialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub enum DoTypes {
     Bool,
     Char,
@@ -29,7 +29,11 @@ pub enum DoTypes {
         errors: Vec<String>,
     },
 
+    Tuple(Vec<DoTypes>),
+
     UserDefinedType,
+
+    Unknown,
 }
 
 impl DoTypes {
@@ -89,8 +93,39 @@ impl DoTypes {
                 signature
             }
 
+            DoTypes::Tuple(tuple) => {
+                let mut tuple_as_str = String::new();
+
+                tuple_as_str.push_str("typle<");
+                for t in tuple {
+                    tuple_as_str.push_str(" ");
+                    tuple_as_str.push_str(&t.as_string());
+                }
+                tuple_as_str.push_str(" >");
+                tuple_as_str
+            }
+
             DoTypes::UserDefinedType => "udt".to_string(),
+
+            DoTypes::Unknown => "unknown".to_string(),
         }
+    }
+
+    pub fn is_numeric(&self) -> bool {
+        return match self {
+            DoTypes::I8
+            | DoTypes::I16
+            | DoTypes::I32
+            | DoTypes::I64
+            | DoTypes::Size
+            | DoTypes::U8
+            | DoTypes::U16
+            | DoTypes::U32
+            | DoTypes::U64
+            | DoTypes::F32
+            | DoTypes::F64 => true,
+            _ => false,
+        };
     }
 
     pub fn match_from_string(kind_str: &String) -> DoTypes {

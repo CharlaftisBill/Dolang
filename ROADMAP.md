@@ -8,7 +8,8 @@
 * Functions are not parsing them return values ✔
 
 ## backlog [0/5]
-* Make a new keyword `pass` that can be used only in `catch` case blocks. The pass keyword would be used to pass values as result of the function raise the failure when this had been handled:
+* Make a new keyword `pass` that can be used only in `catch` case blocks. The pass keyword would be used to pass values as result of the function raise the failure when this had been handled.
+* During parsing make sure that we collect the return types of closures, this way we will get more performance during type checking.
 * Make sure that the names of enums elements between token Tag and ast Node are in par
 ```do
 print_char char = self.Tape.Get(i) catch {
